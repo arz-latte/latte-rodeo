@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomee>
+	<!-- see http://tomee.apache.org/containers-and-resources.html -->
+
+	<!-- activate next line to be able to deploy applications in apps -->
+	<!-- <Deployments dir="apps" /> -->
+
+	<Resource id="jdbc/rodeo_db" type="DataSource">
+		JdbcDriver org.hsqldb.jdbcDriver
+		JdbcUrl jdbc:hsqldb:file:${rodeo.home}/db/rodeo
+		UserName sa
+		Password
+	</Resource>
+
+</tomee>
