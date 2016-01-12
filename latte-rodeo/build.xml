@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE public>
+<project name="latte-rodeo" default="build">
+	
+	<target name="build">
+			<echo>project build successfully</echo>
+	</target>
+	
+</project>
