@@ -5,8 +5,8 @@
 
 	<persistence-unit name="latte-rodeo">
 		<jta-data-source>jdbc/rodeo_db</jta-data-source>
-		<class>at.arz.latte.rodeo.domain.Application</class>
-		<class>at.arz.latte.rodeo.domain.Release</class>
+		<class>at.arz.latte.rodeo.application.Application</class>
+		<class>at.arz.latte.rodeo.release.Release</class>
 
 		<properties>
 			<property name="openjpa.DynamicEnhancementAgent" value="true" />

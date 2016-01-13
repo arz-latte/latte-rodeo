@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import at.arz.latte.rodeo.api.RodeoQuery;
-import at.arz.latte.rodeo.domain.Release;
+import at.arz.latte.rodeo.release.Release;
 
 public class ListReleasesQuery implements RodeoQuery<ListReleases> {
 	private static final int DEFAULT_FETCH_SIZE = 100;

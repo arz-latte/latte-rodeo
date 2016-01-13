@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.domain;
+package at.arz.latte.rodeo.application;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
