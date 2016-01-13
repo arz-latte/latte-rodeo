@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-import at.arz.latte.rodeo.application.restapi.ApplicationResource;
+import at.arz.latte.rodeo.release.restapi.ApplicationResource;
 import at.arz.latte.rodeo.release.restapi.ReleaseResource;
 
 @ApplicationPath("/api")

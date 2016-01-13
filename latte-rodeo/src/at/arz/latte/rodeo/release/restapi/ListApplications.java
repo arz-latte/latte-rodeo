@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.application.restapi;
+package at.arz.latte.rodeo.release.restapi;
 
 import java.io.Serializable;
 import java.util.List;

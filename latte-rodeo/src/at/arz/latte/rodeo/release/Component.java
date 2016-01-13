@@ -3,6 +3,8 @@ package at.arz.latte.rodeo.release;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,48 +16,51 @@ import javax.persistence.Table;
 import at.arz.latte.rodeo.api.AbstractEntity;
 
 /**
- * the description of one release.
+ * a component is the description of a releaseable unit.
  * 
  * @author mrodler
  * 
  */
 @Entity
-@Table(name = "RELEASES")
-@NamedQueries({ @NamedQuery(name = Release.SELECT_ALL, query = "select o from Release o ") })
-public class Release
+@Table(name = "COMPONENTS")
+@NamedQueries({ @NamedQuery(name = Component.SELECT_ALL, query = "select o from Component o ") })
+@DiscriminatorColumn(name = "CTYPE", length = 32)
+@DiscriminatorValue("COMPONENT")
+public class Component
 		extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
-	public static final String SELECT_ALL = "Release.selectAll";
+
+	public static final String SELECT_ALL = "Component.selectAll";
 
 	@Id
 	@Column(name = "OID")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "SEQUENCES")
 	private Long id;
 
-	@Column(name = "RELEASE_NAME", length = 255, unique = true, nullable = false)
-	private String releaseName;
+	@Column(name = "COMPONENT_NAME", length = 255, unique = true)
+	private String name;
 
-	protected Release() {
+	protected Component() {
 		// jpa constructor
 	}
 
-	public Release(String releaseName) {
-		Objects.requireNonNull(releaseName, "releaseName required");
-		this.releaseName = releaseName;
+	public Component(String componentName) {
+		Objects.requireNonNull(componentName, "componentName required");
+		this.name = componentName;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public String getReleaseName() {
-		return releaseName;
+	public String getName() {
+		return name;
 	}
 
 	@Override
 	public int hashCode() {
-		return releaseName == null ? 0 : releaseName.hashCode();
+		return name == null ? 0 : name.hashCode();
 	}
 
 	@Override
@@ -66,12 +71,13 @@ public class Release
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Release other = (Release) obj;
-		return releaseName.equals(other.releaseName);
+		Component other = (Component) obj;
+		return Objects.equals(name, other.name);
 	}
 
 	@Override
 	public String toString() {
-		return "Release [id=" + id + ", releaseName=" + releaseName + "]";
+		return "Component [id=" + getId() + ", name=" + getName() + "]";
 	}
+
 }

@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.application.restapi;
+package at.arz.latte.rodeo.release.restapi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import at.arz.latte.rodeo.api.RodeoQuery;
-import at.arz.latte.rodeo.application.Application;
+import at.arz.latte.rodeo.release.Application;
 
 public class ListApplicationsQuery implements RodeoQuery<ListApplications> {
 	private static final int DEFAULT_FETCH_SIZE = 100;
@@ -29,7 +29,7 @@ public class ListApplicationsQuery implements RodeoQuery<ListApplications> {
 	}
 
 	String map(Application application) {
-		return application.getApplicationName();
+		return application.getName();
 	}
 
 	TypedQuery<Application> createQuery(EntityManager entityManager) {
