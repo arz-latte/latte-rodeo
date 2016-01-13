@@ -1,8 +1,8 @@
 package at.arz.latte.rodeo.scm;
 
+import at.arz.latte.rodeo.execution.Command;
 import at.arz.latte.rodeo.workspace.Workspace;
 import at.arz.latte.rodeo.workspace.WorkspaceSettings;
-import at.arz.release.execution.Command;
 
 public class CvsScmRepository
 		implements ScmRepository {

@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.Semaphore;
 
+import at.arz.latte.rodeo.execution.BatchJobProcessor;
+import at.arz.latte.rodeo.execution.Command;
+import at.arz.latte.rodeo.execution.Project;
 import at.arz.latte.rodeo.scm.ScmRepository;
 import at.arz.latte.rodeo.scm.ScmRepositoryFactory;
-import at.arz.release.execution.BatchJobProcessor;
-import at.arz.release.execution.Command;
-import at.arz.release.execution.Project;
 
 public class Workspace {
 
