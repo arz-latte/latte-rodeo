@@ -2,15 +2,15 @@ package at.arz.latte.rodeo.scm;
 
 import at.arz.latte.rodeo.workspace.Workspace;
 
-public class ScmRepositoryFactory {
+public class ScmRepositoryServiceFactory {
 
 	private Workspace workspace;
 
-	public ScmRepositoryFactory(Workspace workspace) {
+	public ScmRepositoryServiceFactory(Workspace workspace) {
 		this.workspace = workspace;
 	}
 
-	public ScmRepository getRepository(String repositoryURL) {
+	public ScmRepositoryService getRepository(String repositoryURL) {
 		if (repositoryURL.startsWith(":pserver:")) {
 			return new CvsScmRepository(workspace, repositoryURL);
 		}

@@ -1,6 +1,8 @@
-package at.arz.latte.rodeo.release;
+package at.arz.latte.rodeo.project;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -11,12 +13,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import at.arz.latte.rodeo.api.AbstractEntity;
 
 /**
- * a component is the description of a releaseable unit.
+ * a component groups a set of projects.
  * 
  * @author mrodler
  * 
@@ -41,8 +44,29 @@ public class Component
 	@Column(name = "COMPONENT_NAME", length = 255, unique = true)
 	private String name;
 
+	@OneToMany(mappedBy = "component", orphanRemoval = false)
+	private Set<Project> projects;
+
 	protected Component() {
 		// jpa constructor
+	}
+
+	public Set<Project> getProjects() {
+		return Collections.unmodifiableSet(projects);
+	}
+
+	public void assignProject(Project project) {
+		Component other = project.getComponent();
+		if (other != null) {
+			other.removeProject(project);
+		}
+		projects.add(project);
+		project.setComponent(this);
+	}
+
+	public void removeProject(Project project) {
+		projects.remove(project);
+		project.setComponent(null);
 	}
 
 	public Component(String componentName) {

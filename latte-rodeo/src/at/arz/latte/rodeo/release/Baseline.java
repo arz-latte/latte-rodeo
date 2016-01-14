@@ -33,30 +33,30 @@ public class Baseline
 	private Long id;
 
 	@OneToOne
-	@Column(name = "COMPONENT_RELEASE_OID", nullable = false, unique = true)
-	private ComponentRelease componentRelease;
+	@Column(name = "APPLICATION_RELEASE_OID", nullable = false, unique = true)
+	private ApplicationRelease applicationRelease;
 
-	private Set<Revision> moduleRevisions;
+	private Set<ModuleRevision> moduleRevisions;
 
 	protected Baseline() {
 		// jpa constructor
 	}
 
-	public Baseline(ComponentRelease componentRelease) {
-		Objects.requireNonNull(componentRelease, "componentRelease required");
-		this.componentRelease = componentRelease;
-		this.moduleRevisions = new HashSet<Revision>();
+	public Baseline(ApplicationRelease applicationRelease) {
+		Objects.requireNonNull(applicationRelease, "applicationRelease required");
+		this.applicationRelease = applicationRelease;
+		this.moduleRevisions = new HashSet<ModuleRevision>();
 	}
 
 	public void addModule(Module module, String revisionName) {
-		Revision revision = module.getRevision(revisionName);
+		ModuleRevision revision = module.getRevision(revisionName);
 		if (revision != null) {
 			moduleRevisions.add(revision);
 		}
 	}
 
 	public String getModuleRevision(Module module) {
-		for (Revision revision : moduleRevisions) {
+		for (ModuleRevision revision : moduleRevisions) {
 			if (module.equals(revision.getModule())) {
 				return revision.getRevision();
 			}

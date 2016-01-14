@@ -43,7 +43,7 @@ public class Module
 	private String organisation;
 
 	@OneToMany(mappedBy = "module", orphanRemoval = true)
-	private Set<Revision> revisions;
+	private Set<ModuleRevision> revisions;
 
 	protected Module() {
 		// jpa constructor
@@ -59,16 +59,16 @@ public class Module
 		return moduleName == null ? 0 : moduleName.hashCode();
 	}
 
-	public Map<String, Revision> getRevisions() {
-		Map<String, Revision> revisionMap = new HashMap<String, Revision>();
-		for (Revision revision : revisions) {
+	public Map<String, ModuleRevision> getRevisions() {
+		Map<String, ModuleRevision> revisionMap = new HashMap<String, ModuleRevision>();
+		for (ModuleRevision revision : revisions) {
 			revisionMap.put(revision.getRevision(), revision);
 		}
 		return Collections.unmodifiableMap(revisionMap);
 	}
 
 	public void addRevision(String revision) {
-		revisions.add(new Revision(this, revision));
+		revisions.add(new ModuleRevision(this, revision));
 	}
 
 	public String getModuleName() {
@@ -87,8 +87,8 @@ public class Module
 		return Objects.equals(moduleName, other.moduleName);
 	}
 
-	Revision getRevision(String revisionName) {
-		for (Revision revision : revisions) {
+	ModuleRevision getRevision(String revisionName) {
+		for (ModuleRevision revision : revisions) {
 			if (revisionName.equals(revision.getRevision()))
 				;
 		}

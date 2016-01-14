@@ -5,18 +5,20 @@
 	<persistence-unit name="latte-rodeo">
 		<jta-data-source>jdbc/rodeo_db</jta-data-source>
 		<mapping-file>META-INF/rodeo-orm.xml</mapping-file>
-		<class>at.arz.latte.rodeo.release.Application</class>
-		<class>at.arz.latte.rodeo.release.Release</class>
-		<class>at.arz.latte.rodeo.release.Component</class>
-		<class>at.arz.latte.rodeo.release.Module</class>
-		<class>at.arz.latte.rodeo.user.User</class>
-		<class>at.arz.latte.rodeo.release.ComponentRelease</class>
-		<class>at.arz.latte.rodeo.release.Baseline</class>
-		<class>at.arz.latte.rodeo.release.Revision</class>
 		<class>at.arz.latte.rodeo.api.AbstractEntity</class>
+		<class>at.arz.latte.rodeo.journal.EventAttribute</class>
+		<class>at.arz.latte.rodeo.journal.Event</class>
+		<class>at.arz.latte.rodeo.project.Component</class>
+		<class>at.arz.latte.rodeo.project.Project</class>
+		<class>at.arz.latte.rodeo.project.ProjectVersion</class>
+		<class>at.arz.latte.rodeo.release.Application</class>
+		<class>at.arz.latte.rodeo.release.ApplicationRelease</class>
+		<class>at.arz.latte.rodeo.release.Baseline</class>
+		<class>at.arz.latte.rodeo.release.Module</class>
+		<class>at.arz.latte.rodeo.release.Release</class>
+		<class>at.arz.latte.rodeo.release.ModuleRevision</class>
 		<class>at.arz.latte.rodeo.user.SystemAccount</class>
-		<class>at.arz.latte.rodeo.journal.JournalEntry</class>
-		<class>at.arz.latte.rodeo.journal.JournalAttribute</class>
+		<class>at.arz.latte.rodeo.user.User</class>
 
 		<properties>
 			<property name="openjpa.DynamicEnhancementAgent" value="true" />

@@ -18,7 +18,7 @@ import at.arz.latte.rodeo.api.AbstractEntity;
  */
 @Entity
 @Table(name = "REVISIONS")
-public class Revision
+public class ModuleRevision
 		extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -33,11 +33,11 @@ public class Revision
 
 	private String revision;
 
-	protected Revision() {
+	protected ModuleRevision() {
 		// jpa constructor
 	}
 
-	Revision(Module module, String revision) {
+	ModuleRevision(Module module, String revision) {
 		this.module = module;
 		this.revision = revision;
 	}

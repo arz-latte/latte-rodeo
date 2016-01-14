@@ -5,7 +5,7 @@ import at.arz.latte.rodeo.workspace.Workspace;
 import at.arz.latte.rodeo.workspace.WorkspaceSettings;
 
 public class CvsScmRepository
-		implements ScmRepository {
+		implements ScmRepositoryService {
 
 	private String repositoryURL;
 	private Workspace workspace;

@@ -12,15 +12,15 @@ import javax.persistence.UniqueConstraint;
 import at.arz.latte.rodeo.api.AbstractEntity;
 
 /**
- * a component release represents the state of one component for one release.
+ * a application release represents the state of one application for one release.
  * 
  * @author mrodler
  * 
  */
 @Entity
-@Table(name = "COMPONENT_RELEASES", uniqueConstraints = { @UniqueConstraint(columnNames = { "COMPONENT_OID",
-																							"RELEASE_OID" }) })
-public class ComponentRelease
+@Table(	name = "APPLICATION_RELEASES",
+		uniqueConstraints = { @UniqueConstraint(columnNames = { "APPLICATION_OID", "RELEASE_OID" }) })
+public class ApplicationRelease
 		extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -31,19 +31,20 @@ public class ComponentRelease
 	private Long id;
 
 	@OneToOne(orphanRemoval = false)
-	@Column(name = "COMPONENT_OID", nullable = false)
-	private Component component;
+	@Column(name = "APPLICATION_OID", nullable = false)
+	private Application application;
 
 	@OneToOne(orphanRemoval = false)
 	@Column(name = "RELEASE_OID", nullable = false)
 	private Release release;
 
-	protected ComponentRelease() {
+	protected ApplicationRelease() {
 		// jpa constructor
 	}
 
-	public ComponentRelease(Release release, Component component) {
-
+	public ApplicationRelease(Release release, Application application) {
+		this.release = release;
+		this.application = application;
 	}
 
 }

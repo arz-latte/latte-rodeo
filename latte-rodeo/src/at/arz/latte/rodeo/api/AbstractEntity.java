@@ -14,5 +14,5 @@ public abstract class AbstractEntity
 
 	@Version
 	@Column(name = "EVERSION")
-	private long version;
+	private long entityVersion;
 }

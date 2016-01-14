@@ -1,22 +1,17 @@
-package at.arz.latte.rodeo.journal;
+package at.arz.latte.rodeo.project;
 
 import java.io.Serializable;
 
-public class JournalAttributeKey
+public class ProjectVersionPrimaryKey
 		implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
-	private Long entry;
+	private Long project;
 	private String name;
-	private int index;
 
-	public JournalAttributeKey() {
+	public ProjectVersionPrimaryKey() {
 		// jpa constructor
-	}
-
-	public JournalAttributeKey(Long entry, String attributeName) {
-		this.entry = entry;
-		this.name = attributeName;
 	}
 
 	@Override
@@ -24,8 +19,7 @@ public class JournalAttributeKey
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((entry == null) ? 0 : entry.hashCode());
-		result = prime * result + index;
+		result = prime * result + ((project == null) ? 0 : project.hashCode());
 		return result;
 	}
 
@@ -37,20 +31,17 @@ public class JournalAttributeKey
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		JournalAttributeKey other = (JournalAttributeKey) obj;
+		ProjectVersionPrimaryKey other = (ProjectVersionPrimaryKey) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (entry == null) {
-			if (other.entry != null)
+		if (project == null) {
+			if (other.project != null)
 				return false;
-		} else if (!entry.equals(other.entry))
-			return false;
-		if (index != other.index)
+		} else if (!project.equals(other.project))
 			return false;
 		return true;
 	}
-
 }

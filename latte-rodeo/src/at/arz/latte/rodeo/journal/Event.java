@@ -17,12 +17,12 @@ import javax.persistence.Table;
 import at.arz.latte.rodeo.api.AbstractEntity;
 
 /**
- * Entity implementation class for Entity: JournalEntry
+ * Entity implementation class for Entity: Event
  * 
  */
 @Entity
-@Table(name = "JOURNAL_ENTRIES")
-public class JournalEntry
+@Table(name = "EVENTS")
+public class Event
 		extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -34,28 +34,28 @@ public class JournalEntry
 	@Column(name = "TSTAMP", nullable = false)
 	private Timestamp timestamp;
 	
-	@Column(name = "ACTION_NAME", nullable = false)
-	private String action;
+	@Column(name = "EVENT_NAME", nullable = false)
+	private String name;
 
-	@OneToMany(mappedBy = "entry", orphanRemoval = true, cascade = ALL)
-	private List<JournalAttribute> attributes;
+	@OneToMany(mappedBy = "event", orphanRemoval = true, cascade = ALL)
+	private List<EventAttribute> attributes;
 
-	protected JournalEntry() {
+	protected Event() {
 		// jpa entry
 	}
 
-	public JournalEntry(String action) {
-		Objects.requireNonNull(action, "action required");
-		this.action = action;
-		this.attributes = new ArrayList<JournalAttribute>();
+	public Event(String name) {
+		Objects.requireNonNull(name, "name required");
+		this.name = name;
+		this.attributes = new ArrayList<EventAttribute>();
 	}
 
 	public void addAttribute(String name, String value) {
-		attributes.add(new JournalAttribute(this, name, value));
+		attributes.add(new EventAttribute(this, name, value));
 	}
 
 	public void addAttribute(String name, int index, String value) {
-		attributes.add(new JournalAttribute(this, name, value, index));
+		attributes.add(new EventAttribute(this, name, value, index));
 	}
 
 	public Timestamp getTimestamp() {
@@ -63,10 +63,10 @@ public class JournalEntry
 	}
 
 	public String getAction() {
-		return action;
+		return name;
 	}
 
-	public List<JournalAttribute> getAttributes() {
+	public List<EventAttribute> getAttributes() {
 		return Collections.unmodifiableList(attributes);
 	}
 
