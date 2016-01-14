@@ -23,7 +23,7 @@ public class EventAttribute
 
 	@Id
 	@ManyToOne
-	private Event event;
+	private EventEntry event;
 
 	@Id
 	@Column(name = "ATTRIBUTE_NAME")
@@ -40,11 +40,11 @@ public class EventAttribute
 		// jpa constructor
 	}
 
-	public EventAttribute(Event entry, String attributeName, String attributeValue) {
+	public EventAttribute(EventEntry entry, String attributeName, String attributeValue) {
 		this(entry, attributeName, attributeValue, 0);
 	}
 
-	public EventAttribute(Event entry, String attributeName, String attributeValue, int index) {
+	public EventAttribute(EventEntry entry, String attributeName, String attributeValue, int index) {
 		this.event = entry;
 		this.name = attributeName;
 		this.value = attributeValue;

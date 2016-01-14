@@ -22,7 +22,7 @@ import at.arz.latte.rodeo.api.AbstractEntity;
  */
 @Entity
 @Table(name = "EVENTS")
-public class Event
+public class EventEntry
 		extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -40,11 +40,11 @@ public class Event
 	@OneToMany(mappedBy = "event", orphanRemoval = true, cascade = ALL)
 	private List<EventAttribute> attributes;
 
-	protected Event() {
+	protected EventEntry() {
 		// jpa entry
 	}
 
-	public Event(String name) {
+	public EventEntry(String name) {
 		Objects.requireNonNull(name, "name required");
 		this.name = name;
 		this.attributes = new ArrayList<EventAttribute>();
