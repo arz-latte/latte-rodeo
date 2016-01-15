@@ -14,7 +14,6 @@ public class ScmLocationExistsMapper
 
 	@Override
 	public Response toResponse(ScmLocationExists exception) {
-		System.out.println("HANDLE SCM REPOSITORY EXISTS");
 		return Response.status(Status.CONFLICT).entity(buildErrorDetail(exception)).build();
 	}
 

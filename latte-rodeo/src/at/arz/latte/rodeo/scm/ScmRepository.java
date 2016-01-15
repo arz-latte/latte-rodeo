@@ -29,4 +29,12 @@ public class ScmRepository {
 		return list;
 	}
 
+	public List<Scm> findByLocationOrName(ScmLocation location, String name) {
+		TypedQuery<Scm> query = entityManager.createNamedQuery(Scm.FIND_BY_LOCATION_OR_NAME, Scm.class);
+		query.setParameter("location", location.toString());
+		query.setParameter("name", name);
+		List<Scm> list = query.getResultList();
+		return list;
+	}
+
 }

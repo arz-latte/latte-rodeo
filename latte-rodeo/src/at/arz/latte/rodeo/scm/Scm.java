@@ -17,11 +17,14 @@ import at.arz.latte.rodeo.scm.admin.ScmCreated;
 @Entity
 @Table(name = "SCM_REPOSITORIES")
 @NamedQueries({ @NamedQuery(name = Scm.FIND_ALL, query = "select o from Scm o "),
-				@NamedQuery(name = Scm.FIND_BY_LOCATION, query = "select o from Scm o where o.location=:location") })
+				@NamedQuery(name = Scm.FIND_BY_LOCATION, query = "select o from Scm o where o.location=:location"),
+				@NamedQuery(name = Scm.FIND_BY_LOCATION_OR_NAME,
+							query = "select o from Scm o where o.location=:location or o.name=:name"), })
 public class Scm {
 
 	public static final String FIND_ALL = "Scm.findAll";
 	public static final String FIND_BY_LOCATION = "Scm.findByLocation";
+	public static final String FIND_BY_LOCATION_OR_NAME = "Scm.findByLocationOrName";
 
 	@Id
 	@Column(name = "OID")
@@ -39,7 +42,6 @@ public class Scm {
 
 	@Column(name = "SCM_USER")
 	private String userId;
-	
 
 	protected Scm() {
 		// jpa constructor
@@ -71,6 +73,10 @@ public class Scm {
 
 	public ScmUserId getUserId() {
 		return new ScmUserId(userId);
+	}
+
+	public String getName() {
+		return name;
 	}
 
 }

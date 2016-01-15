@@ -3,6 +3,7 @@ package at.arz.latte.rodeo.scm.admin;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -24,10 +25,14 @@ public class CreateScm
 	@Inject
 	private ScmRepository repository;
 
+	@NotNull
 	private ScmLocation location;
+	@NotNull
 	private ScmType type;
+	@NotNull
 	private ScmUserId userId;
 
+	@NotNull
 	private String name;
 
 	CreateScm() {
@@ -43,14 +48,21 @@ public class CreateScm
 
 	@Override
 	public Long execute() {
-		List<Scm> scms = repository.findByLocation(location);
+		List<Scm> scms = repository.findByLocationOrName(location, name);
 		if (scms.isEmpty()) {
 			Scm scm = new Scm(name, location, type, userId);
 			repository.create(scm);
 			return scm.getId();
-		} else {
-			throw new ScmLocationExists(location);
 		}
+		for (Scm scm : scms) {
+			if (name.equals(scm.getName())) {
+				throw new ScmNameExists(name);
+			}
+			if (location.equals(scm.getLocation())) {
+				throw new ScmLocationExists(location);
+			}
+		}
+		throw new RuntimeException("found multiple scm entites, but none match name or location");
 	}
 
 }
