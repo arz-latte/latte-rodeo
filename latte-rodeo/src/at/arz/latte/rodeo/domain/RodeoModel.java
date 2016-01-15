@@ -5,6 +5,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import at.arz.latte.rodeo.api.RodeoCommand;
 import at.arz.latte.rodeo.api.RodeoQuery;
 
 /**
@@ -20,4 +21,9 @@ public class RodeoModel {
 	public <R> R query(RodeoQuery<R> query){
 		return query.execute(entityManager);
 	}
+	
+	public void execute(RodeoCommand command){
+		command.execute(entityManager);
+	}
+
 }

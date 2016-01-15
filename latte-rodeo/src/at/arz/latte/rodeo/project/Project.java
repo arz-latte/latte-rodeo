@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
@@ -17,6 +19,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import at.arz.latte.rodeo.api.AbstractEntity;
+import at.arz.latte.rodeo.event.EventDispatcher;
+import at.arz.latte.rodeo.project.events.ProjectCreated;
 
 @Entity
 @Table(name = "PROJECTS")
@@ -27,6 +31,7 @@ public class Project
 
 	@Id
 	@Column(name = "OID")
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "SEQUENCES")
 	private Long id;
 
 	@OneToMany(mappedBy = "project", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -43,6 +48,7 @@ public class Project
 								updatable = false) })
 	private ProjectVersion mainline;
 
+	@Column(name = "PROJECT_NAME", nullable = false, unique = true)
 	private String name;
 
 	@ManyToOne
@@ -55,6 +61,15 @@ public class Project
 	public Project(String name) {
 		this.name = name;
 		this.versions = new HashSet<>();
+		 EventDispatcher.notify(new ProjectCreated(name));
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public void addBranch(String branchName) {
@@ -94,7 +109,7 @@ public class Project
 	}
 
 	void setComponent(Component component) {
-		this.component=component;
+		this.component = component;
 	}
 
 	public Component getComponent() {

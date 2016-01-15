@@ -15,15 +15,15 @@ import at.arz.latte.rodeo.api.AbstractEntity;
  */
 @Entity
 @Table(name="EVENT_ATTRIBUTES")
-@IdClass(EventAttributePrimaryKey.class)
-public class EventAttribute
+@IdClass(AttributePrimaryKey.class)
+public class Attribute
 		extends AbstractEntity {
 	
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@ManyToOne
-	private EventEntry event;
+	private JournalEntry event;
 
 	@Id
 	@Column(name = "ATTRIBUTE_NAME")
@@ -36,15 +36,15 @@ public class EventAttribute
 	@Column(name = "ATTRIBUTE_VALUE")
 	private String value;
 
-	protected EventAttribute() {
+	protected Attribute() {
 		// jpa constructor
 	}
 
-	public EventAttribute(EventEntry entry, String attributeName, String attributeValue) {
+	public Attribute(JournalEntry entry, String attributeName, String attributeValue) {
 		this(entry, attributeName, attributeValue, 0);
 	}
 
-	public EventAttribute(EventEntry entry, String attributeName, String attributeValue, int index) {
+	public Attribute(JournalEntry entry, String attributeName, String attributeValue, int index) {
 		this.event = entry;
 		this.name = attributeName;
 		this.value = attributeValue;

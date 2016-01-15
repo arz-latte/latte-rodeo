@@ -6,8 +6,8 @@
 		<jta-data-source>jdbc/rodeo_db</jta-data-source>
 		<mapping-file>META-INF/rodeo-orm.xml</mapping-file>
 		<class>at.arz.latte.rodeo.api.AbstractEntity</class>
-		<class>at.arz.latte.rodeo.journal.EventAttribute</class>
-		<class>at.arz.latte.rodeo.journal.EventEntry</class>
+		<class>at.arz.latte.rodeo.journal.Attribute</class>
+		<class>at.arz.latte.rodeo.journal.JournalEntry</class>
 		<class>at.arz.latte.rodeo.project.Component</class>
 		<class>at.arz.latte.rodeo.project.Project</class>
 		<class>at.arz.latte.rodeo.project.ProjectVersion</class>

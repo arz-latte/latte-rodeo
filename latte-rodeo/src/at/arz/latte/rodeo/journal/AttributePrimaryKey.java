@@ -2,7 +2,7 @@ package at.arz.latte.rodeo.journal;
 
 import java.io.Serializable;
 
-public class EventAttributePrimaryKey
+public class AttributePrimaryKey
 		implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -10,11 +10,11 @@ public class EventAttributePrimaryKey
 	private String name;
 	private int index;
 
-	public EventAttributePrimaryKey() {
+	public AttributePrimaryKey() {
 		// jpa constructor
 	}
 
-	public EventAttributePrimaryKey(Long event, String attributeName) {
+	public AttributePrimaryKey(Long event, String attributeName) {
 		this.event = event;
 		this.name = attributeName;
 	}
@@ -37,7 +37,7 @@ public class EventAttributePrimaryKey
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EventAttributePrimaryKey other = (EventAttributePrimaryKey) obj;
+		AttributePrimaryKey other = (AttributePrimaryKey) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;

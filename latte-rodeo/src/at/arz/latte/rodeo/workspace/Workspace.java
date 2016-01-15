@@ -11,7 +11,7 @@ import java.util.concurrent.Semaphore;
 
 import at.arz.latte.rodeo.execution.BatchJobProcessor;
 import at.arz.latte.rodeo.execution.Command;
-import at.arz.latte.rodeo.execution.Project;
+import at.arz.latte.rodeo.execution.SCMProject;
 import at.arz.latte.rodeo.scm.ScmRepositoryService;
 import at.arz.latte.rodeo.scm.ScmRepositoryServiceFactory;
 
@@ -19,7 +19,7 @@ public class Workspace {
 
 	private String name;
 	private File workspaceDir;
-	private Map<String, Project> projects;
+	private Map<String, SCMProject> projects;
 	private Semaphore maxParallelJobs;
 	private ScmRepositoryServiceFactory repositoryFactory;
 	private Stack<Command> activeCommands;
@@ -30,11 +30,11 @@ public class Workspace {
 		this.workspaceDir = workspaceDir;
 		this.repositoryFactory = new ScmRepositoryServiceFactory(this);
 		this.activeCommands = new Stack<Command>();
-		projects = new HashMap<String, Project>();
+		projects = new HashMap<String, SCMProject>();
 		maxParallelJobs = new Semaphore(2);
 	}
 
-	public void addProject(Project project) {
+	public void addProject(SCMProject project) {
 		if (projects.containsKey(project.getName())) {
 			throw new IllegalStateException("duplicate project:" + project.getName());
 		}
@@ -98,7 +98,7 @@ public class Workspace {
 			workspaceDir.mkdirs();
 		}
 
-		for (Project project : projects.values()) {
+		for (SCMProject project : projects.values()) {
 			File file = new File(workspaceDir, project.getScmModuleName());
 			if(file.exists()){
 				continue;
@@ -121,7 +121,7 @@ public class Workspace {
 
 	public void rebuild() {
 		waitUntilActiveCommandsCompleted();
-		for (Project project : projects.values()) {
+		for (SCMProject project : projects.values()) {
 			buildProject(project.getScmModuleName());
 		}
 	}

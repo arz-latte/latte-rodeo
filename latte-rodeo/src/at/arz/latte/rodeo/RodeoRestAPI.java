@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import at.arz.latte.rodeo.project.restapi.ProjectResource;
 import at.arz.latte.rodeo.release.restapi.ApplicationResource;
 import at.arz.latte.rodeo.release.restapi.ReleaseResource;
 
@@ -17,6 +18,7 @@ public class RodeoRestAPI extends Application {
 		Set<Class<?>> classes = new HashSet<>();
 		classes.add(ReleaseResource.class);
 		classes.add(ApplicationResource.class);
+		classes.add(ProjectResource.class);
 		return classes;
 	}
 }

@@ -1,12 +1,12 @@
 package at.arz.latte.rodeo.execution;
 
-public class Project {
+public class SCMProject {
 
 	private String name;
 	private String scmRepository;
 	private String branch;
 
-	public Project(String name, String scmRepository, String branch) {
+	public SCMProject(String name, String scmRepository, String branch) {
 		this.name = name;
 		this.scmRepository = scmRepository;
 		this.branch = branch;

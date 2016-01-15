@@ -10,6 +10,8 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,40 +24,48 @@ import at.arz.latte.rodeo.api.AbstractEntity;
  */
 @Entity
 @Table(name = "EVENTS")
-public class EventEntry
+public class JournalEntry
 		extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "OID")
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "SEQUENCES")
 	private Long id;
 
 	@Column(name = "TSTAMP", nullable = false)
 	private Timestamp timestamp;
-	
+
 	@Column(name = "EVENT_NAME", nullable = false)
 	private String name;
 
 	@OneToMany(mappedBy = "event", orphanRemoval = true, cascade = ALL)
-	private List<EventAttribute> attributes;
+	private List<Attribute> attributes;
 
-	protected EventEntry() {
+	protected JournalEntry() {
 		// jpa entry
 	}
 
-	public EventEntry(String name) {
+	public JournalEntry(String name) {
 		Objects.requireNonNull(name, "name required");
 		this.name = name;
-		this.attributes = new ArrayList<EventAttribute>();
+		this.timestamp = new Timestamp(System.currentTimeMillis());
+		this.attributes = new ArrayList<Attribute>();
+	}
+
+	public void addAttribute(String name, Object value) {
+		if (value != null) {
+			attributes.add(new Attribute(this, name, value.toString()));
+		}
 	}
 
 	public void addAttribute(String name, String value) {
-		attributes.add(new EventAttribute(this, name, value));
+		attributes.add(new Attribute(this, name, value));
 	}
 
 	public void addAttribute(String name, int index, String value) {
-		attributes.add(new EventAttribute(this, name, value, index));
+		attributes.add(new Attribute(this, name, value, index));
 	}
 
 	public Timestamp getTimestamp() {
@@ -66,7 +76,7 @@ public class EventEntry
 		return name;
 	}
 
-	public List<EventAttribute> getAttributes() {
+	public List<Attribute> getAttributes() {
 		return Collections.unmodifiableList(attributes);
 	}
 
