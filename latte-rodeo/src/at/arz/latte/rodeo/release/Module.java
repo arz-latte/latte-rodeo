@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import at.arz.latte.rodeo.domain.AbstractEntity;
+import at.arz.latte.rodeo.infrastructure.AbstractEntity;
 
 /**
  * a module is the description one binary artifact and each module can have multiple revisions.

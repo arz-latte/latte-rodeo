@@ -7,7 +7,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import at.arz.latte.rodeo.domain.RodeoModel;
+import at.arz.latte.rodeo.infrastructure.RodeoModel;
 
 @Path("/releases")
 @Produces(MediaType.APPLICATION_JSON)

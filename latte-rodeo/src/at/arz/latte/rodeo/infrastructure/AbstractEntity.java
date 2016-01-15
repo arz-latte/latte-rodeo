@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.domain;
+package at.arz.latte.rodeo.infrastructure;
 
 import java.io.Serializable;
 

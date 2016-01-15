@@ -5,7 +5,7 @@
 	<persistence-unit name="latte-rodeo">
 		<jta-data-source>jdbc/rodeo_db</jta-data-source>
 		<mapping-file>META-INF/rodeo-orm.xml</mapping-file>
-		<class>at.arz.latte.rodeo.domain.AbstractEntity</class>
+		<class>at.arz.latte.rodeo.infrastructure.AbstractEntity</class>
 		<class>at.arz.latte.rodeo.journal.Attribute</class>
 		<class>at.arz.latte.rodeo.journal.JournalEntry</class>
 		<class>at.arz.latte.rodeo.project.Component</class>

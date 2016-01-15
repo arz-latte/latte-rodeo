@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import at.arz.latte.rodeo.domain.AbstractEntity;
+import at.arz.latte.rodeo.infrastructure.AbstractEntity;
 
 /**
  * A baseline contains all module revisions of one component release.

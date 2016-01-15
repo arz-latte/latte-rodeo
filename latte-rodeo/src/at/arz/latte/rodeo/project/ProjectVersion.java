@@ -9,7 +9,7 @@ import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import at.arz.latte.rodeo.domain.AbstractEntity;
+import at.arz.latte.rodeo.infrastructure.AbstractEntity;
 
 @Entity
 @Table(name = "PROJECT_VERSIONS")
