@@ -6,7 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import at.arz.latte.rodeo.api.StartupListener;
 
 @ApplicationScoped
 public class EventDispatcher

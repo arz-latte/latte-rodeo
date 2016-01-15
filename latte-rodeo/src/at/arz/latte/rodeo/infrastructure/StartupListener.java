@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.api;
+package at.arz.latte.rodeo.infrastructure;
 
 
 public interface StartupListener {

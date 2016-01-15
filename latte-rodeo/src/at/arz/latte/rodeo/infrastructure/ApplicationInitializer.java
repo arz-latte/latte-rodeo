@@ -9,7 +9,6 @@ import javax.ejb.Startup;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import at.arz.latte.rodeo.api.StartupListener;
 
 @Singleton
 @Startup
