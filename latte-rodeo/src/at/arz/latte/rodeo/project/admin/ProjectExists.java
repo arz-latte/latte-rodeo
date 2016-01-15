@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.project.exception;
+package at.arz.latte.rodeo.project.admin;
 
 import javax.ejb.ApplicationException;
 

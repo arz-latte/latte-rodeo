@@ -6,7 +6,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import at.arz.latte.rodeo.api.ErrorDetail;
-import at.arz.latte.rodeo.project.exception.ProjectExists;
+import at.arz.latte.rodeo.project.admin.ProjectExists;
 
 @Provider
 public class ProjectExistsMapper

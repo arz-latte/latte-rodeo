@@ -19,6 +19,7 @@
 		<class>at.arz.latte.rodeo.release.ModuleRevision</class>
 		<class>at.arz.latte.rodeo.user.SystemAccount</class>
 		<class>at.arz.latte.rodeo.user.User</class>
+		<class>at.arz.latte.rodeo.scm.Scm</class>
 
 		<properties>
 			<property name="openjpa.DynamicEnhancementAgent" value="true" />

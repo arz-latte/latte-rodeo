@@ -1,11 +1,12 @@
 package at.arz.latte.rodeo.scm;
 
 import at.arz.latte.rodeo.execution.Command;
+import at.arz.latte.rodeo.scm.provider.ScmProvider;
 import at.arz.latte.rodeo.workspace.Workspace;
 import at.arz.latte.rodeo.workspace.WorkspaceSettings;
 
 public class CvsScmRepository
-		implements ScmRepositoryService {
+		implements ScmProvider {
 
 	private String repositoryURL;
 	private Workspace workspace;

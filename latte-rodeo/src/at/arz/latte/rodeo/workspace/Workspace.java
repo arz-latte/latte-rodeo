@@ -12,8 +12,8 @@ import java.util.concurrent.Semaphore;
 import at.arz.latte.rodeo.execution.BatchJobProcessor;
 import at.arz.latte.rodeo.execution.Command;
 import at.arz.latte.rodeo.execution.SCMProject;
-import at.arz.latte.rodeo.scm.ScmRepositoryService;
-import at.arz.latte.rodeo.scm.ScmRepositoryServiceFactory;
+import at.arz.latte.rodeo.scm.provider.ScmProvider;
+import at.arz.latte.rodeo.scm.provider.ScmProviderFactory;
 
 public class Workspace {
 
@@ -21,14 +21,14 @@ public class Workspace {
 	private File workspaceDir;
 	private Map<String, SCMProject> projects;
 	private Semaphore maxParallelJobs;
-	private ScmRepositoryServiceFactory repositoryFactory;
+	private ScmProviderFactory repositoryFactory;
 	private Stack<Command> activeCommands;
 	private int jobCount;
 
 	public Workspace(String name, File workspaceDir) {
 		this.name = name;
 		this.workspaceDir = workspaceDir;
-		this.repositoryFactory = new ScmRepositoryServiceFactory(this);
+		this.repositoryFactory = new ScmProviderFactory(this);
 		this.activeCommands = new Stack<Command>();
 		projects = new HashMap<String, SCMProject>();
 		maxParallelJobs = new Semaphore(2);
@@ -103,7 +103,7 @@ public class Workspace {
 			if(file.exists()){
 				continue;
 			}
-			ScmRepositoryService repository = repositoryFactory.getRepository(project.getScmRepository());
+			ScmProvider repository = repositoryFactory.getRepository(project.getScmRepository());
 			repository.checkout(project.getScmModuleName(), project.getBranch());
 		}
 	}

@@ -9,6 +9,7 @@ import javax.ws.rs.core.Application;
 import at.arz.latte.rodeo.project.restapi.ProjectResource;
 import at.arz.latte.rodeo.release.restapi.ApplicationResource;
 import at.arz.latte.rodeo.release.restapi.ReleaseResource;
+import at.arz.latte.rodeo.scm.restapi.ScmResource;
 
 @ApplicationPath("/api")
 public class RodeoRestAPI extends Application {
@@ -19,6 +20,7 @@ public class RodeoRestAPI extends Application {
 		classes.add(ReleaseResource.class);
 		classes.add(ApplicationResource.class);
 		classes.add(ProjectResource.class);
+		classes.add(ScmResource.class);
 		return classes;
 	}
 }

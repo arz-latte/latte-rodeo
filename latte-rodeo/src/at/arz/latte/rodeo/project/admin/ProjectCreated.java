@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.project.event;
+package at.arz.latte.rodeo.project.admin;
 
 import at.arz.latte.rodeo.journal.JournalEvent;
 

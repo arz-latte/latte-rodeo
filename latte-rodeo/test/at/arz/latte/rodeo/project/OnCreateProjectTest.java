@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import at.arz.latte.rodeo.infrastructure.EventDispatcher;
-import at.arz.latte.rodeo.project.event.ProjectCreated;
+import at.arz.latte.rodeo.project.admin.ProjectCreated;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OnCreateProjectTest {

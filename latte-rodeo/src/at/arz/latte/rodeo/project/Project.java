@@ -22,7 +22,7 @@ import javax.persistence.Table;
 
 import at.arz.latte.rodeo.infrastructure.AbstractEntity;
 import at.arz.latte.rodeo.infrastructure.EventDispatcher;
-import at.arz.latte.rodeo.project.event.ProjectCreated;
+import at.arz.latte.rodeo.project.admin.ProjectCreated;
 
 @Entity
 @Table(name = "PROJECTS")
