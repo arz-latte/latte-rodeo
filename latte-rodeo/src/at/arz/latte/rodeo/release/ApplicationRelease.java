@@ -9,7 +9,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import at.arz.latte.rodeo.api.AbstractEntity;
+import at.arz.latte.rodeo.domain.AbstractEntity;
 
 /**
  * a application release represents the state of one application for one release.

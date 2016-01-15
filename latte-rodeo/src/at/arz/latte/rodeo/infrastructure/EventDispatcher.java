@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.event;
+package at.arz.latte.rodeo.infrastructure;
 
 import java.util.logging.Logger;
 

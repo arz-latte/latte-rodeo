@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import at.arz.latte.rodeo.event.EventDispatcher;
+import at.arz.latte.rodeo.infrastructure.EventDispatcher;
 
 
 @RunWith(MockitoJUnitRunner.class)

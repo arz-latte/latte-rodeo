@@ -1,34 +1,27 @@
 package at.arz.latte.rodeo.project.restapi;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.ws.rs.GET;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import at.arz.latte.rodeo.api.RodeoCommand;
-import at.arz.latte.rodeo.domain.RodeoModel;
-import at.arz.latte.rodeo.project.Project;
+import at.arz.latte.rodeo.project.ProjectCommandHandler;
+import at.arz.latte.rodeo.project.command.CreateProject;
 
 @Path("/projects")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectResource {
 
 	@Inject
-	private RodeoModel model;
+	private ProjectCommandHandler handler;
 
-	@Path("/test")
-	@GET
-	public String sample(final String arg) {
-		model.execute(new RodeoCommand() {
-
-			@Override
-			public void execute(EntityManager entityManager) {
-				entityManager.persist(new Project("sample project"));
-			}
-		});
-		return "success";
+	@Path("/")
+	@PUT
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public void execute(CreateProject command) {
+		handler.execute(command);
 	}
 
 }

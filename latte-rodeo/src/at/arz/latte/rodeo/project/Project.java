@@ -14,20 +14,25 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import at.arz.latte.rodeo.api.AbstractEntity;
-import at.arz.latte.rodeo.event.EventDispatcher;
-import at.arz.latte.rodeo.project.events.ProjectCreated;
+import at.arz.latte.rodeo.domain.AbstractEntity;
+import at.arz.latte.rodeo.infrastructure.EventDispatcher;
+import at.arz.latte.rodeo.project.event.ProjectCreated;
 
 @Entity
 @Table(name = "PROJECTS")
+@NamedQueries({ @NamedQuery(name = Project.FIND_BY_NAME, query = "select o from Project o where o.name=:name") })
 public class Project
 		extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String FIND_BY_NAME = "Project.findByName";
 
 	@Id
 	@Column(name = "OID")

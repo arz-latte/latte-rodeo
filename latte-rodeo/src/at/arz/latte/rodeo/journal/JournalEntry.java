@@ -16,7 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import at.arz.latte.rodeo.api.AbstractEntity;
+import at.arz.latte.rodeo.domain.AbstractEntity;
 
 /**
  * Entity implementation class for Entity: Event

@@ -16,7 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import at.arz.latte.rodeo.api.AbstractEntity;
+import at.arz.latte.rodeo.domain.AbstractEntity;
 
 /**
  * a component groups a set of projects.

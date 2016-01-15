@@ -11,7 +11,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import at.arz.latte.rodeo.api.AbstractEntity;
+import at.arz.latte.rodeo.domain.AbstractEntity;
 
 /**
  * the description of one release.
