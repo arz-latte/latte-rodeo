@@ -11,7 +11,7 @@ import at.arz.latte.rodeo.project.ProjectCommandHandler;
 import at.arz.latte.rodeo.project.command.CreateProject;
 
 @Path("/projects")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class ProjectResource {
 
 	@Inject
