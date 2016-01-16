@@ -1,6 +1,6 @@
 package at.arz.latte.rodeo.scm.admin;
 
-import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -16,6 +16,14 @@ import at.arz.latte.rodeo.scm.ScmRepository;
 import at.arz.latte.rodeo.scm.ScmType;
 import at.arz.latte.rodeo.scm.ScmUserId;
 
+/**
+ * creates a new scm repository.
+ * 
+ * a scm repository must have a unique name and a unique location. type and userId are required.
+ * 
+ * @author mrodler
+ *
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CreateScm
@@ -27,8 +35,10 @@ public class CreateScm
 
 	@NotNull
 	private ScmLocation location;
+
 	@NotNull
 	private ScmType type;
+
 	@NotNull
 	private ScmUserId userId;
 
@@ -40,6 +50,10 @@ public class CreateScm
 	}
 
 	public CreateScm(String name, ScmLocation location, ScmType type, ScmUserId userId) {
+		Objects.requireNonNull(name, "name required");
+		Objects.requireNonNull(location, "location required");
+		Objects.requireNonNull(type, "type required");
+		Objects.requireNonNull(userId, "userId required");
 		this.name = name;
 		this.location = location;
 		this.type = type;
@@ -48,21 +62,29 @@ public class CreateScm
 
 	@Override
 	public Long execute() {
-		List<Scm> scms = repository.findByLocationOrName(location, name);
-		if (scms.isEmpty()) {
-			Scm scm = new Scm(name, location, type, userId);
-			repository.create(scm);
-			return scm.getId();
+		assertScmIsUnique();
+		Scm scm = new Scm(name, location, type, userId);
+		repository.create(scm);
+		return scm.getId();
+	}
+
+	private void assertScmIsUnique() {
+		for (Scm scm : repository.findByLocationOrName(location, name)) {
+			assertNameIsUnique(scm);
+			assertLocationIsUnique(scm);
 		}
-		for (Scm scm : scms) {
-			if (name.equals(scm.getName())) {
-				throw new ScmNameExists(name);
-			}
-			if (location.equals(scm.getLocation())) {
-				throw new ScmLocationExists(location);
-			}
+	}
+
+	private void assertLocationIsUnique(Scm scm) {
+		if (location.equals(scm.getLocation())) {
+			throw new ScmLocationExists(location);
 		}
-		throw new RuntimeException("found multiple scm entites, but none match name or location");
+	}
+
+	private void assertNameIsUnique(Scm scm) {
+		if (name.equals(scm.getName())) {
+			throw new ScmNameExists(name);
+		}
 	}
 
 }
