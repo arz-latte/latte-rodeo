@@ -7,28 +7,20 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 
-import at.arz.latte.rodeo.infrastructure.StartupListener;
-
-@Singleton
-@Startup
+@ApplicationScoped
 public class Workspace {
 
 	private static final Logger log = Logger.getLogger(Workspace.class.getSimpleName());
 
-	@Inject
-	private Instance<StartupListener> startupListeners;
+	private Settings settings;
 
-	private WorkspaceSettings settings;
+	private File homeDir;
 
-	public Properties getSettings(String domain) {
-		return settings.propertiesFor(domain);
+	public Settings getSettings(String domain) {
+		return settings.settingsFor(domain);
 	}
 
 	void initWorkspaceDir() {
@@ -40,11 +32,19 @@ public class Workspace {
 	}
 
 	private void initSettings() {
-		settings = new WorkspaceSettings(loadConfiguration());
+		Properties properties = loadConfiguration();
+		settings = new Settings(properties, createResolver(properties));
+	}
+
+	private VariableResolver createResolver(Properties properties) {
+		Properties resolverProperties = new Properties(properties);
+		resolverProperties.setProperty("rodeo.home", homeDir.getAbsolutePath());
+		return new VariableResolver(resolverProperties);
 	}
 
 	void initHomeDir() {
-		File homeDir = WorkspaceSettings.getHomeDir();
+		VariableResolver resolver = new VariableResolver(System.getProperties());
+		homeDir = new File(resolver.resolve(System.getProperty("rodeo.home", "${user.home}/rodeo")));
 		if (!homeDir.exists()) {
 			homeDir.mkdirs();
 		}
@@ -53,11 +53,11 @@ public class Workspace {
 	}
 
 	private Properties loadConfiguration() {
-		Properties defaultProperties = WorkspaceSettings.loadDefaultProperties();
-		File customConfig = new File(WorkspaceSettings.getHomeDir(), "etc/rodeo.properties");
+		Properties defaultProperties = Settings.loadDefaultProperties();
+		File customConfig = new File(homeDir, "etc/rodeo.properties");
 		if (customConfig.exists()) {
 			try (InputStream is = new FileInputStream(customConfig)) {
-				defaultProperties.putAll(WorkspaceSettings.loadProperties(is));
+				defaultProperties.putAll(Settings.loadProperties(is));
 				return defaultProperties;
 			} catch (IOException e) {
 				log.severe("can't load custom rodeo properties from " + customConfig.getAbsolutePath());
@@ -66,11 +66,6 @@ public class Workspace {
 		return defaultProperties;
 	}
 
-	private void notifyStartupListener() {
-		for (StartupListener startupListener : startupListeners) {
-			startupListener.onStartup();
-		}
-	}
 
 	@PreDestroy
 	void shutdown() {
@@ -83,14 +78,10 @@ public class Workspace {
 		// TODO
 	}
 
-	@PostConstruct
-	void startup() {
-		log.info("initializing rodeo services.");
-		initSettings();
+	public void startup() {
 		initHomeDir();
+		initSettings();
 		initWorkspaceDir();
-		notifyStartupListener();
-		log.info("rodeo services initialized.");
 	}
 
 }

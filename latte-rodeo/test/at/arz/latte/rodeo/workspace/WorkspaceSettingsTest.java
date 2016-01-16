@@ -14,17 +14,17 @@ public class WorkspaceSettingsTest {
 
 	@Test
 	public void removePrefix_does_not_return_equal_name() {
-		assertThat(WorkspaceSettings.removePrefix("domain", "domain"), is(nullValue()));
+		assertThat(Settings.removePrefix("domain", "domain"), is(nullValue()));
 	}
 
 	@Test
 	public void removePrefix_removes_prefix() {
-		assertThat(WorkspaceSettings.removePrefix("domain", "domain.subdomain"), is("subdomain"));
+		assertThat(Settings.removePrefix("domain", "domain.subdomain"), is("subdomain"));
 	}
 
 	@Test
 	public void removePrefix_returns_null_if_not_subdomain() {
-		assertThat(WorkspaceSettings.removePrefix("domain", "x"), is(nullValue()));
+		assertThat(Settings.removePrefix("domain", "x"), is(nullValue()));
 	}
 
 	@Test
@@ -33,17 +33,17 @@ public class WorkspaceSettingsTest {
 		properties.put("some.domain", "1");
 		properties.put("domain", "2");
 		properties.put("domain.subdomain", "3");
-		WorkspaceSettings settings = new WorkspaceSettings(properties);
-		Properties domain = settings.propertiesFor("domain");
-		assertThat(domain.getProperty("domain"), is(nullValue()));
-		assertThat(domain.getProperty("subdomain"), is("3"));
+		Settings settings = new Settings(properties, new VariableResolver(System.getProperties()));
+		Settings domain = settings.settingsFor("domain");
+		assertThat(domain.property("domain"), is(nullValue()));
+		assertThat(domain.property("subdomain"), is("3"));
 	}
 
 	@Test
 	public void get_property() {
 		Properties properties = new Properties();
 		properties.put("key_1", "1");
-		WorkspaceSettings settings = new WorkspaceSettings(properties);
+		Settings settings = new Settings(properties, new VariableResolver(System.getProperties()));
 		assertThat(settings.property("key_1"), is("1"));
 	}
 
@@ -51,10 +51,10 @@ public class WorkspaceSettingsTest {
 	public void get_property_as_array() {
 		Properties properties = new Properties();
 		properties.put("key_1", "1");
-		properties.put("key_2", ";1");
-		properties.put("key_3", "1;");
-		properties.put("key_4", "1;2");
-		WorkspaceSettings settings = new WorkspaceSettings(properties);
+		properties.put("key_2", ",1");
+		properties.put("key_3", "1,");
+		properties.put("key_4", "1,2");
+		Settings settings = new Settings(properties, new VariableResolver(System.getProperties()));
 		assertThat(settings.propertyAsArray("unknown"), is(new String[] {}));
 		assertThat(settings.propertyAsArray("key_1"), is(new String[] { "1" }));
 		assertThat(settings.propertyAsArray("key_2"), is(new String[] { "", "1" }));
@@ -64,7 +64,7 @@ public class WorkspaceSettingsTest {
 
 	@Test
 	public void load_default_properties() {
-		Properties properties = WorkspaceSettings.loadDefaultProperties();
+		Properties properties = Settings.loadDefaultProperties();
 		assertThat(properties, is(notNullValue()));
 	}
 

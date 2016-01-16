@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-public class WorkspaceSettings {
+public class Settings {
 
 	private String[] EMPTY = {};
 
@@ -16,21 +16,23 @@ public class WorkspaceSettings {
 
 	private VariableResolver resolver;
 
-	private static File homeDir;
+	private String domain;
 
-	public static final File getHomeDir() {
-		if (homeDir == null) {
-			VariableResolver resolver = new VariableResolver(System.getProperties());
-			homeDir = new File(resolver.resolve(System.getProperty("rodeo.home", "${user.home}/rodeo")));
-		}
-		return homeDir;
+
+	public Settings(Properties properties, VariableResolver resolver) {
+		this("", properties, resolver);
+		this.properties = properties;
+		this.resolver = resolver;
 	}
 
-	public WorkspaceSettings(Properties properties) {
+	public Settings(String domain, Properties properties, VariableResolver resolver) {
+		this.domain = domain;
 		this.properties = properties;
-		Properties resolverProperties = new Properties(properties);
-		resolverProperties.setProperty("rodeo.home", getHomeDir().getAbsolutePath());
-		resolver = new VariableResolver(resolverProperties);
+		this.resolver = resolver;
+	}
+
+	public String getDomain() {
+		return domain;
 	}
 
 	public String resolvedProperty(String key) {
@@ -62,24 +64,28 @@ public class WorkspaceSettings {
 	}
 
 	public String[] propertyAsArray(String key) {
+		return propertyAsArray(key, ",| ");
+	}
+
+	public String[] propertyAsArray(String key, String seperator) {
 		String property = property(key);
 		if (property == null) {
 			return EMPTY;
 		}
-		return property.split(";");
+		return property.split(seperator);
 	}
 
-	public Properties propertiesFor(String prefix) {
+	public Settings settingsFor(String subDomain) {
 		Properties result = new Properties();
 		for (Entry<Object, Object> entry : properties.entrySet()) {
 			String key = entry.getKey().toString();
-			String newKey = removePrefix(prefix, key);
+			String newKey = removePrefix(subDomain, key);
 			if (newKey == null) {
 				continue;
 			}
 			result.put(newKey, entry.getValue());
 		}
-		return result;
+		return new Settings(subDomain, result, resolver);
 	}
 
 	public static String removePrefix(String prefix, String key) {
@@ -97,7 +103,7 @@ public class WorkspaceSettings {
 	}
 
 	public static final Properties loadDefaultProperties() {
-		URL resource = WorkspaceSettings.class.getResource("workspace.properties");
+		URL resource = Settings.class.getResource("workspace.properties");
 		try (InputStream inputStream = resource.openStream()) {
 			return loadProperties(inputStream);
 		} catch (IOException e) {
@@ -116,7 +122,7 @@ public class WorkspaceSettings {
 		if (workspaceDir.isAbsolute()) {
 			return workspaceDir;
 		}
-		return new File(homeDir, workspaceDir.getPath());
+		return new File(new File(resolve("${rodeo.home}")), workspaceDir.getPath());
 	}
 
 }

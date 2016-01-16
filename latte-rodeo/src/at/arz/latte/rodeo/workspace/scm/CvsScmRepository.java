@@ -2,8 +2,7 @@ package at.arz.latte.rodeo.workspace.scm;
 
 import at.arz.latte.rodeo.workspace.Workspace;
 
-public class CvsScmRepository
-		implements ScmProvider {
+public class CvsScmRepository {
 
 	private String repositoryURL;
 	private Workspace workspace;
