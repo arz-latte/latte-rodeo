@@ -15,6 +15,9 @@ public class VariableResolver {
 	}
 
 	public String resolve(String value) {
+		if (value == null) {
+			return null;
+		}
 		Matcher matcher = PROPERTY_PATTERN.matcher(value);
 		final StringBuffer buffer = new StringBuffer();
 		int current = 0;

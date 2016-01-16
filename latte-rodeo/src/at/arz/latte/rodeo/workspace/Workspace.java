@@ -21,7 +21,7 @@ import at.arz.latte.rodeo.workspace.scm.ScmProviderFactory;
 @Stateless
 @LocalBean
 public class Workspace {
-	
+
 	private String name;
 	private File workspaceDir;
 	private Map<String, SCMProject> projects;
@@ -105,7 +105,7 @@ public class Workspace {
 
 		for (SCMProject project : projects.values()) {
 			File file = new File(workspaceDir, project.getScmModuleName());
-			if(file.exists()){
+			if (file.exists()) {
 				continue;
 			}
 			ScmProvider repository = repositoryFactory.getRepository(project.getScmRepository());

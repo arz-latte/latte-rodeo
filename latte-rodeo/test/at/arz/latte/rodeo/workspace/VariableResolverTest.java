@@ -1,6 +1,7 @@
 package at.arz.latte.rodeo.workspace;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Properties;
@@ -61,4 +62,14 @@ public class VariableResolverTest {
 		assertThat(resolver.resolve("\\${var1}"), is("${var1}"));
 	}
 	
+	@Test
+	public void must_accept_null_value() {
+		assertThat(resolver.resolve(null), is(nullValue()));
+	}
+
+	@Test
+	public void must_accept_unknown_variable() {
+		assertThat(resolver.resolve("${unknown}"), is("${unknown}"));
+	}
+
 }
