@@ -1,11 +1,10 @@
 package at.arz.latte.rodeo.workspace;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -13,44 +12,57 @@ public class WorkspaceSettings {
 
 	private String[] EMPTY = {};
 
-	public static final String CVS_EXECUTABLE = "CVS_EXECUTABLE";
-	public static final String ARZBUILD = "ARZBUILD";
-
-	private static final Map<String, String> settings;
 	private Properties properties;
 
-	static {
-		settings = new HashMap<String, String>();
-		settings.put(CVS_EXECUTABLE, "cvs");
-		settings.put(	ARZBUILD,
-						"C:/irad/apache-ant-1.9.6/bin/ant.bat " + "-Darzbuild.dir=C:/irad/build/at.arz.tools.arzbuild "
-								+ "-Darzbuild.conf=irad "
-								+ "-Darzbuild.status=integration "
-								+ "-propertyfile=C:/IRAD/build/at.arz.tools.arzbuild/config/global-environment-with-latte-irad.properties");
-	}
+	private VariableResolver resolver;
 
-	public static String get(String name) {
-		return settings.get(name);
-	}
+	private static File homeDir;
 
-	public static String get(String name, String defaultValue) {
-		String value = settings.get(name);
-		if (value == null) {
-			return defaultValue;
+	public static final File getHomeDir() {
+		if (homeDir == null) {
+			VariableResolver resolver = new VariableResolver(System.getProperties());
+			homeDir = new File(resolver.resolve(System.getProperty("rodeo.home", "${user.home}/rodeo")));
 		}
-		return settings.get(name);
+		return homeDir;
 	}
 
 	public WorkspaceSettings(Properties properties) {
 		this.properties = properties;
+		Properties resolverProperties = new Properties(properties);
+		resolverProperties.setProperty("rodeo.home", getHomeDir().getAbsolutePath());
+		resolver = new VariableResolver(resolverProperties);
 	}
 
-	public String getProperty(String key) {
+	public String resolvedProperty(String key) {
+		return resolve(property(key));
+	}
+
+	public String resolvedProperty(String key, String defaultValue) {
+		String value = resolve(property(key, defaultValue));
+		if (value == null) {
+			return defaultValue;
+		}
+		return value;
+	}
+
+	public String resolve(String value) {
+		return resolver.resolve(value);
+	}
+
+	public String property(String key) {
 		return properties.getProperty(key);
 	}
 
-	public String[] getPropertyAsArray(String key) {
-		String property = properties.getProperty(key);
+	public String property(String key, String defaultValue) {
+		String property = property(key);
+		if (property == null) {
+			return defaultValue;
+		}
+		return property;
+	}
+
+	public String[] propertyAsArray(String key) {
+		String property = property(key);
 		if (property == null) {
 			return EMPTY;
 		}
@@ -97,6 +109,14 @@ public class WorkspaceSettings {
 		Properties properties = new Properties();
 		properties.load(inputStream);
 		return properties;
+	}
+
+	public File getWorkspaceDir() {
+		File workspaceDir = new File(resolvedProperty("rodeo.workspace.dir", "workspace"));
+		if (workspaceDir.isAbsolute()) {
+			return workspaceDir;
+		}
+		return new File(homeDir, workspaceDir.getPath());
 	}
 
 }

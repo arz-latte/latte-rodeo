@@ -1,159 +1,96 @@
 package at.arz.latte.rodeo.workspace;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-import java.util.concurrent.Semaphore;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.logging.Logger;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
-import at.arz.latte.rodeo.execution.BatchJobProcessor;
-import at.arz.latte.rodeo.execution.Command;
-import at.arz.latte.rodeo.execution.SCMProject;
-import at.arz.latte.rodeo.workspace.scm.ScmProvider;
-import at.arz.latte.rodeo.workspace.scm.ScmProviderFactory;
+import at.arz.latte.rodeo.infrastructure.StartupListener;
 
-@Stateless
-@LocalBean
+@Singleton
+@Startup
 public class Workspace {
 
-	private String name;
-	private File workspaceDir;
-	private Map<String, SCMProject> projects;
-	private Semaphore maxParallelJobs;
-	private ScmProviderFactory repositoryFactory;
-	private Stack<Command> activeCommands;
-	private int jobCount;
+	private static final Logger log = Logger.getLogger(Workspace.class.getSimpleName());
 
-	public Workspace(String name, File workspaceDir) {
-		this.name = name;
-		this.workspaceDir = workspaceDir;
-		this.repositoryFactory = new ScmProviderFactory(this);
-		this.activeCommands = new Stack<Command>();
-		projects = new HashMap<String, SCMProject>();
-		maxParallelJobs = new Semaphore(2);
+	@Inject
+	private Instance<StartupListener> startupListeners;
+
+	private WorkspaceSettings settings;
+
+	public Properties getSettings(String domain) {
+		return settings.propertiesFor(domain);
 	}
 
-	public void addProject(SCMProject project) {
-		if (projects.containsKey(project.getName())) {
-			throw new IllegalStateException("duplicate project:" + project.getName());
-		}
-		projects.put(project.getName(), project);
-	}
-
-	public void executeCommand(final Command cmd) {
-		getFreeJobSlot();
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				activeCommands.add(cmd);
-				FileOutputStream outputStream = createOutputStream();
-				try {
-					BatchJobProcessor processor = new BatchJobProcessor(Workspace.this, outputStream, System.err);
-					cmd.execute(processor);
-				} finally {
-					close(outputStream);
-					activeCommands.remove(cmd);
-					maxParallelJobs.release();
-				}
-			}
-
-			private FileOutputStream createOutputStream() {
-				FileOutputStream outputStream;
-				try {
-					outputStream = new FileOutputStream(new File(getWorkspaceDir(), "output_" + jobCount++ + ".txt"));
-				} catch (FileNotFoundException e) {
-					throw new IllegalStateException("can't create job output:", e);
-				}
-				return outputStream;
-			}
-
-			private void close(FileOutputStream outputStream) {
-				try {
-					outputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
-	}
-
-	public void shutdown() {
-		waitUntilActiveCommandsCompleted();
-	}
-
-	public void waitUntilActiveCommandsCompleted() {
-		while (!activeCommands.empty()) {
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				//
-			}
-		}
-	}
-
-	public void initWorkspace() {
+	void initWorkspaceDir() {
+		File workspaceDir = settings.getWorkspaceDir();
 		if (!workspaceDir.exists()) {
 			workspaceDir.mkdirs();
 		}
+		log.info("rodeo workspace:" + workspaceDir.getAbsolutePath());
+	}
 
-		for (SCMProject project : projects.values()) {
-			File file = new File(workspaceDir, project.getScmModuleName());
-			if (file.exists()) {
-				continue;
+	private void initSettings() {
+		settings = new WorkspaceSettings(loadConfiguration());
+	}
+
+	void initHomeDir() {
+		File homeDir = WorkspaceSettings.getHomeDir();
+		if (!homeDir.exists()) {
+			homeDir.mkdirs();
+		}
+		log.info("rodeo home:" + homeDir.getAbsolutePath());
+
+	}
+
+	private Properties loadConfiguration() {
+		Properties defaultProperties = WorkspaceSettings.loadDefaultProperties();
+		File customConfig = new File(WorkspaceSettings.getHomeDir(), "etc/rodeo.properties");
+		if (customConfig.exists()) {
+			try (InputStream is = new FileInputStream(customConfig)) {
+				defaultProperties.putAll(WorkspaceSettings.loadProperties(is));
+				return defaultProperties;
+			} catch (IOException e) {
+				log.severe("can't load custom rodeo properties from " + customConfig.getAbsolutePath());
 			}
-			ScmProvider repository = repositoryFactory.getRepository(project.getScmRepository());
-			repository.checkout(project.getScmModuleName(), project.getBranch());
+		}
+		return defaultProperties;
+	}
+
+	private void notifyStartupListener() {
+		for (StartupListener startupListener : startupListeners) {
+			startupListener.onStartup();
 		}
 	}
 
-	private void getFreeJobSlot() {
-		while (true) {
-			try {
-				maxParallelJobs.acquire();
-				return;
-			} catch (InterruptedException e) {
-
-			}
-		}
-	}
-
-	public void rebuild() {
+	@PreDestroy
+	void shutdown() {
+		log.info("shutting down rodeo...");
 		waitUntilActiveCommandsCompleted();
-		for (SCMProject project : projects.values()) {
-			buildProject(project.getScmModuleName());
-		}
+		log.info("rodeo stopped.");
 	}
 
-	private void buildProject(final String projectDir) {
-		String commandLine = WorkspaceSettings.get(WorkspaceSettings.ARZBUILD) + " package";
-		Command command = new Command(commandLine) {
-
-			@Override
-			public void execute(BatchJobProcessor processor) {
-				processor.setWorkDirectory(new File(getWorkspaceDir(), projectDir));
-				super.execute(processor);
-			}
-		};
-		executeCommand(command);
+	private void waitUntilActiveCommandsCompleted() {
+		// TODO
 	}
 
-	public File getWorkspaceDir() {
-		return workspaceDir;
+	@PostConstruct
+	void startup() {
+		log.info("initializing rodeo services.");
+		initSettings();
+		initHomeDir();
+		initWorkspaceDir();
+		notifyStartupListener();
+		log.info("rodeo services initialized.");
 	}
 
-	public static String buildCommandLine(String commandLine) {
-		String systemSpecificShellCommand = "cmd.exe /C";
-		return systemSpecificShellCommand + " " + commandLine;
-	}
-
-	public String getName() {
-		return name;
-	}
 }

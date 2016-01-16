@@ -44,7 +44,7 @@ public class WorkspaceSettingsTest {
 		Properties properties = new Properties();
 		properties.put("key_1", "1");
 		WorkspaceSettings settings = new WorkspaceSettings(properties);
-		assertThat(settings.getProperty("key_1"), is("1"));
+		assertThat(settings.property("key_1"), is("1"));
 	}
 
 	@Test
@@ -55,11 +55,11 @@ public class WorkspaceSettingsTest {
 		properties.put("key_3", "1;");
 		properties.put("key_4", "1;2");
 		WorkspaceSettings settings = new WorkspaceSettings(properties);
-		assertThat(settings.getPropertyAsArray("unknown"), is(new String[] {}));
-		assertThat(settings.getPropertyAsArray("key_1"), is(new String[] { "1" }));
-		assertThat(settings.getPropertyAsArray("key_2"), is(new String[] { "", "1" }));
-		assertThat(settings.getPropertyAsArray("key_3"), is(new String[] { "1" }));
-		assertThat(settings.getPropertyAsArray("key_4"), is(new String[] { "1", "2" }));
+		assertThat(settings.propertyAsArray("unknown"), is(new String[] {}));
+		assertThat(settings.propertyAsArray("key_1"), is(new String[] { "1" }));
+		assertThat(settings.propertyAsArray("key_2"), is(new String[] { "", "1" }));
+		assertThat(settings.propertyAsArray("key_3"), is(new String[] { "1" }));
+		assertThat(settings.propertyAsArray("key_4"), is(new String[] { "1", "2" }));
 	}
 
 	@Test

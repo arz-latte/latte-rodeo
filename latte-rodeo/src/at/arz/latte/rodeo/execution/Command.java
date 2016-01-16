@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import at.arz.latte.rodeo.workspace.Workspace;
-
 public class Command {
 
 	private Map<String, String> environment;
@@ -28,7 +26,7 @@ public class Command {
 	public void execute(BatchJobProcessor processor) {
 		String[] environmentVariables = buildEnvironmentEntries();
 		processor.setEnvironmentVariables(environmentVariables);
-		processor.execute(Workspace.buildCommandLine(commandLine));
+		// processor.execute(Workspace.buildCommandLine(commandLine));
 	}
 
 	private String[] buildEnvironmentEntries() {

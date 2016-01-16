@@ -2,10 +2,6 @@ package at.arz.latte.rodeo.execution;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +45,7 @@ public class BatchJobProcessor {
 			throw new RuntimeException("invalid emtpy command line");
 		}
 		if (workDirectory == null) {
-			workDirectory = workspace.getWorkspaceDir();
+			// workDirectory = workspace.getWorkspaceDir();
 		}
 		return executeProcess(commandLine);
 	}
@@ -93,24 +89,6 @@ public class BatchJobProcessor {
 	protected void stopOutputStreams() {
 		streamStdOut.waitForCompletion();
 		streamStdErr.waitForCompletion();
-	}
-
-	public static void checkoutArctis() {
-		File workingDirectory = new File("C:/home/rpri142/release");
-		if (!workingDirectory.exists()) {
-			workingDirectory.mkdirs();
-		}
-		BatchJobProcessor processor = new BatchJobProcessor(new Workspace("x", workingDirectory));
-		Map<String, String> env = new HashMap<String, String>(System.getenv());
-		env.put("CVSROOT", ":pserver:d086cvs.m086:/usr/local/cvs/arctis");
-		ArrayList<String> list = new ArrayList<String>();
-		for (Entry<String, String> entry : env.entrySet()) {
-			list.add(entry.getKey() + "=" + entry.getValue());
-		}
-
-		String[] environmentVariables = list.toArray(new String[list.size()]);
-		processor.setEnvironmentVariables(environmentVariables);
-		processor.execute("cmd.exe /C cvs co Arctis");
 	}
 
 
