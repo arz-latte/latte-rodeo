@@ -24,14 +24,14 @@ public class ScmRepository {
 
 	public List<Scm> findByLocation(ScmLocation location) {
 		TypedQuery<Scm> query = entityManager.createNamedQuery(Scm.FIND_BY_LOCATION, Scm.class);
-		query.setParameter("location", location.toString());
+		query.setParameter("location", location);
 		List<Scm> list = query.getResultList();
 		return list;
 	}
 
 	public List<Scm> findByLocationOrName(ScmLocation location, String name) {
 		TypedQuery<Scm> query = entityManager.createNamedQuery(Scm.FIND_BY_LOCATION_OR_NAME, Scm.class);
-		query.setParameter("location", location.toString());
+		query.setParameter("location", location);
 		query.setParameter("name", name);
 		List<Scm> list = query.getResultList();
 		return list;

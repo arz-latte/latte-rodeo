@@ -11,6 +11,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.apache.openjpa.persistence.Externalizer;
+import org.apache.openjpa.persistence.Factory;
+import org.apache.openjpa.persistence.Persistent;
+
 import at.arz.latte.rodeo.infrastructure.EventDispatcher;
 import at.arz.latte.rodeo.scm.admin.ScmCreated;
 
@@ -31,8 +35,11 @@ public class Scm {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "SEQUENCES")
 	private Long id;
 
+	@Persistent
+	@Externalizer("toString")
+	@Factory("fromString")
 	@Column(name = "SCM_LOCATION", unique = true, nullable = false)
-	private String location;
+	private ScmLocation location;
 
 	@Column(name = "SCM_NAME", unique = true, nullable = false)
 	private String name;
@@ -53,7 +60,7 @@ public class Scm {
 		Objects.requireNonNull(type, "type required");
 		Objects.requireNonNull(userId, "userId required");
 		this.name = name;
-		this.location = location.toString();
+		this.location = location;
 		this.type = type.toString();
 		this.userId = userId.toString();
 		EventDispatcher.notify(new ScmCreated(location));
@@ -64,7 +71,7 @@ public class Scm {
 	}
 
 	public ScmLocation getLocation() {
-		return new ScmLocation(location);
+		return location;
 	}
 
 	public ScmType getType() {

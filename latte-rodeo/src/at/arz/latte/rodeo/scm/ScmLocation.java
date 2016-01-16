@@ -1,5 +1,6 @@
 package at.arz.latte.rodeo.scm;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -7,7 +8,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlValue;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ScmLocation {
+public class ScmLocation
+		implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@XmlValue
 	private String value;
@@ -40,6 +44,10 @@ public class ScmLocation {
 	@Override
 	public String toString() {
 		return value;
+	}
+
+	public static ScmLocation fromString(String location) {
+		return new ScmLocation(location);
 	}
 
 }
