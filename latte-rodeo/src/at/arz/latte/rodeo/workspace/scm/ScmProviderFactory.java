@@ -1,6 +1,5 @@
-package at.arz.latte.rodeo.scm.provider;
+package at.arz.latte.rodeo.workspace.scm;
 
-import at.arz.latte.rodeo.scm.CvsScmRepository;
 import at.arz.latte.rodeo.workspace.Workspace;
 
 public class ScmProviderFactory {

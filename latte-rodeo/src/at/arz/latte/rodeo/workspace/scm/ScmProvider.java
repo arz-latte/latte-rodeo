@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.scm.provider;
+package at.arz.latte.rodeo.workspace.scm;
 
 
 public interface ScmProvider {

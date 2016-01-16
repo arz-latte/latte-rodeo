@@ -1,7 +1,6 @@
-package at.arz.latte.rodeo.scm;
+package at.arz.latte.rodeo.workspace.scm;
 
 import at.arz.latte.rodeo.execution.Command;
-import at.arz.latte.rodeo.scm.provider.ScmProvider;
 import at.arz.latte.rodeo.workspace.Workspace;
 import at.arz.latte.rodeo.workspace.WorkspaceSettings;
 

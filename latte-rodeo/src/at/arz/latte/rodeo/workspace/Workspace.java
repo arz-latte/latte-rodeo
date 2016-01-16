@@ -9,14 +9,19 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.Semaphore;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
 import at.arz.latte.rodeo.execution.BatchJobProcessor;
 import at.arz.latte.rodeo.execution.Command;
 import at.arz.latte.rodeo.execution.SCMProject;
-import at.arz.latte.rodeo.scm.provider.ScmProvider;
-import at.arz.latte.rodeo.scm.provider.ScmProviderFactory;
+import at.arz.latte.rodeo.workspace.scm.ScmProvider;
+import at.arz.latte.rodeo.workspace.scm.ScmProviderFactory;
 
+@Stateless
+@LocalBean
 public class Workspace {
-
+	
 	private String name;
 	private File workspaceDir;
 	private Map<String, SCMProject> projects;
