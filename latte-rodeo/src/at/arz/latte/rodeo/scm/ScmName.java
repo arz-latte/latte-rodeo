@@ -1,20 +1,24 @@
 package at.arz.latte.rodeo.scm;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlValue;
 
 
-public class ScmType {
+public class ScmName
+		implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@XmlValue
 	private String value;
 
-	ScmType() {
+	ScmName() {
 		// tool constructor;
 	}
 
-	public ScmType(String value) {
+	public ScmName(String value) {
 		Objects.requireNonNull(value, "value required");
 		this.value = value;
 	}
@@ -32,7 +36,7 @@ public class ScmType {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ScmType other = (ScmType) obj;
+		ScmName other = (ScmName) obj;
 		return Objects.equals(value, other.value);
 	}
 

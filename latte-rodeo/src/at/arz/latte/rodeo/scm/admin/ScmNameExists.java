@@ -6,6 +6,7 @@ import javax.ws.rs.core.Response.Status;
 
 import at.arz.latte.rodeo.api.ApiException;
 import at.arz.latte.rodeo.api.ErrorDetail;
+import at.arz.latte.rodeo.scm.ScmName;
 
 @ApplicationException(rollback = true)
 public class ScmNameExists
@@ -13,14 +14,14 @@ public class ScmNameExists
 
 	private static final long serialVersionUID = 1L;
 
-	private String name;
+	private ScmName name;
 
-	public ScmNameExists(String name) {
-		super(name);
+	public ScmNameExists(ScmName name) {
+		super(name.toString());
 		this.name = name;
 	}
 
-	public String getName() {
+	public ScmName getName() {
 		return name;
 	}
 	
@@ -30,7 +31,7 @@ public class ScmNameExists
 	}
 	
 	private ErrorDetail buildErrorDetail() {
-		return new ErrorDetail(this.getClass().getSimpleName(), name);
+		return new ErrorDetail(this.getClass().getSimpleName(), name.toString());
 	}
 
 }

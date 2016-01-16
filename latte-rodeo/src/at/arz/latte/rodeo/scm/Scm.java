@@ -12,7 +12,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.apache.openjpa.persistence.Externalizer;
-import org.apache.openjpa.persistence.Factory;
 import org.apache.openjpa.persistence.Persistent;
 
 import at.arz.latte.rodeo.infrastructure.EventDispatcher;
@@ -37,32 +36,37 @@ public class Scm {
 
 	@Persistent
 	@Externalizer("toString")
-	@Factory("fromString")
 	@Column(name = "SCM_LOCATION", unique = true, nullable = false)
 	private ScmLocation location;
 
+	@Persistent
+	@Externalizer("toString")
 	@Column(name = "SCM_NAME", unique = true, nullable = false)
-	private String name;
+	private ScmName name;
 
+	@Persistent
+	@Externalizer("toString")
 	@Column(name = "SCM_TYPE")
-	private String type;
+	private ScmType type;
 
+	@Persistent
+	@Externalizer("toString")
 	@Column(name = "SCM_USER")
-	private String userId;
+	private ScmUserId userId;
 
 	protected Scm() {
 		// jpa constructor
 	}
 
-	public Scm(String name, ScmLocation location, ScmType type, ScmUserId userId) {
+	public Scm(ScmName name, ScmLocation location, ScmType type, ScmUserId userId) {
 		Objects.requireNonNull(name, "name required");
 		Objects.requireNonNull(location, "location required");
 		Objects.requireNonNull(type, "type required");
 		Objects.requireNonNull(userId, "userId required");
 		this.name = name;
 		this.location = location;
-		this.type = type.toString();
-		this.userId = userId.toString();
+		this.type = type;
+		this.userId = userId;
 		EventDispatcher.notify(new ScmCreated(location));
 	}
 
@@ -75,14 +79,14 @@ public class Scm {
 	}
 
 	public ScmType getType() {
-		return new ScmType(type);
+		return type;
 	}
 
 	public ScmUserId getUserId() {
-		return new ScmUserId(userId);
+		return userId;
 	}
 
-	public String getName() {
+	public ScmName getName() {
 		return name;
 	}
 

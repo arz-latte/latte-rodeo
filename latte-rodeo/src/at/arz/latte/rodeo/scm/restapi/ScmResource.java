@@ -5,9 +5,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
+import at.arz.latte.rodeo.scm.ScmLocation;
+import at.arz.latte.rodeo.scm.ScmName;
+import at.arz.latte.rodeo.scm.ScmType;
 import at.arz.latte.rodeo.scm.admin.CreateScm;
 
 @Path("/repositories")
@@ -19,10 +23,12 @@ public class ScmResource {
 
 	@Path("/")
 	@GET
-	public GetScmRepositoriesResult listRepositories() {
-		return model.query(new GetScmRepositories());
+	public GetScmRepositoriesResult listRepositories(	@QueryParam("type") ScmType type,
+														@QueryParam("location") ScmLocation location,
+														@QueryParam("name") ScmName name) {
+		return model.query(new FindScmRepositories().with(type).with(location).with(name));
 	}
-	
+
 	@Path("/")
 	@PUT
 	public void execute(CreateScm command) {

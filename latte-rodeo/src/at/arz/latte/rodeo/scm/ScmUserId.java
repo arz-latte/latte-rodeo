@@ -15,6 +15,7 @@ public class ScmUserId {
 	}
 
 	public ScmUserId(String value) {
+		Objects.requireNonNull(value, "value required");
 		this.value = value;
 	}
 

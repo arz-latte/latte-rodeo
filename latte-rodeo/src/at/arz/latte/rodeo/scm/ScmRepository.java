@@ -29,7 +29,7 @@ public class ScmRepository {
 		return list;
 	}
 
-	public List<Scm> findByLocationOrName(ScmLocation location, String name) {
+	public List<Scm> findByLocationOrName(ScmLocation location, ScmName name) {
 		TypedQuery<Scm> query = entityManager.createNamedQuery(Scm.FIND_BY_LOCATION_OR_NAME, Scm.class);
 		query.setParameter("location", location);
 		query.setParameter("name", name);

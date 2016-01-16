@@ -20,6 +20,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import at.arz.latte.rodeo.infrastructure.EventDispatcher;
 import at.arz.latte.rodeo.scm.Scm;
 import at.arz.latte.rodeo.scm.ScmLocation;
+import at.arz.latte.rodeo.scm.ScmName;
 import at.arz.latte.rodeo.scm.ScmRepository;
 import at.arz.latte.rodeo.scm.ScmType;
 import at.arz.latte.rodeo.scm.ScmUserId;
@@ -34,7 +35,7 @@ public class CreateScmTest {
 
 	private static final ScmLocation LOCATION = new ScmLocation("location");
 
-	private static final String NAME = "scm";
+	private static final ScmName NAME = new ScmName("scm");
 
 	@Mock
 	private BeanManager beanManager;
@@ -75,7 +76,7 @@ public class CreateScmTest {
 	@Test(expected = ScmLocationExists.class)
 	public void prevents_duplicate_locations() {
 		List<Scm> list = new ArrayList<Scm>();
-		list.add(new Scm("other", LOCATION, TYPE, USER_ID));
+		list.add(new Scm(new ScmName("other"), LOCATION, TYPE, USER_ID));
 		when(repository.findByLocationOrName(LOCATION, NAME)).thenReturn(list);
 		command.execute();
 	}

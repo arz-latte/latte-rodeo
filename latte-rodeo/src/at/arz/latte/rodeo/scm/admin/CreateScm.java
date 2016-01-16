@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import at.arz.latte.rodeo.api.RodeoCommand;
 import at.arz.latte.rodeo.scm.Scm;
 import at.arz.latte.rodeo.scm.ScmLocation;
+import at.arz.latte.rodeo.scm.ScmName;
 import at.arz.latte.rodeo.scm.ScmRepository;
 import at.arz.latte.rodeo.scm.ScmType;
 import at.arz.latte.rodeo.scm.ScmUserId;
@@ -43,13 +44,13 @@ public class CreateScm
 	private ScmUserId userId;
 
 	@NotNull
-	private String name;
+	private ScmName name;
 
 	CreateScm() {
 		// tool constructor
 	}
 
-	public CreateScm(String name, ScmLocation location, ScmType type, ScmUserId userId) {
+	public CreateScm(ScmName name, ScmLocation location, ScmType type, ScmUserId userId) {
 		Objects.requireNonNull(name, "name required");
 		Objects.requireNonNull(location, "location required");
 		Objects.requireNonNull(type, "type required");
