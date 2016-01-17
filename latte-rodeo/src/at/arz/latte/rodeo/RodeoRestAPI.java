@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import at.arz.latte.rodeo.pipeline.restapi.PipelineResource;
+import at.arz.latte.rodeo.pipeline.restapi.StepResource;
 import at.arz.latte.rodeo.project.restapi.ProjectResource;
 import at.arz.latte.rodeo.release.restapi.ApplicationResource;
 import at.arz.latte.rodeo.release.restapi.ReleaseResource;
@@ -21,6 +23,8 @@ public class RodeoRestAPI extends Application {
 		classes.add(ApplicationResource.class);
 		classes.add(ProjectResource.class);
 		classes.add(ScmResource.class);
+		classes.add(PipelineResource.class);
+		classes.add(StepResource.class);
 		return classes;
 	}
 }

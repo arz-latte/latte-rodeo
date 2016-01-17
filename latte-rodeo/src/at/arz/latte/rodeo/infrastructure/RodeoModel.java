@@ -1,5 +1,8 @@
 package at.arz.latte.rodeo.infrastructure;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.enterprise.context.spi.CreationalContext;
@@ -10,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import at.arz.latte.rodeo.api.RodeoCommand;
+import at.arz.latte.rodeo.api.RodeoFunction;
 import at.arz.latte.rodeo.api.RodeoQuery;
 
 /**
@@ -29,6 +33,19 @@ public class RodeoModel {
 		return query.execute(entityManager);
 	}
 
+	public <R, T> R apply(RodeoQuery<T> query, RodeoFunction<T, R> function) {
+		return function.apply(query.execute(entityManager));
+	}
+
+	public <R, T> List<R> applyAll(RodeoQuery<List<T>> query, RodeoFunction<T, R> function) {
+		List<T> result = query.execute(entityManager);
+		List<R> list = new ArrayList<R>();
+		for (T t : result) {
+			list.add(function.apply(t));
+		}
+		return list;
+	}
+
 	public <R> R execute(RodeoCommand<R> command) {
 		CreationalContext<Object> context = beanManager.createCreationalContext(null);
 		try {
@@ -39,6 +56,14 @@ public class RodeoModel {
 		} finally {
 			context.release();
 		}
+	}
+
+	public void create(AbstractEntity entity) {
+		entityManager.persist(entity);
+	}
+
+	public void remove(AbstractEntity entity) {
+		entityManager.remove(entity);
 	}
 
 }

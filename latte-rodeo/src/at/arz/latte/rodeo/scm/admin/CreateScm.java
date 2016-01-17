@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import at.arz.latte.rodeo.api.ObjectExists;
 import at.arz.latte.rodeo.api.RodeoCommand;
 import at.arz.latte.rodeo.scm.Scm;
 import at.arz.latte.rodeo.scm.ScmLocation;
@@ -78,13 +79,13 @@ public class CreateScm
 
 	private void assertLocationIsUnique(Scm scm) {
 		if (location.equals(scm.getLocation())) {
-			throw new ScmLocationExists(location);
+			throw new ObjectExists(Scm.class, "location", location);
 		}
 	}
 
 	private void assertNameIsUnique(Scm scm) {
 		if (name.equals(scm.getName())) {
-			throw new ScmNameExists(name);
+			throw new ObjectExists(Scm.class, "name", name);
 		}
 	}
 

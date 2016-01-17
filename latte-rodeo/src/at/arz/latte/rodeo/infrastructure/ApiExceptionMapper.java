@@ -1,5 +1,7 @@
 package at.arz.latte.rodeo.infrastructure;
 
+import java.util.Locale;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -12,6 +14,6 @@ public class ApiExceptionMapper
 
 	@Override
 	public Response toResponse(ApiException exception) {
-		return exception.createResponse();
+		return exception.createResponse(Locale.getDefault());
 	}
 }

@@ -8,6 +8,9 @@
 		<class>at.arz.latte.rodeo.infrastructure.AbstractEntity</class>
 		<class>at.arz.latte.rodeo.journal.Attribute</class>
 		<class>at.arz.latte.rodeo.journal.JournalEntry</class>
+		<class>at.arz.latte.rodeo.pipeline.Pipeline</class>
+		<class>at.arz.latte.rodeo.pipeline.Step</class>
+		<class>at.arz.latte.rodeo.pipeline.Template</class>
 		<class>at.arz.latte.rodeo.project.Component</class>
 		<class>at.arz.latte.rodeo.project.Project</class>
 		<class>at.arz.latte.rodeo.project.ProjectVersion</class>
@@ -15,11 +18,12 @@
 		<class>at.arz.latte.rodeo.release.ApplicationRelease</class>
 		<class>at.arz.latte.rodeo.release.Baseline</class>
 		<class>at.arz.latte.rodeo.release.Module</class>
-		<class>at.arz.latte.rodeo.release.Release</class>
 		<class>at.arz.latte.rodeo.release.ModuleRevision</class>
+		<class>at.arz.latte.rodeo.release.Release</class>
+		<class>at.arz.latte.rodeo.scm.Scm</class>
 		<class>at.arz.latte.rodeo.user.SystemAccount</class>
 		<class>at.arz.latte.rodeo.user.User</class>
-		<class>at.arz.latte.rodeo.scm.Scm</class>
+		<class>at.arz.latte.rodeo.pipeline.PipelineStep</class>
 
 		<properties>
 			<property name="openjpa.DynamicEnhancementAgent" value="true" />

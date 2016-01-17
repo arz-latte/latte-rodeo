@@ -24,7 +24,7 @@ public class EventDispatcherTest {
 	}
 
 	@Test
-	public void test() {
+	public void is_usable_in_unit_tests() {
 		EventDispatcher.notify("hallo");
 		Mockito.verify(beanManager).fireEvent("hallo");
 	}

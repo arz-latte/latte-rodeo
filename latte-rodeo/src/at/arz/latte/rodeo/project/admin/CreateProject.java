@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import at.arz.latte.rodeo.api.ObjectExists;
 import at.arz.latte.rodeo.api.RodeoCommand;
 import at.arz.latte.rodeo.project.Project;
 import at.arz.latte.rodeo.project.ProjectRepository;
@@ -43,7 +44,7 @@ public class CreateProject
 			repository.create(project);
 			return project.getId();
 		} else {
-			throw new ProjectExists(name);
+			throw new ObjectExists(Project.class, "name", name);
 		}
 	}
 

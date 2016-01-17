@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import at.arz.latte.rodeo.api.ObjectNotFound;
 import at.arz.latte.rodeo.infrastructure.StartupListener;
 import at.arz.latte.rodeo.scm.ScmType;
 import at.arz.latte.rodeo.workspace.Settings;
@@ -34,7 +35,7 @@ public class ScmService
 	private ScmProvider provider(ScmType type) {
 		ScmProvider provider = providers.get(type);
 		if (provider == null) {
-			throw new ScmTypeNotFound(type);
+			throw new ObjectNotFound(ScmType.class, type);
 		}
 		return provider;
 	}

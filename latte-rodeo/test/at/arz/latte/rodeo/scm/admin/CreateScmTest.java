@@ -17,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import at.arz.latte.rodeo.api.ObjectExists;
 import at.arz.latte.rodeo.infrastructure.EventDispatcher;
 import at.arz.latte.rodeo.scm.Scm;
 import at.arz.latte.rodeo.scm.ScmLocation;
@@ -73,7 +74,7 @@ public class CreateScmTest {
 		assertThat(LOCATION, is(value.getLocation()));
 	}
 
-	@Test(expected = ScmLocationExists.class)
+	@Test(expected = ObjectExists.class)
 	public void prevents_duplicate_locations() {
 		List<Scm> list = new ArrayList<Scm>();
 		list.add(new Scm(new ScmName("other"), LOCATION, TYPE, USER_ID));
@@ -81,7 +82,7 @@ public class CreateScmTest {
 		command.execute();
 	}
 
-	@Test(expected = ScmNameExists.class)
+	@Test(expected = ObjectExists.class)
 	public void prevents_duplicate_names() {
 		List<Scm> list = new ArrayList<Scm>();
 		list.add(new Scm(NAME, new ScmLocation("OTHER"), TYPE, USER_ID));
