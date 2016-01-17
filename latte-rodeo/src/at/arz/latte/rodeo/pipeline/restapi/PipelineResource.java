@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 
 import at.arz.latte.rodeo.api.RodeoFunction;
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
+import at.arz.latte.rodeo.infrastructure.RodeoSecurity;
 import at.arz.latte.rodeo.pipeline.FindPipelines;
 import at.arz.latte.rodeo.pipeline.Pipeline;
 import at.arz.latte.rodeo.pipeline.PipelineName;
@@ -22,6 +23,9 @@ import at.arz.latte.rodeo.pipeline.admin.CreatePipeline;
 @Path("/pipelines")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class PipelineResource {
+	
+	@Inject
+	private RodeoSecurity security;
 
 	@Inject
 	private RodeoModel model;
@@ -47,6 +51,7 @@ public class PipelineResource {
 	@Path("/")
 	@PUT
 	public void createPipeline(CreatePipeline command) {
+		security.assertUserIsAdmin();
 		model.execute(command);
 	}
 

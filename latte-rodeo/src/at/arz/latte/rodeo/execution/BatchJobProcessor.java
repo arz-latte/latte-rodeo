@@ -6,9 +6,6 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.event.Observes;
-import javax.ws.rs.Consumes;
-
 import at.arz.latte.rodeo.workspace.Workspace;
 
 public class BatchJobProcessor {

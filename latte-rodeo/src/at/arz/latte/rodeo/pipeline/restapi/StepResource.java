@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import at.arz.latte.rodeo.api.ObjectNotFound;
 import at.arz.latte.rodeo.api.RodeoFunction;
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
+import at.arz.latte.rodeo.infrastructure.RodeoSecurity;
 import at.arz.latte.rodeo.pipeline.FindSteps;
 import at.arz.latte.rodeo.pipeline.Step;
 import at.arz.latte.rodeo.pipeline.StepName;
@@ -22,6 +23,9 @@ import at.arz.latte.rodeo.pipeline.admin.CreateStep;
 @Path("/steps")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class StepResource {
+	
+	@Inject
+	private RodeoSecurity security;
 
 	@Inject
 	private RodeoModel model;
@@ -42,6 +46,7 @@ public class StepResource {
 	@Path("/")
 	@PUT
 	public void createStep(CreateStep command) {
+		security.assertUserIsAdmin();
 		model.execute(command);
 	}
 
