@@ -11,6 +11,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.Valid;
 
 import at.arz.latte.rodeo.api.RodeoCommand;
 import at.arz.latte.rodeo.api.RodeoFunction;
@@ -29,15 +30,15 @@ public class RodeoModel {
 	@Inject
 	private BeanManager beanManager;
 
-	public <R> R query(RodeoQuery<R> query) {
+	public <R> R query(@Valid RodeoQuery<R> query) {
 		return query.execute(entityManager);
 	}
 
-	public <R, T> R apply(RodeoQuery<T> query, RodeoFunction<T, R> function) {
+	public <R, T> R apply(@Valid RodeoQuery<T> query, RodeoFunction<T, R> function) {
 		return function.apply(query.execute(entityManager));
 	}
 
-	public <R, T> List<R> applyAll(RodeoQuery<List<T>> query, RodeoFunction<T, R> function) {
+	public <R, T> List<R> applyAll(@Valid RodeoQuery<List<T>> query, RodeoFunction<T, R> function) {
 		List<T> result = query.execute(entityManager);
 		List<R> list = new ArrayList<R>();
 		for (T t : result) {
@@ -46,7 +47,7 @@ public class RodeoModel {
 		return list;
 	}
 
-	public <R> R execute(RodeoCommand<R> command) {
+	public <R> R execute(@Valid RodeoCommand<R> command) {
 		CreationalContext<Object> context = beanManager.createCreationalContext(null);
 		try {
 			@SuppressWarnings("unchecked")

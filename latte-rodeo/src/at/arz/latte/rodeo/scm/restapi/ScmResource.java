@@ -10,6 +10,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
+import at.arz.latte.rodeo.infrastructure.RodeoSecurity;
 import at.arz.latte.rodeo.scm.ScmLocation;
 import at.arz.latte.rodeo.scm.ScmName;
 import at.arz.latte.rodeo.scm.ScmType;
@@ -18,6 +19,9 @@ import at.arz.latte.rodeo.scm.admin.CreateScm;
 @Path("/repositories")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class ScmResource {
+
+	@Inject
+	private RodeoSecurity security;
 
 	@Inject
 	private RodeoModel model;
@@ -39,6 +43,7 @@ public class ScmResource {
 	@Path("/")
 	@PUT
 	public void execute(CreateScm command) {
+		security.assertUserIsAdmin();
 		model.execute(command);
 	}
 

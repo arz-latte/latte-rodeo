@@ -6,6 +6,9 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.event.Observes;
+import javax.ws.rs.Consumes;
+
 import at.arz.latte.rodeo.workspace.Workspace;
 
 public class BatchJobProcessor {
@@ -22,7 +25,7 @@ public class BatchJobProcessor {
 	public BatchJobProcessor(Workspace workspace) {
 		this(workspace, System.out, System.err);
 	}
-
+	
 	public BatchJobProcessor(Workspace workspace, OutputStream stdoutStream, OutputStream stderrStream) {
 		Objects.requireNonNull(workspace, "argument workspace is required");
 		Objects.requireNonNull(stdoutStream, "argument stdoutStream is required");

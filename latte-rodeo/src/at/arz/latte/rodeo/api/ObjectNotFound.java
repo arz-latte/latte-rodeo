@@ -3,11 +3,13 @@ package at.arz.latte.rodeo.api;
 import java.text.MessageFormat;
 import java.util.Locale;
 
+import javax.ejb.ApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import at.arz.latte.rodeo.api.ErrorDetail.Type;
 
+@ApplicationException(rollback=true)
 public class ObjectNotFound
 		extends ApiException {
 

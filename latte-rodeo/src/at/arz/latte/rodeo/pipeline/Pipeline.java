@@ -1,8 +1,10 @@
 package at.arz.latte.rodeo.pipeline;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -47,7 +49,7 @@ public class Pipeline
 	@Column(name = "PIPELINE_NAME", unique = true, nullable = false)
 	private PipelineName name;
 
-	@OneToMany(mappedBy = "pipeline", cascade=CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "pipeline", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderColumn(name = "STEP_ORDER")
 	private List<PipelineStep> steps;
 
@@ -125,6 +127,28 @@ public class Pipeline
 
 	public Template getUpdateScript() {
 		return updateScript;
+	}
+
+	public PipelineStep getNextStep(StepName stepName) {
+		if (stepName == null) {
+			return steps.isEmpty() ? null : steps.get(0);
+		}
+		Iterator<PipelineStep> iterator = steps.iterator();
+		while (iterator.hasNext()) {
+			PipelineStep current = iterator.next();
+			if (stepName.equals(current.getStepName())) {
+				if (iterator.hasNext()) {
+					return iterator.next();
+				} else {
+					return null;
+				}
+			}
+		}
+		throw new RuntimeException("unkown step name");
+	}
+
+	public PipelineInstance triggerNewInstance(ListenerReference reference, Properties properties) {
+		return new PipelineInstance(reference, this, properties);
 	}
 
 	@Override

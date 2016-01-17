@@ -9,4 +9,25 @@
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>rodeo</realm-name>
+	</login-config>
+	<security-role>
+		<role-name>rodeo-admin</role-name>
+	</security-role>
+	<security-role>
+		<role-name>rodeo-developer</role-name>
+	</security-role>
+	<security-constraint>
+		<display-name>protected</display-name>
+		<web-resource-collection>
+			<web-resource-name>api</web-resource-name>
+			<url-pattern>/api/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>rodeo-developer</role-name>
+			<role-name>rodeo-admin</role-name>
+		</auth-constraint>
+	</security-constraint>
 </web-app>

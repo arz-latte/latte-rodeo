@@ -33,6 +33,10 @@
   <user username="role1" password="tomcat" roles="role1"/>
 -->
   <!-- Activate those lines to get access to TomEE GUI -->
+  <role rolename="rodeo-admin"/>
+  <role rolename="rodeo-developer"/>
+  <user username="admin" password="admin" roles="rodeo-admin,rodeo-developer"/>
+  <user username="developer" password="developer" roles="rodeo-developer"/>
   <role rolename="tomee-admin"/>
   <role rolename="admin-gui"/>
   <user password="tomee" roles="tomee-admin,manager-gui,admin-gui" username="tomee"/>

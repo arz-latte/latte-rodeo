@@ -42,6 +42,10 @@ public class PipelineStep
 	public PipelineStep(Step step) {
 		this.step = step;
 	}
+	
+	public StepName getStepName(){
+		return step.getName();
+	}
 
 	public Step getStep() {
 		return step;
