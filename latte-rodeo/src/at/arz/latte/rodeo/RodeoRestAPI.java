@@ -12,6 +12,7 @@ import at.arz.latte.rodeo.project.restapi.ProjectResource;
 import at.arz.latte.rodeo.release.restapi.ApplicationResource;
 import at.arz.latte.rodeo.release.restapi.ReleaseResource;
 import at.arz.latte.rodeo.scm.restapi.ScmResource;
+import at.arz.latte.rodeo.workspace.restapi.WorkspaceResource;
 
 @ApplicationPath("/api")
 public class RodeoRestAPI extends Application {
@@ -25,6 +26,7 @@ public class RodeoRestAPI extends Application {
 		classes.add(ScmResource.class);
 		classes.add(PipelineResource.class);
 		classes.add(StepResource.class);
+		classes.add(WorkspaceResource.class);
 		return classes;
 	}
 }

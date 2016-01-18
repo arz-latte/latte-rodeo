@@ -84,4 +84,8 @@ public class Workspace {
 		initWorkspaceDir();
 	}
 
+	public File getWorkspaceDir() {
+		return settings.getWorkspaceDir();
+	}
+
 }
