@@ -1,16 +1,25 @@
 package at.arz.latte.rodeo.engine;
 
 import java.io.Serializable;
+import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 
-public class Engine
+public class Engine<T>
 		implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private DependencyTree tree;
-	private TreeAction treeAction;
+	private DependencyTreeTraverser<T> traverser;
+	private TreeAction<T> action;
+
+	/**
+	 * Diese Queue stellt sicher, dass die Verarbeitungsreihenfolge exakt der vom {@link DependencyTreeTraverser}
+	 * vorgegebenen Reihenfolge entspricht.
+	 */
+	private BlockingQueue<DependencyNode<T>> queue;
 
 	/*
 	 * 
@@ -18,26 +27,49 @@ public class Engine
 	 * eine Action möglichst parallel, jedoch unter Berücksichtigung der
 	 * Abhängigkeiten auszuführen.
 	 */
-
-	public Engine(DependencyTree tree, TreeAction action) {
-		this.tree = tree;
-		this.treeAction = action;
+	public Engine(DependencyTree<T> tree, TreeAction<T> action) {
+		this(new DependencyTreeTraverser<T>(tree), action);
 	}
 
-	protected void execute(DependencyNode node) {
-		treeAction.execute(node);
+	Engine(DependencyTreeTraverser<T> traverser, TreeAction<T> action) {
+		this.traverser = traverser;
+		this.action = action;
+		this.queue = new LinkedBlockingQueue<DependencyNode<T>>();
 	}
 
-	public void processingFinished(DependencyNode node) {
-		// achtung, processingFinished kann auch während der Action Ausführung aufgerufen werden.
+	public void execute() {
+		Set<DependencyNode<T>> initialNodesToProcess = traverser.retrieveProcessableNodes();
+		schedule(initialNodesToProcess);
 	}
 
-	public void processingFailed(DependencyNode node) {
-		// achtung, processingFailed kann auch während der Action Ausführung aufgerufen werden.
+	protected void schedule(Set<DependencyNode<T>> nodes) {
+		queue.addAll(nodes);
+		DependencyNode<T> node = queue.poll();
+		while (node != null) {
+			action.execute(this, node);
+			node = queue.poll();
+		}
+	}
+
+	public void processingFinished(DependencyNode<T> node) {
+		synchronized (traverser) {
+			traverser.notifyProcessingSucceeded(node);
+			Set<DependencyNode<T>> nextNodesToProcess = traverser.retrieveProcessableNodes();
+			schedule(nextNodesToProcess);
+		}
+	}
+
+	public void processingFailed(DependencyNode<T> node) {
+		synchronized (traverser) {
+			traverser.notifyProcessingFailed(node);
+			Set<DependencyNode<T>> nextNodesToProcess = traverser.retrieveProcessableNodes();
+			schedule(nextNodesToProcess);
+		}
 	}
 
 	public void cancelAll() {
-
+		// No action required. Do not schedule further nodes. Already scheduled nodes will be completed
+		queue.clear();
 	}
 
 

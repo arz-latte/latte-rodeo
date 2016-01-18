@@ -1,6 +1,7 @@
 package at.arz.latte.rodeo.engine;
 
 
-public class DependencyTree {
+public class DependencyTree<T> {
 
+	
 }
