@@ -6,17 +6,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.sun.istack.NotNull;
-
 import at.arz.latte.rodeo.api.RodeoCommand;
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
+import at.arz.latte.rodeo.pipeline.CommandLineStep;
+import at.arz.latte.rodeo.pipeline.CommandLineStepConfiguration;
 import at.arz.latte.rodeo.pipeline.Step;
-import at.arz.latte.rodeo.pipeline.StepConfiguration;
 import at.arz.latte.rodeo.pipeline.StepName;
+
+import com.sun.istack.NotNull;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CreateStep
+public class CreateCommandLineStep
 		implements RodeoCommand<Long> {
 
 	@XmlTransient
@@ -27,20 +28,20 @@ public class CreateStep
 	private StepName name;
 
 	@NotNull
-	private StepConfiguration configuration;
+	private CommandLineStepConfiguration configuration;
 
-	protected CreateStep(){
+	protected CreateCommandLineStep(){
 		// tool constructor
 	}
 
-	public CreateStep(StepName name, StepConfiguration configuration) {
+	public CreateCommandLineStep(StepName name, CommandLineStepConfiguration configuration) {
 		this.name = name;
 		this.configuration = configuration;
 	}
 
 	@Override
 	public Long execute() {
-		Step step = new Step(name, configuration);
+		Step step = new CommandLineStep(name, configuration);
 		model.create(step);
 		return step.getId();
 	}

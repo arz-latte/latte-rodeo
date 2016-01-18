@@ -18,7 +18,7 @@ import at.arz.latte.rodeo.infrastructure.RodeoSecurity;
 import at.arz.latte.rodeo.pipeline.FindSteps;
 import at.arz.latte.rodeo.pipeline.Step;
 import at.arz.latte.rodeo.pipeline.StepName;
-import at.arz.latte.rodeo.pipeline.admin.CreateStep;
+import at.arz.latte.rodeo.pipeline.admin.CreateCommandLineStep;
 
 @Path("/steps")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -45,7 +45,7 @@ public class StepResource {
 
 	@Path("/")
 	@PUT
-	public void createStep(CreateStep command) {
+	public void createStep(CreateCommandLineStep command) {
 		security.assertUserIsAdmin();
 		model.execute(command);
 	}
