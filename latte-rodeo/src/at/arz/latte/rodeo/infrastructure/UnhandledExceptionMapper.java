@@ -51,10 +51,14 @@ public class UnhandledExceptionMapper
 
 	private void logFixme(Throwable throwable) {
 		StackTraceElement element = throwable.getStackTrace()[0];
-		log.severe("[FIXME] "+ throwable.getClass().getSimpleName()
-					+ " at "
-					+ element.toString()
-					+ " (activate log level fine for stacktrace)");
-		log.log(Level.FINE, "exception details", throwable);
+		if (element.getClassName().startsWith("at.arz")) {
+			log.severe("[FIXME] " + throwable.getClass().getSimpleName()
+						+ " at "
+						+ element.toString()
+						+ " (activate log level fine for stacktrace)");
+			log.log(Level.FINE, "exception details", throwable);
+		} else {
+			log.log(Level.INFO, "exception details", throwable);
+		}
 	}
 }

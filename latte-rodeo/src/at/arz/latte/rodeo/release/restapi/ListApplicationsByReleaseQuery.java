@@ -9,22 +9,32 @@ import javax.persistence.TypedQuery;
 import at.arz.latte.rodeo.api.RodeoQuery;
 import at.arz.latte.rodeo.release.Application;
 import at.arz.latte.rodeo.release.ApplicationName;
+import at.arz.latte.rodeo.release.ApplicationRelease;
+import at.arz.latte.rodeo.release.Release;
 
-public class ListApplicationsQuery implements RodeoQuery<ListApplications> {
+public class ListApplicationsByReleaseQuery
+		implements RodeoQuery<ListApplications> {
+
 	private static final int DEFAULT_FETCH_SIZE = 100;
 	private int maxResultSize = DEFAULT_FETCH_SIZE;
+	private Release release;
 
 	@Override
 	public ListApplications execute(EntityManager entityManager) {
-		TypedQuery<Application> query = createQuery(entityManager);
+		TypedQuery<ApplicationRelease> query = createQuery(entityManager);
 		query.setMaxResults(maxResultSize);
+		query.setParameter("release", release);
 		return new ListApplications(map(query.getResultList()));
 	}
 
-	List<ApplicationName> map(List<Application> list) {
+	public void setRelease(Release release) {
+		this.release = release;
+	}
+
+	List<ApplicationName> map(List<ApplicationRelease> list) {
 		List<ApplicationName> resultList = new ArrayList<>(list.size());
-		for (Application application : list) {
-			resultList.add(map(application));
+		for (ApplicationRelease application : list) {
+			resultList.add(map(application.getApplication()));
 		}
 		return resultList;
 	}
@@ -33,8 +43,8 @@ public class ListApplicationsQuery implements RodeoQuery<ListApplications> {
 		return application.getName();
 	}
 
-	TypedQuery<Application> createQuery(EntityManager entityManager) {
-		return entityManager.createNamedQuery(Application.SELECT_ALL, Application.class);
+	TypedQuery<ApplicationRelease> createQuery(EntityManager entityManager) {
+		return entityManager.createNamedQuery(Application.SELECT_ALL, ApplicationRelease.class);
 	}
 
 }

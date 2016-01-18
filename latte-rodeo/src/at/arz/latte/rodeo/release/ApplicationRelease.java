@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -18,12 +20,19 @@ import at.arz.latte.rodeo.infrastructure.AbstractEntity;
  * 
  */
 @Entity
-@Table(	name = "APPLICATION_RELEASES",
-		uniqueConstraints = { @UniqueConstraint(columnNames = { "APPLICATION_OID", "RELEASE_OID" }) })
+@Table(name = "APPLICATION_RELEASES", uniqueConstraints = { @UniqueConstraint(columnNames = {	"APPLICATION_OID",
+																								"RELEASE_OID" }) })
+@NamedQueries({ @NamedQuery(name = ApplicationRelease.SELECT_ALL_BY_APPLICATION,
+							query = "select o from ApplicationRelease o where o.application = :application"),
+				@NamedQuery(name = ApplicationRelease.SELECT_ALL_BY_RELEASE,
+							query = "select o from ApplicationRelease o where o.release = :release") })
 public class ApplicationRelease
 		extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String SELECT_ALL_BY_APPLICATION = "ApplicationRelease.selectAllByApplication";
+	public static final String SELECT_ALL_BY_RELEASE = "ApplicationRelease.selectAllByRelease";
 
 	@Id
 	@Column(name = "OID")
@@ -47,4 +56,15 @@ public class ApplicationRelease
 		this.application = application;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public Application getApplication() {
+		return application;
+	}
+
+	public Release getRelease() {
+		return release;
+	}
 }

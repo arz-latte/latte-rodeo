@@ -24,6 +24,7 @@
 		<class>at.arz.latte.rodeo.user.SystemAccount</class>
 		<class>at.arz.latte.rodeo.user.User</class>
 		<class>at.arz.latte.rodeo.pipeline.PipelineStep</class>
+		<class>at.arz.latte.rodeo.pipeline.CommandLineStep</class>
 
 		<properties>
 			<property name="openjpa.DynamicEnhancementAgent" value="true" />
