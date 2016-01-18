@@ -2,8 +2,6 @@ package at.arz.latte.rodeo.engine;
 
 import java.io.Serializable;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 
 
@@ -14,12 +12,6 @@ public class Engine<T>
 
 	private DependencyTreeTraverser<T> traverser;
 	private TreeAction<T> action;
-
-	/**
-	 * Diese Queue stellt sicher, dass die Verarbeitungsreihenfolge exakt der vom {@link DependencyTreeTraverser}
-	 * vorgegebenen Reihenfolge entspricht.
-	 */
-	private BlockingQueue<DependencyNode<T>> queue;
 
 	/*
 	 * 
@@ -34,7 +26,6 @@ public class Engine<T>
 	Engine(DependencyTreeTraverser<T> traverser, TreeAction<T> action) {
 		this.traverser = traverser;
 		this.action = action;
-		this.queue = new LinkedBlockingQueue<DependencyNode<T>>();
 	}
 
 	public void execute() {
@@ -43,33 +34,25 @@ public class Engine<T>
 	}
 
 	protected void schedule(Set<DependencyNode<T>> nodes) {
-		queue.addAll(nodes);
-		DependencyNode<T> node = queue.poll();
-		while (node != null) {
+		for (DependencyNode<T> node : nodes) {
 			action.execute(this, node);
-			node = queue.poll();
 		}
 	}
 
 	public void processingFinished(DependencyNode<T> node) {
-		synchronized (traverser) {
-			traverser.notifyProcessingSucceeded(node);
-			Set<DependencyNode<T>> nextNodesToProcess = traverser.retrieveProcessableNodes();
-			schedule(nextNodesToProcess);
-		}
+		traverser.notifyProcessingSucceeded(node);
+		Set<DependencyNode<T>> nextNodesToProcess = traverser.retrieveProcessableNodes();
+		schedule(nextNodesToProcess);
 	}
 
 	public void processingFailed(DependencyNode<T> node) {
-		synchronized (traverser) {
-			traverser.notifyProcessingFailed(node);
-			Set<DependencyNode<T>> nextNodesToProcess = traverser.retrieveProcessableNodes();
-			schedule(nextNodesToProcess);
-		}
+		traverser.notifyProcessingFailed(node);
+		Set<DependencyNode<T>> nextNodesToProcess = traverser.retrieveProcessableNodes();
+		schedule(nextNodesToProcess);
 	}
 
 	public void cancelAll() {
 		// No action required. Do not schedule further nodes. Already scheduled nodes will be completed
-		queue.clear();
 	}
 
 

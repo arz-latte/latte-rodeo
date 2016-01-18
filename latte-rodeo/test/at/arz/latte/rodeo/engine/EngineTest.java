@@ -1,7 +1,7 @@
 package at.arz.latte.rodeo.engine;
 
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InOrder;
 
 public class EngineTest {
 
@@ -43,7 +42,9 @@ public class EngineTest {
 		// Verify retrieval of initial nodes.
 		verify(traverser).retrieveProcessableNodes();
 		// Verify invocation of first node.
-		verify(action).execute(engine, initialNodes.iterator().next());
+		for (DependencyNode<String> initial : initialNodes) {
+			verify(action).execute(engine, initial);
+		}
 		// Keine weiteren Interaktionen, da die action sofort cancelAll() ausgelöst hat!
 		verifyNoMoreInteractions(traverser, action);
 
@@ -59,21 +60,17 @@ public class EngineTest {
 		engine = new Engine<String>(traverser, action);
 		engine.execute();
 
-		InOrder inOrder = inOrder(traverser, action);
-		// Verify retrieval of initial nodes.
-		inOrder.verify(traverser).retrieveProcessableNodes();
+		verify(traverser, times(1 + initialNodes.size() + nextNodes.size())).retrieveProcessableNodes();
 		// Verify successful processing of initial nodes
 		for(DependencyNode<String> initial : initialNodes){
-			inOrder.verify(action).execute(engine, initial);
-			inOrder.verify(traverser).notifyProcessingSucceeded(initial);
-			inOrder.verify(traverser).retrieveProcessableNodes();
+			verify(action).execute(engine, initial);
+			verify(traverser).notifyProcessingSucceeded(initial);
 		}
 
 		// Verify faild processing of next nodes.
 		for (DependencyNode<String> next : nextNodes) {
-			inOrder.verify(action).execute(engine, next);
-			inOrder.verify(traverser).notifyProcessingFailed(next);
-			inOrder.verify(traverser).retrieveProcessableNodes();
+			verify(action).execute(engine, next);
+			verify(traverser).notifyProcessingFailed(next);
 		}
 		verifyNoMoreInteractions(traverser, action);
 
@@ -88,21 +85,18 @@ public class EngineTest {
 		engine = new Engine<String>(traverser, action);
 		engine.execute();
 
-		InOrder inOrder = inOrder(traverser, action);
 		// Verify retrieval of initial nodes.
-		inOrder.verify(traverser).retrieveProcessableNodes();
+		verify(traverser, times(1 + initialNodes.size() + nextNodes.size())).retrieveProcessableNodes();
 		// Verify successful processing of initial nodes
 		for(DependencyNode<String> initial : initialNodes){
-			inOrder.verify(action).execute(engine, initial);
-			inOrder.verify(traverser).notifyProcessingSucceeded(initial);
-			inOrder.verify(traverser).retrieveProcessableNodes();
+			verify(action).execute(engine, initial);
+			verify(traverser).notifyProcessingSucceeded(initial);
 		}
 
 		// Verify successful processing of next nodes
 		for (DependencyNode<String> next : nextNodes) {
-			inOrder.verify(action).execute(engine, next);
-			inOrder.verify(traverser).notifyProcessingSucceeded(next);
-			inOrder.verify(traverser).retrieveProcessableNodes();
+			verify(action).execute(engine, next);
+			verify(traverser).notifyProcessingSucceeded(next);
 		}
 		
 		verifyNoMoreInteractions(traverser);
