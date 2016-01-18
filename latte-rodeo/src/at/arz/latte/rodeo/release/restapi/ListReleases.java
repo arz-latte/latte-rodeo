@@ -8,19 +8,23 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import at.arz.latte.rodeo.release.ReleaseName;
+
 @XmlRootElement(name = "releases")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ListReleases implements Serializable {
+public class ListReleases
+		implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@XmlElement(name = "release")
-	private List<String> names;
+	private List<ReleaseName> names;
 
 	ListReleases() {
 		// tool constructor
 	}
 
-	public ListReleases(List<String> names) {
+	public ListReleases(List<ReleaseName> names) {
 		this.names = names;
 	}
 }

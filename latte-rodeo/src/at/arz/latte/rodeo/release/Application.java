@@ -11,6 +11,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.apache.openjpa.persistence.Externalizer;
+import org.apache.openjpa.persistence.Persistent;
+
 import at.arz.latte.rodeo.infrastructure.AbstractEntity;
 
 /**
@@ -20,27 +23,31 @@ import at.arz.latte.rodeo.infrastructure.AbstractEntity;
  */
 @Entity
 @Table(name = "APPLICATIONS")
-@NamedQueries({ @NamedQuery(name = Application.SELECT_ALL, query = "select o from Component o ") })
+@NamedQueries({ @NamedQuery(name = Application.SELECT_ALL, query = "select o from Component o "),
+				@NamedQuery(name = Application.SELECT_BY_NAME, query = "select o from Component o where o.name = :name") })
 public class Application
 		extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String SELECT_ALL = "Application.selectAll";
+	public static final String SELECT_BY_NAME = "Application.selectByName";
 
 	@Id
 	@Column(name = "OID")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "SEQUENCES")
 	private Long id;
 
+	@Persistent
+	@Externalizer("toString")
 	@Column(name = "APPLICATION_NAME", length = 255, unique = true)
-	private String name;
+	private ApplicationName name;
 
 	protected Application() {
 		// jpa constructor
 	}
 
-	public Application(String componentName) {
+	public Application(ApplicationName componentName) {
 		Objects.requireNonNull(componentName, "componentName required");
 		this.name = componentName;
 	}
@@ -49,7 +56,7 @@ public class Application
 		return id;
 	}
 
-	public String getName() {
+	public ApplicationName getName() {
 		return name;
 	}
 
