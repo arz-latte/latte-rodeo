@@ -1,6 +1,7 @@
 package at.arz.latte.rodeo.release.restapi;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import at.arz.latte.rodeo.api.RodeoQuery;
@@ -16,7 +17,12 @@ public class FindReleaseByNameQuery
 	public Release execute(EntityManager entityManager) {
 		TypedQuery<Release> createQuery = createQuery(entityManager);
 		createQuery.setParameter("releaseName", releaseName);
-		return createQuery.getSingleResult();
+		try {
+			return createQuery.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+
 	}
 
 	public void setReleaseName(ReleaseName releaseName) {
