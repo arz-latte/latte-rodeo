@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.apache.openjpa.persistence.Externalizer;
+import org.apache.openjpa.persistence.Persistent;
+
 /**
  * To make shure that user entities can stay forever, we need an account entity to represent the system login
  * information.
@@ -26,8 +29,10 @@ public class SystemAccount
 	 * the userId is unique and mapped to the users system account.
 	 */
 	@Id
+	@Persistent
+	@Externalizer("toString")
 	@Column(name = "USER_ID")
-	private String userId;
+	private UserId userId;
 
 	@Column(name = "USER_PASSWORD", nullable = true)
 	private String password;
@@ -39,8 +44,12 @@ public class SystemAccount
 		// jpa constructor
 	}
 
-	public SystemAccount(String userId) {
+	public SystemAccount(UserId userId) {
 		this.userId = userId;
+	}
+	
+	public UserId getUserId() {
+		return userId;
 	}
 
 	void setUser(User user) {
