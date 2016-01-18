@@ -1,15 +1,22 @@
 package at.arz.latte.rodeo.engine;
 
-import java.util.List;
 
 // Dependency Node ist die API für Clients
 public class DependencyNode<T> {
 
 	private T item;
-	private List<DependencyNode<T>> children;
 
 	public DependencyNode(T item) {
 		this.item = item;
+	}
+
+	public T getItem() {
+		return item;
+	}
+
+	@Override
+	public String toString() {
+		return "DependencyNode [item=" + item + "]";
 	}
 
 	@Override
@@ -36,5 +43,4 @@ public class DependencyNode<T> {
 			return false;
 		return true;
 	}
-
 }

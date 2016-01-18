@@ -1,7 +1,7 @@
 package at.arz.latte.rodeo.engine;
 
 
-public interface TreeAction {
+public interface TreeAction<T> {
 
-	void execute(DependencyNode node);
+	void execute(Engine<T> engine, DependencyNode<T> node);
 }
