@@ -4,7 +4,8 @@ import at.arz.latte.rodeo.engine.graph.Graph;
 import at.arz.latte.rodeo.engine.graph.Visitor;
 
 public class DependencyTree<T>
-		extends Graph<DependencyNode<T>> {
+		extends Graph<DependencyNode<T>>
+		implements Cloneable {
 
 	private DependencyNode<T> root;
 
@@ -22,5 +23,12 @@ public class DependencyTree<T>
 
 	public void depthFirstTraversal(Visitor<DependencyNode<T>> visitor) {
 		super.depthFirstTraversal(root, visitor);
+	}
+
+	@Override
+	public DependencyTree<T> clone() {
+		DependencyTreeBuilder<T> builder = new DependencyTreeBuilder<T>();
+		builder.fromGraph(this);
+		return builder.build();
 	}
 }

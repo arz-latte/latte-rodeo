@@ -1,5 +1,6 @@
 package at.arz.latte.rodeo.engine;
 
+import java.util.Objects;
 
 // Dependency Node ist die API für Clients
 public class DependencyNode<T> {
@@ -7,7 +8,7 @@ public class DependencyNode<T> {
 	private T item;
 
 	public DependencyNode(T item) {
-		this.item = item;
+		this.item = Objects.requireNonNull(item);
 	}
 
 	public T getItem() {
@@ -21,26 +22,15 @@ public class DependencyNode<T> {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((item == null) ? 0 : item.hashCode());
-		return result;
+		return item.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		DependencyNode other = (DependencyNode) obj;
-		if (item == null) {
-			if (other.item != null)
-				return false;
-		} else if (!item.equals(other.item))
-			return false;
-		return true;
+		return obj instanceof DependencyNode && equals((DependencyNode<?>) obj);
+	}
+
+	public boolean equals(DependencyNode<?> dependencyNode) {
+		return dependencyNode != null && Objects.equals(item, dependencyNode.item);
 	}
 }

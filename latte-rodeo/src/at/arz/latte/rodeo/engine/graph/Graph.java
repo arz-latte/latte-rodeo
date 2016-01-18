@@ -3,6 +3,7 @@ package at.arz.latte.rodeo.engine.graph;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -78,12 +79,33 @@ public class Graph<V>
 		return leafs;
 	}
 
+	public void removeLeaf(V vertex) {
+		if (!isLeaf(vertex)) {
+			throw new RuntimeException(vertex + " is not a leaf.");
+		}
+		vertexes.remove(vertex);
+		edges.removeAll(getEdges(vertex));
+		parents.remove(vertex);
+		Iterator<V> iterator = children.keySet().iterator();
+		while (iterator.hasNext()) {
+			V parent = iterator.next();
+			children.get(parent).remove(vertex);
+			if (children.get(parent).isEmpty()) {
+				iterator.remove();
+			}
+		}
+	}
+
 	public void breadthFirstTraversal(V vertex, Visitor<V> visitor) {
 		new BreadthFirstTraversal<V>(this).traverse(vertex, visitor);
 	}
 	
 	public void depthFirstTraversal(V vertex, Visitor<V> visitor) {
 		new DepthFirstTraversal<V>(this).traverse(vertex, visitor);
+	}
+
+	public boolean isEmpty() {
+		return vertexes.isEmpty();
 	}
 
 	public String getDot() {
@@ -153,5 +175,15 @@ public class Graph<V>
 			parents.put(to, parentSet);
 		}
 		parentSet.add(from);
+	}
+
+	private Set<Edge<V>> getEdges(V vertex) {
+		Set<Edge<V>> containingEdges = new HashSet<Edge<V>>();
+		for (Edge<V> edge : edges) {
+			if (edge.getFrom().equals(vertex) || edge.getTo().equals(vertex)) {
+				containingEdges.add(edge);
+			}
+		}
+		return containingEdges;
 	}
 }

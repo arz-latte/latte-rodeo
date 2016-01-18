@@ -13,6 +13,13 @@ public class GraphBuilder<V, G extends Graph<V>> {
 		return this;
 	}
 	
+	public GraphBuilder<V, G> fromGraph(G template) {
+		for (Edge<V> edge : template.getEdges()) {
+			graph.addEdge(edge.getFrom(), edge.getTo());
+		}
+		return this;
+	}
+
 	public G build() {
 		if (graph == null) {
 			throw new RuntimeException("Builder can be used only once.");
