@@ -8,19 +8,21 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import at.arz.latte.rodeo.release.ApplicationName;
+
 @XmlRootElement(name = "applications")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ListApplications implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@XmlElement(name = "application")
-	private List<String> names;
+	private List<ApplicationName> names;
 
 	ListApplications() {
 		// tool constructor
 	}
 
-	public ListApplications(List<String> names) {
+	public ListApplications(List<ApplicationName> names) {
 		this.names = names;
 	}
 
