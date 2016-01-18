@@ -9,10 +9,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import at.arz.latte.rodeo.api.ObjectExists;
 import at.arz.latte.rodeo.api.RodeoCommand;
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
 import at.arz.latte.rodeo.release.Release;
 import at.arz.latte.rodeo.release.ReleaseName;
+import at.arz.latte.rodeo.release.restapi.FindReleaseByNameQuery;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -38,9 +40,16 @@ public class CreateRelease
 
 	@Override
 	public Long execute() {
-		Release release = new Release(releaseName);
-		model.create(release);
-		return release.getId();
+		FindReleaseByNameQuery query = new FindReleaseByNameQuery();
+		query.setReleaseName(getReleaseName());
+		Release release = model.query(query);
+		if (release != null) {
+			throw new ObjectExists(Release.class, "releaseName", getReleaseName());
+		}
+
+		Release r = new Release(releaseName);
+		model.create(r);
+		return r.getId();
 	}
 
 	public ReleaseName getReleaseName() {
