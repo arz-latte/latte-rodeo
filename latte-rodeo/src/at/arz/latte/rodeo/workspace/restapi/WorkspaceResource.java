@@ -55,9 +55,9 @@ public class WorkspaceResource {
 			if (subdir.isDirectory()) {
 				return Response.status(Status.OK).entity(buildDirList(subdir)).build();
 			} else {
-				String mimeType = request.getServletContext().getMimeType(subdir.getName());
-				if (mimeType == null) {
-					return Response.ok(subdir, MediaType.APPLICATION_OCTET_STREAM)
+				String mimeType = evaluateMimeType(subdir);
+				if (MediaType.APPLICATION_OCTET_STREAM.equals(mimeType)) {
+					return Response.ok(subdir, mimeType)
 									.header("Content-Disposition", "attachment; filename=\"" + subdir.getName() + "\"")
 									.build();
 				}
@@ -66,6 +66,14 @@ public class WorkspaceResource {
 		}
 		return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(path + " not found").build();
 
+	}
+
+	private String evaluateMimeType(File subdir) {
+		String mimeType = request.getServletContext().getMimeType(subdir.getName());
+		if (mimeType == null) {
+			return MediaType.APPLICATION_OCTET_STREAM;
+		}
+		return mimeType;
 	}
 
 	@Path("{path : .+}")
@@ -79,7 +87,6 @@ public class WorkspaceResource {
 		if (destinationFile.exists()) {
 			return Response.status(Status.CONFLICT).build();
 		}
-		
 
 		try {
 			if (inputStream.available() == 0) {
@@ -109,14 +116,14 @@ public class WorkspaceResource {
 	public Response updateFile(@PathParam("path") String path, InputStream inputStream) {
 		security.assertUserIsAdmin();
 		File workspaceDir = workspace.getWorkspaceDir();
-		File subdir = new File(workspaceDir, path);
+		File destinationFile = new File(workspaceDir, path);
 
-		if (!subdir.exists()) {
+		if (!destinationFile.exists()) {
 			Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(path + " not found").build();
 		}
 
 		try {
-			writeStreamToFile(inputStream, subdir);
+			writeStreamToFile(inputStream, destinationFile);
 		} catch (IOException e) {
 			return Response.status(Status.NOT_ACCEPTABLE).build();
 		}
@@ -128,22 +135,22 @@ public class WorkspaceResource {
 	public Response deleteFileOrDirectoy(@PathParam("path") String path) {
 		security.assertUserIsAdmin();
 		File workspaceDir = workspace.getWorkspaceDir();
-		File subdir = new File(workspaceDir, path);
+		File destinationfile = new File(workspaceDir, path);
 
-		if (!subdir.exists()) {
+		if (!destinationfile.exists()) {
 			return Response.status(Status.CONFLICT).build();
 		}
 
-		if (subdir.isFile()) {
-			if (subdir.delete()) {
+		if (destinationfile.isFile()) {
+			if (destinationfile.delete()) {
 				return Response.ok().build();
 			}
 			return Response.notModified().build();
 		}
 
-		if (subdir.isDirectory()) {
+		if (destinationfile.isDirectory()) {
 			try {
-				FileUtils.deleteDirectory(subdir);
+				FileUtils.deleteDirectory(destinationfile);
 			} catch (IOException e) {
 				return Response.notModified(e.getMessage()).build();
 			}
