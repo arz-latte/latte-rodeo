@@ -12,6 +12,15 @@ public class DependencyTree<T>
 	public DependencyNode<T> getRoot() {
 		return root;
 	}
+	
+	public DependencyTree<T> getDownstreamSubtree(DependencyNode<T> node) {
+		DependencyTreeBuilder<T> builder = new DependencyTreeBuilder<T>();
+		addParentEdges(builder, node);
+		if (builder.isEmpty()) {
+			return null;
+		}
+		return builder.build();
+	}
 
 	void setRoot(DependencyNode<T> root) {
 		this.root = root;
@@ -25,10 +34,24 @@ public class DependencyTree<T>
 		super.depthFirstTraversal(root, visitor);
 	}
 
+	public DependencyTree<T> merge(DependencyTree<T> tree) {
+		DependencyTreeBuilder<T> builder = new DependencyTreeBuilder<T>();
+		builder.addAllEdges(this);
+		builder.addAllEdges(tree);
+		return builder.build();
+	}
+
 	@Override
 	public DependencyTree<T> clone() {
 		DependencyTreeBuilder<T> builder = new DependencyTreeBuilder<T>();
-		builder.fromGraph(this);
+		builder.addAllEdges(this);
 		return builder.build();
+	}
+
+	private void addParentEdges(DependencyTreeBuilder<T> builder, DependencyNode<T> node) {
+		for (DependencyNode<T> parent : getParents(node)) {
+			builder.addEdge(parent, node);
+			addParentEdges(builder, parent);
+		}
 	}
 }

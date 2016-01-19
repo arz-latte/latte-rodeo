@@ -13,11 +13,15 @@ public class GraphBuilder<V, G extends Graph<V>> {
 		return this;
 	}
 	
-	public GraphBuilder<V, G> fromGraph(G template) {
+	public GraphBuilder<V, G> addAllEdges(G template) {
 		for (Edge<V> edge : template.getEdges()) {
 			graph.addEdge(edge.getFrom(), edge.getTo());
 		}
 		return this;
+	}
+
+	public boolean isEmpty() {
+		return graph.getVertexes().isEmpty();
 	}
 
 	public G build() {
