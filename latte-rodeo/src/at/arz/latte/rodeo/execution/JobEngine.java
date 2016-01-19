@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
@@ -35,6 +36,8 @@ import at.arz.latte.rodeo.workspace.Workspace;
 @LocalBean
 public class JobEngine {
 
+	private static final String JOBDIR_DATEFORMAT = "yyyy/MM/dd";
+
 	private static final Logger log = Logger.getLogger(JobEngine.class.getSimpleName());
 
 	@Inject
@@ -49,9 +52,13 @@ public class JobEngine {
 	@PersistenceContext(unitName = "latte-rodeo")
 	private EntityManager entityManager;
 
+	private Settings settings;
+
+	private String runtime;
+
 	File createJobDir(JobIdentifier identifier, Date jobTime) {
-		String DATE_PATTERN = "yyyy/MM/dd";
-		String datePart = new SimpleDateFormat(DATE_PATTERN).format(jobTime);
+		String directoryFormat = settings.resolvedProperty("dateFormatForJobDirectory", JOBDIR_DATEFORMAT);
+		String datePart = new SimpleDateFormat(directoryFormat).format(jobTime);
 		File dir = new File(workspace.getJobDir(), datePart + "/" + identifier.toString());
 		if (dir.exists()) {
 			throw new RuntimeException("job dir for new job exists:" + dir.getAbsolutePath());
@@ -62,9 +69,7 @@ public class JobEngine {
 
 	File createScript(File jobDir, CommandLineStep step, Properties properties) {
 		String script = new VariableResolver(properties).resolve(step.getMainScript());
-		Settings settings = workspace.getSettings("jobEngine");
-		File scriptFile = new File(jobDir, settings.resolvedProperty("runStep.filename", "run_step.bat"));
-
+		File scriptFile = new File(jobDir, settings.resolvedProperty("job.filename." + runtime, "job.sh"));
 		try (Writer writer = new FileWriter(scriptFile)) {
 			writer.append(script);
 		} catch (IOException e) {
@@ -88,9 +93,10 @@ public class JobEngine {
 		processor.setWorkDirectory(workDirectory);
 		String[] environmentVariables = buildEnvironmentVariables();
 		processor.setEnvironmentVariables(environmentVariables);
-		processor.setCommandLine("cmd /C " + scriptFile.getAbsolutePath());
+		String shell = settings.resolvedProperty("shell." + runtime, "/bin/sh");
+		processor.setCommandLine(shell + " " + scriptFile.getAbsolutePath());
 		runner.runAsynchron(processor);
-		// entityManager.persist(job);
+		entityManager.persist(job);
 		return job.getId();
 	}
 
@@ -115,4 +121,12 @@ public class JobEngine {
 		});
 	}
 
+	@PostConstruct
+	public void setup() {
+		settings = workspace.getSettings("jobEngine");
+		runtime = settings.resolvedProperty("runtime");
+		if (runtime == null) {
+			runtime = System.getProperty("os.name").startsWith("Windows") ? "windows" : "unix";
+		}
+	}
 }

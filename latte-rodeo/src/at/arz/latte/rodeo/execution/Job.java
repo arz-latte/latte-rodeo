@@ -26,11 +26,53 @@ public class Job
 	private static final long serialVersionUID = 1L;
 
 	public enum Status {
-		CREATED,
-		WAITING,
-		RUNNING,
-		SUCCESS,
-		FAILED
+						CREATED {
+
+							@Override
+							public boolean hasStarted() {
+								return false;
+							}
+						},
+						WAITING {
+
+							@Override
+							public boolean hasStarted() {
+								return false;
+							}
+						},
+						SUCCESS {
+
+							@Override
+							public boolean isFinished() {
+								return true;
+							}
+						},
+						FAILED {
+
+							@Override
+							public boolean isFinished() {
+								return true;
+							}
+						},
+						RUNNING {
+
+							public boolean isActive() {
+								return true;
+							}
+						};
+
+		public boolean isActive() {
+			return false;
+		}
+
+		public boolean hasStarted() {
+			return true;
+		}
+
+		public boolean isFinished() {
+			return false;
+		}
+
 	};
 
 	@Id
