@@ -10,6 +10,9 @@ class Edge<T> {
 	public Edge(T from, T to) {
 		Objects.requireNonNull(from);
 		Objects.requireNonNull(to);
+		if (from.equals(to)) {
+			throw new RuntimeException("From and to must be different.");
+		}
 		this.from = from;
 		this.to = to;
 	}

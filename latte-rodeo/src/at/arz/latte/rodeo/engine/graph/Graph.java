@@ -122,14 +122,15 @@ public class Graph<V>
 		StringBuilder sb = new StringBuilder();
 		sb.append("digraph G {\n");
 		for (V vertex : vertexes) {
-			sb.append("  ").append(nameProvider.getVertexName(vertex)).append(";\n");
+			sb.append("  \"").append(nameProvider.getVertexName(vertex)).append("\";\n");
 		}
+		sb.append("\n");
 		for (Edge<V> edge : edges) {
-			sb.append("  ")
-			  .append(nameProvider.getVertexName(edge.getFrom()))
-			  .append(" -> ")
-			  .append(nameProvider.getVertexName(edge.getTo()))
-			  .append(";\n");
+			sb.append("  \"")
+				.append(nameProvider.getVertexName(edge.getFrom()))
+				.append("\" -> \"")
+				.append(nameProvider.getVertexName(edge.getTo()))
+				.append("\";\n");
 		}
 		sb.append("}\n");
 		return sb.toString();
@@ -147,6 +148,20 @@ public class Graph<V>
 	@Override
 	public String toString() {
 		return vertexes + " " + edges;
+	}
+	
+	@Override
+	public int hashCode() {
+		return edges.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof Graph && equals((Graph<?>) obj);
+	}
+
+	public boolean equals(Graph<?> graph) {
+		return graph != null && edges.equals(graph.edges);
 	}
 
 	private void addEdge(Edge<V> edge) {
