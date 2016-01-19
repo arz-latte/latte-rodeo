@@ -2,6 +2,7 @@ package at.arz.latte.rodeo.release;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -15,10 +16,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.openjpa.persistence.Externalizer;
+import org.apache.openjpa.persistence.Persistent;
+
 import at.arz.latte.rodeo.infrastructure.AbstractEntity;
 
 /**
- * a module is the description one binary artifact and each module can have multiple revisions.
+ * a module is the description one binary artifact its build revisions.
  * 
  * @author mrodler
  * 
@@ -36,42 +40,87 @@ public class Module
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "SEQUENCES")
 	private Long id;
 
+	@Persistent
+	@Externalizer("toString")
 	@Column(name = "MODULE_NAME", nullable = false)
-	private String moduleName;
+	private ModuleName moduleName;
 
+	@Persistent
+	@Externalizer("toString")
 	@Column(name = "MODULE_ORGANISATION", nullable = false)
-	private String organisation;
+	private Organisation organisation;
 
 	@OneToMany(mappedBy = "module", orphanRemoval = true)
-	private Set<ModuleRevision> revisions;
+	private Set<Revision> revisions;
+
+	@Column(name = "IS_EXTERNAL")
+	private boolean external;
+
+	@Column(name = "MODULE_LICENSE")
+	private String license;
+
+	@Column(name = "MODULE_DESCRIPTION")
+	private String description;
 
 	protected Module() {
 		// jpa constructor
 	}
 
-	public Module(String moduleName) {
+	public Module(Organisation organisation, ModuleName moduleName) {
+		Objects.requireNonNull(organisation, "organisation required");
 		Objects.requireNonNull(moduleName, "moduleName required");
+		this.organisation = organisation;
 		this.moduleName = moduleName;
+		this.revisions = new HashSet<>();
+	}
+
+	public void updateDescription(ModuleDescription description) {
+		this.description = description.getDescription();
+		this.external = description.isExternal();
+		this.license = description.getLicense();
+	}
+
+	public ModuleDescription getDescription() {
+		ModuleDescription description = new ModuleDescription();
+		description.setDescription(this.description);
+		description.setExternal(this.external);
+		description.setLicense(this.license);
+		return description;
 	}
 
 	@Override
 	public int hashCode() {
-		return moduleName == null ? 0 : moduleName.hashCode();
+		return Objects.hash(organisation, moduleName);
 	}
 
-	public Map<String, ModuleRevision> getRevisions() {
-		Map<String, ModuleRevision> revisionMap = new HashMap<String, ModuleRevision>();
-		for (ModuleRevision revision : revisions) {
+	public Map<String, Revision> getRevisions() {
+		Map<String, Revision> revisionMap = new HashMap<String, Revision>();
+		for (Revision revision : revisions) {
 			revisionMap.put(revision.getRevision(), revision);
 		}
 		return Collections.unmodifiableMap(revisionMap);
 	}
 
-	public void addRevision(String revision) {
-		revisions.add(new ModuleRevision(this, revision));
+	/**
+	 * adds a new revision to this module.
+	 * 
+	 * @param revision the complete revision value.
+	 * @param dependencies all direct dependencies of this binary.
+	 * @param modificationTime the modification timestamp of the binary.
+	 */
+	public void addRevision(Revision revision) {
+		if (this.equals(revision.getModule())) {
+			revisions.add(revision);
+		} else {
+			throw new UnsupportedOperationException("can't add " + revision + " to " + this);
+		}
 	}
 
-	public String getModuleName() {
+	public Organisation getOrganisation() {
+		return organisation;
+	}
+
+	public ModuleName getModuleName() {
 		return moduleName;
 	}
 
@@ -84,15 +133,20 @@ public class Module
 		if (getClass() != obj.getClass())
 			return false;
 		Module other = (Module) obj;
-		return Objects.equals(moduleName, other.moduleName);
+		return Objects.equals(organisation, other.organisation) && Objects.equals(moduleName, other.moduleName);
 	}
 
-	ModuleRevision getRevision(String revisionName) {
-		for (ModuleRevision revision : revisions) {
+	Revision getRevision(String revisionName) {
+		for (Revision revision : revisions) {
 			if (revisionName.equals(revision.getRevision()))
-				;
+				return revision;
 		}
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		return "Module [organisation=" + organisation + ", moduleName=" + moduleName + "]";
 	}
 
 }

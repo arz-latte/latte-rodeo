@@ -36,7 +36,7 @@ public class Baseline
 	@Column(name = "APPLICATION_RELEASE_OID", nullable = false, unique = true)
 	private ApplicationRelease applicationRelease;
 
-	private Set<ModuleRevision> moduleRevisions;
+	private Set<Revision> moduleRevisions;
 
 	protected Baseline() {
 		// jpa constructor
@@ -45,18 +45,18 @@ public class Baseline
 	public Baseline(ApplicationRelease applicationRelease) {
 		Objects.requireNonNull(applicationRelease, "applicationRelease required");
 		this.applicationRelease = applicationRelease;
-		this.moduleRevisions = new HashSet<ModuleRevision>();
+		this.moduleRevisions = new HashSet<Revision>();
 	}
 
 	public void addModule(Module module, String revisionName) {
-		ModuleRevision revision = module.getRevision(revisionName);
+		Revision revision = module.getRevision(revisionName);
 		if (revision != null) {
 			moduleRevisions.add(revision);
 		}
 	}
 
 	public String getModuleRevision(Module module) {
-		for (ModuleRevision revision : moduleRevisions) {
+		for (Revision revision : moduleRevisions) {
 			if (module.equals(revision.getModule())) {
 				return revision.getRevision();
 			}

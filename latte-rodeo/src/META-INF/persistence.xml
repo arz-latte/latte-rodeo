@@ -18,13 +18,14 @@
 		<class>at.arz.latte.rodeo.release.ApplicationRelease</class>
 		<class>at.arz.latte.rodeo.release.Baseline</class>
 		<class>at.arz.latte.rodeo.release.Module</class>
-		<class>at.arz.latte.rodeo.release.ModuleRevision</class>
+		<class>at.arz.latte.rodeo.release.Revision</class>
 		<class>at.arz.latte.rodeo.release.Release</class>
 		<class>at.arz.latte.rodeo.scm.Scm</class>
 		<class>at.arz.latte.rodeo.user.SystemAccount</class>
 		<class>at.arz.latte.rodeo.user.User</class>
 		<class>at.arz.latte.rodeo.pipeline.PipelineStep</class>
 		<class>at.arz.latte.rodeo.pipeline.CommandLineStep</class>
+		<class>at.arz.latte.rodeo.release.Dependency</class>
 
 		<properties>
 			<property name="openjpa.DynamicEnhancementAgent" value="true" />
