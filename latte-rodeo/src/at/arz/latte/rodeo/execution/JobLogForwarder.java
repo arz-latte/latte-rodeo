@@ -37,6 +37,7 @@ public class JobLogForwarder {
 			}
 		}
 		currentThread = null;
+
 	}
 
 	private Runnable createRunnable(final JobLog log) {

@@ -95,6 +95,7 @@ public class Workspace {
 		initHomeDir();
 		initSettings();
 		initWorkspaceDir();
+		initjobDir();
 	}
 
 	public File getWorkspaceDir() {

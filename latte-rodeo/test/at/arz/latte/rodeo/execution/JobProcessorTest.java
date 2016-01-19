@@ -1,5 +1,7 @@
 package at.arz.latte.rodeo.execution;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.File;
 
 import javax.enterprise.inject.spi.BeanManager;
@@ -25,14 +27,15 @@ public class JobProcessorTest {
 	@Before
 	public void setup() {
 		eventDispatcher = new EventDispatcher(beanManager);
-		processor = new JobProcessor(new JobIdentifier("test"));
+		processor = new JobProcessor(mock(JobQueue.class), new JobIdentifier("test"));
 		processor.setCommandLine("cmd /c bla bla");
 		processor.setWorkDirectory(new File("."));
 	}
 
 	@Test
 	public void test() throws InterruptedException {
-		Thread thread = processor.execute();
+		Thread thread = new Thread(processor);
+		thread.start();
 		thread.join();
 	}
 

@@ -29,12 +29,17 @@ public class FindJobs
 	}
 
 	private TypedQuery<Job> createQuery(EntityManager entityManager) {
+		if (status == null && identifier == null) {
+			return entityManager.createQuery("select o from Job o", Job.class);
+		}
+
 		if (status == null) {
 			TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.identifier like :identifier",
 																Job.class);
 			query.setParameter("identifier", identifier);
 			return query;
 		}
+
 		TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.identifier like :identifier and status=:status",
 															Job.class);
 		query.setParameter("identifier", identifier);

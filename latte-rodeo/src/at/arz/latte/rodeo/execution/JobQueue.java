@@ -1,40 +1,41 @@
 package at.arz.latte.rodeo.execution;
 
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.Singleton;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import at.arz.latte.rodeo.workspace.Settings;
-import at.arz.latte.rodeo.workspace.Workspace;
-
-@ApplicationScoped
+@Singleton
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class JobQueue {
 
+	private ScheduledThreadPoolExecutor poolExecutor;
+
 	@Inject
-	private Workspace workspace;
-
-	private Semaphore maxConcurrentJobs;
-
-	public JobQueue() {
-	}
+	private BeanManager beanManager;
 
 	@PostConstruct
-	private void setup() {
-		Settings settings = workspace.getSettings("workspace");
-		initMaxConcurrentJobs(settings);
+	public void setup() {
+		poolExecutor = new ScheduledThreadPoolExecutor(10);
 	}
 
-	private void initMaxConcurrentJobs(Settings settings) {
-		int value = Integer.parseInt(settings.property("maxConcurrentJobs", "10"));
-		maxConcurrentJobs = new Semaphore(value);
+	public void submit(Runnable runnable) {
+		poolExecutor.execute(runnable);
 	}
 
-	public void submit(JobProcessor processor) {
-		processor.execute();
+	@PreDestroy
+	public void shutdown() {
+		poolExecutor.shutdown();
 	}
 
+	public void jobStatusChanged(JobStatusChanged event) {
+		beanManager.fireEvent(event);
+	}
 
 }
 

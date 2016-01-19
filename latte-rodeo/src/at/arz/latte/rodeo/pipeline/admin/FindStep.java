@@ -1,5 +1,7 @@
 package at.arz.latte.rodeo.pipeline.admin;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -7,14 +9,14 @@ import at.arz.latte.rodeo.api.RodeoQuery;
 import at.arz.latte.rodeo.pipeline.Step;
 import at.arz.latte.rodeo.pipeline.StepName;
 
-public class FindStep<T>
-		implements RodeoQuery<T> {
+public class FindStep<T extends Step>
+		implements RodeoQuery<List<T>> {
 
 	private StepName name;
 	private Class<T> stepType;
 
 	public static final <Q extends Step> FindStep<Q> forName(StepName name, Class<Q> stepType) {
-		return null;
+		return new FindStep<Q>(name, stepType);
 	}
 	
 	public FindStep(StepName name, Class<T> stepType) {
@@ -23,11 +25,11 @@ public class FindStep<T>
 	}
 
 	@Override
-	public T execute(EntityManager entityManager) {
+	public List<T> execute(EntityManager entityManager) {
 		TypedQuery<T> query = entityManager.createQuery("select o from " + stepType.getSimpleName()
-														+ " + o where o.name=:name", stepType);
+														+ " o where o.name=:name", stepType);
 		query.setParameter("name", name);
-		return query.getSingleResult();
+		return query.getResultList();
 	}
 
 }
