@@ -52,5 +52,9 @@ public class CommandLineStep
 		configuration.setMainScript(mainScript.getContent());
 		return configuration;
 	}
+
+	public String getMainScript() {
+		return mainScript.getContent();
+	}
    
 }

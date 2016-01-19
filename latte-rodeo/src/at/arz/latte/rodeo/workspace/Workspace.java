@@ -19,6 +19,8 @@ public class Workspace {
 
 	private File homeDir;
 
+	private File jobDir;
+
 	public Settings getSettings(String domain) {
 		return settings.settingsFor(domain);
 	}
@@ -49,7 +51,18 @@ public class Workspace {
 			homeDir.mkdirs();
 		}
 		log.info("rodeo home:" + homeDir.getAbsolutePath());
+	}
 
+	void initjobDir() {
+		jobDir = new File(homeDir, "jobs");
+		if (!jobDir.exists()) {
+			jobDir.mkdirs();
+		}
+		log.info("rodeo job idr:" + jobDir.getAbsolutePath());
+	}
+
+	public File getJobDir() {
+		return jobDir;
 	}
 
 	private Properties loadConfiguration() {

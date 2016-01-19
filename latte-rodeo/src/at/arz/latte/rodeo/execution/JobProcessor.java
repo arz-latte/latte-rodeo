@@ -1,35 +1,34 @@
 package at.arz.latte.rodeo.execution;
 
 import java.io.File;
-import java.io.OutputStream;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import at.arz.latte.rodeo.workspace.Workspace;
+import at.arz.latte.rodeo.execution.Job.Status;
+import at.arz.latte.rodeo.infrastructure.EventDispatcher;
 
-public class BatchJobProcessor {
+public class JobProcessor {
 
-	private static final Logger logger = Logger.getLogger(BatchJobProcessor.class.getName());
-	private final OutputStream stderrStream;
-	private final OutputStream stdoutStream;
-	private InputStreamForwarder streamStdErr;
-	private InputStreamForwarder streamStdOut;
-	private final Workspace workspace;
+	private static final Logger logger = Logger.getLogger(JobProcessor.class.getName());
+
+	private JobLogForwarder streamStdErr;
+	private JobLogForwarder streamStdOut;
 	private String[] environmentVariables;
 	private File workDirectory;
+	private JobIdentifier identifier;
+	private File logFile;
+	private String commandLine;
 
-	public BatchJobProcessor(Workspace workspace) {
-		this(workspace, System.out, System.err);
+	public JobProcessor(JobIdentifier identifier) {
+		this.identifier = identifier;
 	}
-	
-	public BatchJobProcessor(Workspace workspace, OutputStream stdoutStream, OutputStream stderrStream) {
-		Objects.requireNonNull(workspace, "argument workspace is required");
-		Objects.requireNonNull(stdoutStream, "argument stdoutStream is required");
-		Objects.requireNonNull(stderrStream, "argument stderrStream is required");
-		this.workspace = workspace;
-		this.stdoutStream = stdoutStream;
-		this.stderrStream = stderrStream;
+
+	public void setLogFile(File logFile) {
+		this.logFile = logFile;
+	}
+
+	public void setCommandLine(String commandLine) {
+		this.commandLine = commandLine;
 	}
 
 	public void setEnvironmentVariables(String[] environmentVariables) {
@@ -40,14 +39,21 @@ public class BatchJobProcessor {
 		this.workDirectory = workDirectory;
 	}
 
-	public int execute(String commandLine) {
+	public Thread execute() {
+		EventDispatcher.notify(new JobStatusChanged(identifier, Status.WAITING));
 		if (commandLine == null || commandLine.length() == 0) {
 			throw new RuntimeException("invalid emtpy command line");
 		}
-		if (workDirectory == null) {
-			// workDirectory = workspace.getWorkspaceDir();
-		}
-		return executeProcess(commandLine);
+		Thread thread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				executeProcess(commandLine);
+			}
+
+		});
+		thread.start();
+		return thread;
 	}
 
 	protected Process createProcess(String command) {
@@ -80,16 +86,15 @@ public class BatchJobProcessor {
 	}
 
 	protected void startOutputStreams(Process process) {
-		streamStdOut = new InputStreamForwarder(process.getInputStream());
-		streamStdErr = new InputStreamForwarder(process.getErrorStream());
-		streamStdOut.forwardTo(stdoutStream);
-		streamStdErr.forwardTo(stderrStream);
+		streamStdOut = new JobLogForwarder(process.getInputStream());
+		streamStdErr = new JobLogForwarder(process.getErrorStream());
+		streamStdOut.forwardTo(new JobLog(System.out, "[OUT]"));
+		streamStdErr.forwardTo(new JobLog(System.out, "[ERR]"));
 	}
 
 	protected void stopOutputStreams() {
 		streamStdOut.waitForCompletion();
 		streamStdErr.waitForCompletion();
 	}
-
 
 }

@@ -23,7 +23,7 @@ public class Command {
 		return environment.get(name);
 	}
 
-	public void execute(BatchJobProcessor processor) {
+	public void execute(JobProcessor processor) {
 		String[] environmentVariables = buildEnvironmentEntries();
 		processor.setEnvironmentVariables(environmentVariables);
 		// processor.execute(Workspace.buildCommandLine(commandLine));

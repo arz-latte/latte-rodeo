@@ -4,23 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-public class InputStreamForwarder
-		implements Runnable {
+public class JobLogForwarder {
 
-	private final InputStream inputStream;
 	private Thread currentThread;
+	private InputStream inputStream;
 
-	public InputStreamForwarder(InputStream inputStream) {
+	public JobLogForwarder(InputStream inputStream) {
 		this.inputStream = inputStream;
 	}
 
-	public synchronized void forwardTo(final OutputStream outputStream) {
+	public synchronized void forwardTo(JobLog log) {
 		if (currentThread == null) {
-			currentThread = new Thread(createRunnable(outputStream));
+			currentThread = new Thread(createRunnable(log));
 			currentThread.setDaemon(true);
 			currentThread.start();
 		} else {
@@ -42,7 +39,7 @@ public class InputStreamForwarder
 		currentThread = null;
 	}
 
-	private Runnable createRunnable(final OutputStream outputStream) {
+	private Runnable createRunnable(final JobLog log) {
 		return new Runnable() {
 
 			@Override
@@ -50,17 +47,15 @@ public class InputStreamForwarder
 				String encoding = System.getProperty("file.encoding");
 				try {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, encoding));
-					PrintStream out = new PrintStream(outputStream);
 					try {
 						String line = reader.readLine();
 						while (line != null) {
-							out.println(line);
+							log.log(line);
 							line = reader.readLine();
 						}
 					} catch (IOException ioe) {
 						ioe.printStackTrace();
 					}
-					out.flush();
 				} catch (UnsupportedEncodingException e) {
 					throw new IllegalStateException("this jvm does not support the current file encoding:" + encoding);
 				}
@@ -68,7 +63,4 @@ public class InputStreamForwarder
 		};
 	}
 
-	@Override
-	public void run() {
-	}
 }

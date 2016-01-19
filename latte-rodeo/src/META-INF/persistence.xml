@@ -26,6 +26,7 @@
 		<class>at.arz.latte.rodeo.pipeline.PipelineStep</class>
 		<class>at.arz.latte.rodeo.pipeline.CommandLineStep</class>
 		<class>at.arz.latte.rodeo.release.Dependency</class>
+		<class>at.arz.latte.rodeo.execution.Job</class>
 
 		<properties>
 			<property name="openjpa.DynamicEnhancementAgent" value="true" />
