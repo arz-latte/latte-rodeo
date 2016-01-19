@@ -16,10 +16,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import at.arz.latte.rodeo.api.Attribute;
 import at.arz.latte.rodeo.api.RodeoFunction;
 import at.arz.latte.rodeo.execution.FindJobs;
 import at.arz.latte.rodeo.execution.Job;
-import at.arz.latte.rodeo.execution.JobAttribute;
 import at.arz.latte.rodeo.execution.JobData;
 import at.arz.latte.rodeo.execution.JobEngine;
 import at.arz.latte.rodeo.execution.JobIdentifier;
@@ -44,9 +44,7 @@ public class JobResource {
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public void submitJob(@PathParam("identifier") JobIdentifier identifier, JobData data) {
 		Properties properties = new Properties();
-		System.out.println(data);
-
-		for (JobAttribute attribute : data.getAttributes()) {
+		for (Attribute attribute : data.getAttributes()) {
 			properties.setProperty(attribute.getName(), attribute.getValue());
 		}
 		File workspaceDir = workspace.getWorkspaceDir();

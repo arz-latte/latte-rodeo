@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import at.arz.latte.rodeo.api.Attribute;
 import at.arz.latte.rodeo.pipeline.StepName;
 
 @XmlRootElement
@@ -17,19 +18,19 @@ public class JobData {
 
 	private String path;
 
-	private List<JobAttribute> attributes;
+	private List<Attribute> attributes;
 
 	protected JobData() {
 		// tool constructor
 	}
 
-	public JobData(StepName stepName, String path, List<JobAttribute> attributes) {
+	public JobData(StepName stepName, String path, List<Attribute> attributes) {
 		this.stepName = stepName;
 		this.path = path;
 		this.attributes = attributes;
 	}
 
-	public List<JobAttribute> getAttributes() {
+	public List<Attribute> getAttributes() {
 		if (attributes == null) {
 			return Collections.emptyList();
 		}

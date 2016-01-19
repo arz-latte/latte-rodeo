@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.execution;
+package at.arz.latte.rodeo.api;
 
 import java.util.Objects;
 
@@ -8,16 +8,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JobAttribute {
+public class Attribute {
 
 	private String name;
 	private String value;
 
-	protected JobAttribute() {
+	protected Attribute() {
 		// tool constructor
 	}
 
-	public JobAttribute(String name, String value) {
+	public Attribute(String name, String value) {
 		Objects.requireNonNull(name, "name required");
 		Objects.requireNonNull(value, "value required");
 		this.name = name;
