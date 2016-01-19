@@ -1,34 +1,30 @@
 package at.arz.latte.rodeo.execution;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import at.arz.latte.rodeo.execution.Job.Status;
 import at.arz.latte.rodeo.infrastructure.EventDispatcher;
+import at.arz.latte.rodeo.workspace.AsynchronousRunner;
 
-public class JobProcessor
+class JobRunner
 		implements Runnable {
 
-	private static final Logger logger = Logger.getLogger(JobProcessor.class.getName());
+	private static final Logger logger = Logger.getLogger(JobRunner.class.getName());
 
-	private JobLogForwarder streamStdErr;
-	private JobLogForwarder streamStdOut;
 	private String[] environmentVariables;
 	private File workDirectory;
 	private JobIdentifier identifier;
 	private File logFile;
 	private String commandLine;
 
-	private PrintStream outputStream;
+	private AsynchronousRunner runner;
 
-	private JobQueue queue;
+	private JobLog log;
 
-	public JobProcessor(JobQueue queue, JobIdentifier identifier) {
-		this.queue = queue;
+	public JobRunner(AsynchronousRunner runner, JobIdentifier identifier) {
+		this.runner = runner;
 		this.identifier = identifier;
 	}
 
@@ -54,16 +50,16 @@ public class JobProcessor
 			throw new RuntimeException("invalid emtpy command line");
 		}
 		int executeProcess = -1;
-		try{
+		try {
 			executeProcess = executeProcess(commandLine);
 			if (executeProcess == 0) {
 				JobStatusChanged event = new JobStatusChanged(identifier, Status.SUCCESS);
-				queue.jobStatusChanged(event);
+				runner.eventFromAsynchronousThread(event);
 			}
 		} finally {
 			if (executeProcess != 0) {
 				JobStatusChanged event = new JobStatusChanged(identifier, Status.FAILED);
-				queue.jobStatusChanged(event);
+				runner.eventFromAsynchronousThread(event);
 			}
 		}
 	}
@@ -82,9 +78,9 @@ public class JobProcessor
 	protected int executeProcess(String commandLine) {
 		logger.info("execute batch process: " + commandLine + ", " + workDirectory);
 		Process p = createProcess(commandLine);
-		queue.jobStatusChanged(new JobStatusChanged(identifier, Job.Status.RUNNING));
+		runner.eventFromAsynchronousThread(new JobStatusChanged(identifier, Job.Status.RUNNING));
+		log = new JobLog(logFile);
 		try {
-			startOutputStreams(p);
 			try {
 				p.waitFor();
 			} catch (InterruptedException ie) {
@@ -94,34 +90,7 @@ public class JobProcessor
 		} catch (Throwable t) {
 			throw new RuntimeException("execution failed:" + t.getMessage(), t);
 		} finally {
-			stopOutputStreams();
-		}
-	}
-
-	protected void startOutputStreams(Process process) {
-		createOutputStream();
-		streamStdOut = new JobLogForwarder(process.getInputStream());
-		streamStdErr = new JobLogForwarder(process.getErrorStream());
-		streamStdOut.forwardTo(new JobLog(outputStream, "[OUT]"));
-		streamStdErr.forwardTo(new JobLog(outputStream, "[ERR]"));
-	}
-
-	private void createOutputStream() {
-		try {
-			outputStream = new PrintStream(new FileOutputStream(logFile));
-		} catch (IOException e) {
-			throw new RuntimeException("can't create output stream for logging", e);
-		}
-	}
-
-	protected void stopOutputStreams() {
-		try {
-			streamStdOut.waitForCompletion();
-			streamStdErr.waitForCompletion();
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
+			log.waitForCompletion();
 		}
 	}
 

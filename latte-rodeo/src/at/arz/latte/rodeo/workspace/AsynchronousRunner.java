@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.execution;
+package at.arz.latte.rodeo.workspace;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-public class JobQueue {
+public class AsynchronousRunner {
 
 	private ScheduledThreadPoolExecutor poolExecutor;
 
@@ -24,18 +24,17 @@ public class JobQueue {
 		poolExecutor = new ScheduledThreadPoolExecutor(10);
 	}
 
-	public void submit(Runnable runnable) {
+	public void runAsynchron(Runnable runnable) {
 		poolExecutor.execute(runnable);
 	}
 
 	@PreDestroy
-	public void shutdown() {
+	void shutdown() {
 		poolExecutor.shutdown();
 	}
 
-	public void jobStatusChanged(JobStatusChanged event) {
+	public void eventFromAsynchronousThread(Object event) {
 		beanManager.fireEvent(event);
 	}
 
 }
-

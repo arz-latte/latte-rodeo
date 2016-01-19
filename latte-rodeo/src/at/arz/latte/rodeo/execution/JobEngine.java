@@ -26,6 +26,7 @@ import at.arz.latte.rodeo.pipeline.CommandLineStep;
 import at.arz.latte.rodeo.pipeline.Step;
 import at.arz.latte.rodeo.pipeline.StepName;
 import at.arz.latte.rodeo.pipeline.admin.FindStep;
+import at.arz.latte.rodeo.workspace.AsynchronousRunner;
 import at.arz.latte.rodeo.workspace.Settings;
 import at.arz.latte.rodeo.workspace.VariableResolver;
 import at.arz.latte.rodeo.workspace.Workspace;
@@ -36,12 +37,11 @@ public class JobEngine {
 
 	private static final Logger log = Logger.getLogger(JobEngine.class.getSimpleName());
 
-
 	@Inject
 	private Workspace workspace;
 
 	@Inject
-	private JobQueue queue;
+	private AsynchronousRunner runner;
 
 	@Inject
 	private RodeoModel model;
@@ -83,13 +83,13 @@ public class JobEngine {
 		File jobDir = createJobDir(identifier, jobDate);
 		File scriptFile = createScript(jobDir, steps.get(0), properties);
 		Job job = new Job(identifier);
-		JobProcessor processor = new JobProcessor(queue, identifier);
+		JobRunner processor = new JobRunner(runner, identifier);
 		processor.setLogFile(new File(jobDir, "log.txt"));
 		processor.setWorkDirectory(workDirectory);
 		String[] environmentVariables = buildEnvironmentVariables();
 		processor.setEnvironmentVariables(environmentVariables);
 		processor.setCommandLine("cmd /C " + scriptFile.getAbsolutePath());
-		queue.submit(processor);
+		runner.runAsynchron(processor);
 		// entityManager.persist(job);
 		return job.getId();
 	}

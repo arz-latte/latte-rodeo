@@ -20,7 +20,6 @@ import at.arz.latte.rodeo.api.Attribute;
 import at.arz.latte.rodeo.api.RodeoFunction;
 import at.arz.latte.rodeo.execution.FindJobs;
 import at.arz.latte.rodeo.execution.Job;
-import at.arz.latte.rodeo.execution.JobData;
 import at.arz.latte.rodeo.execution.JobEngine;
 import at.arz.latte.rodeo.execution.JobIdentifier;
 import at.arz.latte.rodeo.infrastructure.RodeoModel;

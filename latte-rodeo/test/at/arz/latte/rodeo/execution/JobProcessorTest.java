@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import at.arz.latte.rodeo.infrastructure.EventDispatcher;
+import at.arz.latte.rodeo.workspace.AsynchronousRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JobProcessorTest {
@@ -22,12 +23,12 @@ public class JobProcessorTest {
 
 	private EventDispatcher eventDispatcher;
 
-	private JobProcessor processor;
+	private JobRunner processor;
 
 	@Before
 	public void setup() {
 		eventDispatcher = new EventDispatcher(beanManager);
-		processor = new JobProcessor(mock(JobQueue.class), new JobIdentifier("test"));
+		processor = new JobRunner(mock(AsynchronousRunner.class), new JobIdentifier("test"));
 		processor.setCommandLine("cmd /c bla bla");
 		processor.setWorkDirectory(new File("."));
 	}
