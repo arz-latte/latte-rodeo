@@ -14,7 +14,7 @@ import at.arz.latte.rodeo.release.ReleaseName;
 import at.arz.latte.rodeo.release.admin.CreateRelease;
 
 @Path("/releases")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class ReleaseResource {
 	
 	@Inject

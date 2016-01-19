@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -35,6 +37,9 @@ public class WorkspaceResource {
 	@Inject
 	RodeoSecurity security;
 
+	@Resource
+	private HttpServletRequest request;
+
 	@Path("/")
 	@GET
 	public Response getRootIndex() {
@@ -50,13 +55,25 @@ public class WorkspaceResource {
 			if (subdir.isDirectory()) {
 				return Response.status(Status.OK).entity(buildDirList(subdir)).build();
 			} else {
-				return Response.ok(subdir, MediaType.APPLICATION_OCTET_STREAM)
-								.header("Content-Disposition", "attachment; filename=\"" + subdir.getName() + "\"")
-								.build();
+				String mimeType = evaluateMimeType(subdir);
+				if (MediaType.APPLICATION_OCTET_STREAM.equals(mimeType)) {
+					return Response.ok(subdir, mimeType)
+									.header("Content-Disposition", "attachment; filename=\"" + subdir.getName() + "\"")
+									.build();
+				}
+				return Response.ok(subdir, mimeType).build();
 			}
 		}
 		return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(path + " not found").build();
 
+	}
+
+	private String evaluateMimeType(File subdir) {
+		String mimeType = request.getServletContext().getMimeType(subdir.getName());
+		if (mimeType == null) {
+			return MediaType.APPLICATION_OCTET_STREAM;
+		}
+		return mimeType;
 	}
 
 	@Path("{path : .+}")
@@ -65,25 +82,33 @@ public class WorkspaceResource {
 		security.assertUserIsAdmin();
 
 		File workspaceDir = workspace.getWorkspaceDir();
-		File subdir = new File(workspaceDir, path);
+		File destinationFile = new File(workspaceDir, path);
 
-		if (subdir.exists()) {
+		if (destinationFile.exists()) {
 			return Response.status(Status.CONFLICT).build();
 		}
 
 		try {
 			if (inputStream.available() == 0) {
-				subdir.mkdir();
-			} else {
-				subdir.createNewFile();
-
-				writeStreamToFile(inputStream, subdir);
+				createDirectory(destinationFile);
+				return Response.ok().build();
 			}
+			uploadFile(inputStream, destinationFile);
+			return Response.ok().build();
 		} catch (IOException e) {
 			return Response.status(Status.NOT_ACCEPTABLE).build();
 		}
 
-		return Response.ok().build();
+	}
+
+	private void uploadFile(InputStream inputStream, File destinationFile) throws IOException {
+		destinationFile.getParentFile().mkdirs();
+		destinationFile.createNewFile();
+		writeStreamToFile(inputStream, destinationFile);
+	}
+
+	private void createDirectory(File destinationFile) {
+		destinationFile.mkdirs();
 	}
 
 	@Path("{path : .+}")
@@ -91,14 +116,14 @@ public class WorkspaceResource {
 	public Response updateFile(@PathParam("path") String path, InputStream inputStream) {
 		security.assertUserIsAdmin();
 		File workspaceDir = workspace.getWorkspaceDir();
-		File subdir = new File(workspaceDir, path);
+		File destinationFile = new File(workspaceDir, path);
 
-		if (!subdir.exists()) {
+		if (!destinationFile.exists()) {
 			Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(path + " not found").build();
 		}
 
 		try {
-			writeStreamToFile(inputStream, subdir);
+			writeStreamToFile(inputStream, destinationFile);
 		} catch (IOException e) {
 			return Response.status(Status.NOT_ACCEPTABLE).build();
 		}
@@ -110,22 +135,22 @@ public class WorkspaceResource {
 	public Response deleteFileOrDirectoy(@PathParam("path") String path) {
 		security.assertUserIsAdmin();
 		File workspaceDir = workspace.getWorkspaceDir();
-		File subdir = new File(workspaceDir, path);
+		File destinationfile = new File(workspaceDir, path);
 
-		if (!subdir.exists()) {
+		if (!destinationfile.exists()) {
 			return Response.status(Status.CONFLICT).build();
 		}
 
-		if (subdir.isFile()) {
-			if (subdir.delete()) {
+		if (destinationfile.isFile()) {
+			if (destinationfile.delete()) {
 				return Response.ok().build();
 			}
 			return Response.notModified().build();
 		}
 
-		if (subdir.isDirectory()) {
+		if (destinationfile.isDirectory()) {
 			try {
-				FileUtils.deleteDirectory(subdir);
+				FileUtils.deleteDirectory(destinationfile);
 			} catch (IOException e) {
 				return Response.notModified(e.getMessage()).build();
 			}
