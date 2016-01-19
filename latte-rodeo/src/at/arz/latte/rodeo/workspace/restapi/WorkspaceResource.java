@@ -74,25 +74,34 @@ public class WorkspaceResource {
 		security.assertUserIsAdmin();
 
 		File workspaceDir = workspace.getWorkspaceDir();
-		File subdir = new File(workspaceDir, path);
+		File destinationFile = new File(workspaceDir, path);
 
-		if (subdir.exists()) {
+		if (destinationFile.exists()) {
 			return Response.status(Status.CONFLICT).build();
 		}
+		
 
 		try {
 			if (inputStream.available() == 0) {
-				subdir.mkdir();
-			} else {
-				subdir.createNewFile();
-
-				writeStreamToFile(inputStream, subdir);
+				createDirectory(destinationFile);
+				return Response.ok().build();
 			}
+			uploadFile(inputStream, destinationFile);
+			return Response.ok().build();
 		} catch (IOException e) {
 			return Response.status(Status.NOT_ACCEPTABLE).build();
 		}
 
-		return Response.ok().build();
+	}
+
+	private void uploadFile(InputStream inputStream, File destinationFile) throws IOException {
+		destinationFile.getParentFile().mkdirs();
+		destinationFile.createNewFile();
+		writeStreamToFile(inputStream, destinationFile);
+	}
+
+	private void createDirectory(File destinationFile) {
+		destinationFile.mkdirs();
 	}
 
 	@Path("{path : .+}")
