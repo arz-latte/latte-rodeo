@@ -26,7 +26,7 @@ import at.arz.latte.rodeo.project.admin.ProjectCreated;
 
 @Entity
 @Table(name = "PROJECTS")
-@NamedQueries({ @NamedQuery(name = Project.FIND_BY_NAME, query = "select o from Project o where o.name=:name") })
+@NamedQueries({ @NamedQuery(name = Project.FIND_BY_NAME, query = "select o from Project o where o.name like :name") })
 public class Project
 		extends AbstractEntity {
 

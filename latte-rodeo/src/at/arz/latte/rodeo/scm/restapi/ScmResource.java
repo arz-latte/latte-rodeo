@@ -40,11 +40,10 @@ public class ScmResource {
 		return model.query(new FindScmRepositories().with(name));
 	}
 
-	@Path("/")
+	@Path("{name}")
 	@PUT
-	public void execute(CreateScm command) {
+	public void execute(@PathParam("name") ScmName name, CreateScm command) {
 		security.assertUserIsAdmin();
 		model.execute(command);
 	}
-
 }
