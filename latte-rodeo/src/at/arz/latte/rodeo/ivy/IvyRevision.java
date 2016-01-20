@@ -4,10 +4,12 @@ public class IvyRevision {
 
 	private final Revision revision;
 	private final Revision baseline;
+	private final String original;
 
 	public IvyRevision(String baseline) {
 		this.revision = new Revision(baseline);
 		this.baseline = new Revision(baseline);
+		this.original = baseline;
 	}
 
 	public void performMajorUpdate() {
@@ -28,6 +30,10 @@ public class IvyRevision {
 
 	public String getRevisionWildcardString() {
 		return revision.major + "." + revision.minor + ".+";
+	}
+
+	public String getOriginal() {
+		return original;
 	}
 
 	@Override
