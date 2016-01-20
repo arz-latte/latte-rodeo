@@ -20,4 +20,8 @@ public class RodeoClient {
 	public Builder begin(String path) {
 		return resource.path(path).accept("application/xml");
 	}
+
+	public Builder begin(String path, String service) {
+		return resource.path(path + "/" + service).accept("application/xml");
+	}
 }
