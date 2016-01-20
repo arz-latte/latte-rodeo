@@ -30,7 +30,7 @@ public class CreateCommandLineStep
 	@NotNull
 	private CommandLineStepConfiguration configuration;
 
-	protected CreateCommandLineStep(){
+	protected CreateCommandLineStep() {
 		// tool constructor
 	}
 
@@ -44,6 +44,14 @@ public class CreateCommandLineStep
 		Step step = new CommandLineStep(name, configuration);
 		model.create(step);
 		return step.getId();
+	}
+
+	public CommandLineStepConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public StepName getName() {
+		return name;
 	}
 
 }

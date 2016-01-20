@@ -18,7 +18,6 @@ public class Settings {
 
 	private String domain;
 
-
 	public Settings(Properties properties, VariableResolver resolver) {
 		this("", properties, resolver);
 		this.properties = properties;
