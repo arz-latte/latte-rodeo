@@ -18,10 +18,10 @@ import javax.ws.rs.core.Response.Status;
 
 import at.arz.latte.rodeo.api.Attribute;
 import at.arz.latte.rodeo.api.RodeoFunction;
-import at.arz.latte.rodeo.execution.JobsByIdentifierOrStatus;
 import at.arz.latte.rodeo.execution.Job;
 import at.arz.latte.rodeo.execution.JobEngine;
 import at.arz.latte.rodeo.execution.JobIdentifier;
+import at.arz.latte.rodeo.execution.JobsByIdentifierOrStatus;
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
 import at.arz.latte.rodeo.workspace.Workspace;
 
@@ -55,7 +55,7 @@ public class JobResource {
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public JobsResult listJobs(@QueryParam("status") Job.Status status) {
-		JobsByIdentifierOrStatus query = new JobsByIdentifierOrStatus(new JobIdentifier("%"), status);
+		JobsByIdentifierOrStatus query = new JobsByIdentifierOrStatus(null, status);
 		List<JobStatusResult> list = model.applyAll(query, new MapJobToJobStatusResult());
 		return new JobsResult(list);
 	}
