@@ -17,11 +17,19 @@ public class RodeoClient {
 		resource = client.resource(baseURI);
 	}
 
+	public WebResource resource(String path) {
+		return resource.path(path);
+	}
+
+	public String mediaType() {
+		return "application/xml";
+	}
+
 	public Builder begin(String path) {
-		return resource.path(path).accept("application/xml");
+		return resource.path(path).accept(mediaType());
 	}
 
 	public Builder begin(String path, String service) {
-		return resource.path(path + "/" + service).accept("application/xml");
+		return resource.path(path + "/" + service).accept(mediaType());
 	}
 }

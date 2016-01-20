@@ -2,6 +2,7 @@ package at.arz.latte.rodeo.client;
 
 import java.util.List;
 
+import at.arz.latte.rodeo.execution.Job;
 import at.arz.latte.rodeo.execution.JobIdentifier;
 import at.arz.latte.rodeo.execution.restapi.JobData;
 import at.arz.latte.rodeo.execution.restapi.JobStatusResult;
@@ -24,6 +25,14 @@ public class JobClient {
 
 	public List<JobStatusResult> getAllJobStates() {
 		return client.begin(API_JOBS).get(JobsResult.class).getJobs();
+	}
+
+	public List<JobStatusResult> getJobsByStatus(Job.Status status) {
+		return client.resource(API_JOBS)
+						.queryParam("status", status.name())
+						.accept(client.mediaType())
+						.get(JobsResult.class)
+						.getJobs();
 	}
 
 	public List<JobStatusResult> getAllQueuedJobStates() {
