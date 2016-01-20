@@ -1,25 +1,39 @@
 package at.arz.latte.rodeo.ivy;
 
+import static at.arz.latte.rodeo.ivy.IvyRevision.ChangeType.MAJOR;
+import static at.arz.latte.rodeo.ivy.IvyRevision.ChangeType.MINOR;
+import static at.arz.latte.rodeo.ivy.IvyRevision.ChangeType.NONE;
+
 public class IvyRevision {
+
+	public enum ChangeType {
+		NONE,
+		MINOR,
+		MAJOR
+	};
 
 	private final Revision revision;
 	private final Revision baseline;
 	private final String original;
+	private ChangeType changeType;
 
 	public IvyRevision(String baseline) {
 		this.revision = new Revision(baseline);
 		this.baseline = new Revision(baseline);
 		this.original = baseline;
+		changeType = NONE;
 	}
 
 	public void performMajorUpdate() {
 		if (baseline.major == revision.major) {
+			changeType = MAJOR;
 			revision.incMajor();
 		}
 	}
 
 	public void performMinorUpdate() {
 		if (baseline.major == revision.major && baseline.minor == revision.minor) {
+			changeType = MINOR;
 			revision.incMinor();
 		}
 	}
@@ -34,6 +48,10 @@ public class IvyRevision {
 
 	public String getOriginal() {
 		return original;
+	}
+
+	public ChangeType getChangeType() {
+		return changeType;
 	}
 
 	@Override

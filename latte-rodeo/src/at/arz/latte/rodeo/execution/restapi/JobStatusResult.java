@@ -16,12 +16,20 @@ public class JobStatusResult {
 	private Job.Status status;
 
 	public JobStatusResult() {
-		// TODO Auto-generated constructor stub
+		// Tool constructor
 	}
 
 	public JobStatusResult(JobIdentifier identifier, Status status) {
 		this.identifier = identifier;
 		this.status = status;
+	}
+
+	public Job.Status getStatus() {
+		return status;
+	}
+
+	public JobIdentifier getIdentifier() {
+		return identifier;
 	}
 
 	@Override
