@@ -7,10 +7,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlElement;
+
 public class Graph<V>
 		implements Cloneable {
 
 	private Set<V> vertexes;
+	@XmlElement
 	private Set<Edge<V>> edges;
 	private Map<V, Set<V>> children;
 	private Map<V, Set<V>> parents;

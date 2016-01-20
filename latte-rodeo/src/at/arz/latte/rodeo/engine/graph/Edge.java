@@ -2,10 +2,18 @@ package at.arz.latte.rodeo.engine.graph;
 
 import java.util.Objects;
 
-class Edge<T> {
+import javax.xml.bind.annotation.XmlElement;
 
-	private final T from;
-	private final T to;
+public class Edge<T> {
+
+	@XmlElement
+	private T from;
+	@XmlElement
+	private T to;
+
+	protected Edge() {
+		// JAXB Constructor
+	}
 	
 	public Edge(T from, T to) {
 		Objects.requireNonNull(from);

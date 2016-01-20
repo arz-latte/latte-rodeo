@@ -2,10 +2,17 @@ package at.arz.latte.rodeo.engine;
 
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlElement;
+
 // Dependency Node ist die API für Clients
 public class DependencyNode<T> {
 
+	@XmlElement
 	private T item;
+
+	protected DependencyNode() {
+		// JAXB Constructor
+	}
 
 	public DependencyNode(T item) {
 		this.item = Objects.requireNonNull(item);
