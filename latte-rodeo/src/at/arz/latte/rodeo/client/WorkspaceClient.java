@@ -2,6 +2,9 @@ package at.arz.latte.rodeo.client;
 
 import java.util.List;
 
+import at.arz.latte.rodeo.scm.ScmLocation;
+import at.arz.latte.rodeo.scm.ScmName;
+import at.arz.latte.rodeo.scm.restapi.ScmResult;
 import at.arz.latte.rodeo.workspace.restapi.DirItem;
 import at.arz.latte.rodeo.workspace.restapi.DirListResult;
 
@@ -11,9 +14,15 @@ public class WorkspaceClient {
 	public static final String WORKSPACE_PATH = "api/workspaces";
 
 	private RodeoClient client;
+	private ScmClient scmClient;
+	private StepClient stepClient;
+	private JobClient jobClient;
 
 	public WorkspaceClient(RodeoClient client) {
 		this.client = client;
+		this.scmClient = new ScmClient(client);
+		this.stepClient = new StepClient(client);
+		this.jobClient = new JobClient(client);
 	}
 
 	public List<DirItem> listWorkspace() {
@@ -38,5 +47,13 @@ public class WorkspaceClient {
 		client.begin(WORKSPACE_PATH + "/" + path).delete();
 	}
 	
+	public ScmLocation getScmLocation(ScmName scmName) {
+		for (ScmResult result : scmClient.listAll()) {
+			if (result.getName().equals(scmName)) {
+				return result.getLocation();
+			}
+		}
+		throw new RuntimeException("unknown scm repository:" + scmName);
+	}
 
 }

@@ -5,6 +5,8 @@ import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import at.arz.latte.rodeo.scm.BranchName;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProjectId {
 

@@ -23,6 +23,10 @@ public class ScmClient {
 		return client.begin(API_REPOSITORIES).get(GetScmRepositoriesResult.class).getScms();
 	}
 
+	public ScmResult getScm(ScmName name) {
+		return client.begin(API_REPOSITORIES, name.toString()).get(GetScmRepositoriesResult.class).getScms().get(0);
+	}
+
 	public void createScm(ScmName name, ScmLocation location, ScmType type, ScmUserId userId) {
 		CreateScm command = new CreateScm(name, location, type, userId);
 		client.begin(API_REPOSITORIES + "/" + name).put(command);

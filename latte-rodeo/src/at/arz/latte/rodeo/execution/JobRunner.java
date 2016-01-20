@@ -71,9 +71,14 @@ class JobRunner
 			logger.fine("Trying to create Process '" + command + "' with workingDir='" + workDirectory + "'...");
 		}
 		try {
+			if (!workDirectory.exists()) {
+				workDirectory.mkdirs();
+			}
 			return Runtime.getRuntime().exec(command, environmentVariables, workDirectory);
 		} catch (Throwable t) {
-			throw new RuntimeException("can't create process '" + command + "' in '" + workDirectory + "'", t);
+			String message = "can't create process '" + command + "' in '" + workDirectory + "'";
+			logger.log(Level.SEVERE, message, t);
+			throw new RuntimeException(message, t);
 		}
 	}
 
