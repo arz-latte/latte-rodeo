@@ -21,7 +21,7 @@ import at.arz.latte.rodeo.test.TestUtil;
 @RunWith(MockitoJUnitRunner.class)
 public class CreateProjectTest {
 
-	private static final String NAME = "name";
+	private static final ProjectName NAME = new ProjectName("name");
 
 	@Mock
 	private BeanManager beanManager;

@@ -19,7 +19,7 @@ public class ProjectRepository {
 		entityManager.persist(project);
 	}
 
-	public List<Project> findProjectByName(String projectName) {
+	public List<Project> findProjectByName(ProjectName projectName) {
 		TypedQuery<Project> query = entityManager.createNamedQuery(Project.FIND_BY_NAME, Project.class);
 		query.setParameter("name", projectName);
 		return query.getResultList();
