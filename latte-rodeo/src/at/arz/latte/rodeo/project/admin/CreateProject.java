@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import at.arz.latte.rodeo.api.ObjectExists;
 import at.arz.latte.rodeo.api.RodeoCommand;
 import at.arz.latte.rodeo.project.Project;
+import at.arz.latte.rodeo.project.ProjectName;
 import at.arz.latte.rodeo.project.ProjectRepository;
 
 @XmlRootElement
@@ -19,7 +20,7 @@ public class CreateProject
 		implements RodeoCommand<Long> {
 
 	@NotNull
-	private String name;
+	private ProjectName name;
 
 	@XmlTransient
 	private ProjectRepository repository;
@@ -28,11 +29,11 @@ public class CreateProject
 		// tool constructor
 	}
 
-	public CreateProject(String name) {
+	public CreateProject(ProjectName name) {
 		this.name = name;
 	}
 
-	public String getName() {
+	public ProjectName getName() {
 		return name;
 	}
 

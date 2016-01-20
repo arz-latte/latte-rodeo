@@ -20,6 +20,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.apache.openjpa.persistence.Externalizer;
+import org.apache.openjpa.persistence.Persistent;
+
 import at.arz.latte.rodeo.infrastructure.AbstractEntity;
 import at.arz.latte.rodeo.infrastructure.EventDispatcher;
 import at.arz.latte.rodeo.project.admin.ProjectCreated;
@@ -53,8 +56,10 @@ public class Project
 								updatable = false) })
 	private ProjectVersion mainline;
 
+	@Persistent
+	@Externalizer("toString")
 	@Column(name = "PROJECT_NAME", nullable = false, unique = true)
-	private String name;
+	private ProjectName name;
 
 	@ManyToOne
 	private Component component;
@@ -63,7 +68,7 @@ public class Project
 		// jpa constructor
 	}
 
-	public Project(String name) {
+	public Project(ProjectName name) {
 		this.name = name;
 		this.versions = new HashSet<>();
 		 EventDispatcher.notify(new ProjectCreated(name));
@@ -73,7 +78,7 @@ public class Project
 		return id;
 	}
 
-	public String getName() {
+	public ProjectName getName() {
 		return name;
 	}
 

@@ -15,6 +15,9 @@
     </configurations>
     
     <dependencies>
+       	<dependency org="com.sun.jersey" name="jersey-client" conf="compile->default" rev="1.19" />
+    	<dependency org="com.sun.jersey" name="jersey-core" conf="compile->default" rev="1.19" />
+    
     	<dependency org="junit" name="junit" conf="test->default" rev="4.12"/>
     	<dependency org="org.mockito" name="mockito-all" conf="test->default" rev="1.10.19"/>
     </dependencies>

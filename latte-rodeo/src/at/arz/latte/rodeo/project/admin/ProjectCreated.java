@@ -1,17 +1,18 @@
 package at.arz.latte.rodeo.project.admin;
 
 import at.arz.latte.rodeo.journal.JournalEvent;
+import at.arz.latte.rodeo.project.ProjectName;
 
 public class ProjectCreated
 		implements JournalEvent {
 
-	private String name;
+	private ProjectName name;
 
-	public ProjectCreated(String name) {
+	public ProjectCreated(ProjectName name) {
 		this.name = name;
 	}
 
-	public String getName() {
+	public ProjectName getName() {
 		return name;
 	}
 }

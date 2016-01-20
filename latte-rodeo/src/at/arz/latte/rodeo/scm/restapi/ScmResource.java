@@ -1,6 +1,9 @@
 package at.arz.latte.rodeo.scm.restapi;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -9,8 +12,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import at.arz.latte.rodeo.api.RodeoQuery;
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
 import at.arz.latte.rodeo.infrastructure.RodeoSecurity;
+import at.arz.latte.rodeo.scm.Scm;
 import at.arz.latte.rodeo.scm.ScmLocation;
 import at.arz.latte.rodeo.scm.ScmName;
 import at.arz.latte.rodeo.scm.ScmType;
@@ -46,4 +51,21 @@ public class ScmResource {
 		security.assertUserIsAdmin();
 		model.execute(command);
 	}
+
+	@Path("{name}")
+	@DELETE
+	public void execute(@PathParam("name") final ScmName name) {
+		security.assertUserIsAdmin();
+		model.query(new RodeoQuery<Void>() {
+
+			@Override
+			public Void execute(EntityManager entityManager) {
+				TypedQuery<Scm> query = entityManager.createQuery("select o from Scm o where o.name =:name", Scm.class);
+				query.setParameter("name", name);
+				entityManager.remove(query.getSingleResult());
+				return null;
+			}
+		});
+	}
+
 }
