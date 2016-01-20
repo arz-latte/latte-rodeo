@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import at.arz.latte.rodeo.execution.restapi.JobQueueResource;
 import at.arz.latte.rodeo.execution.restapi.JobResource;
 import at.arz.latte.rodeo.pipeline.restapi.PipelineResource;
 import at.arz.latte.rodeo.pipeline.restapi.StepResource;
@@ -29,6 +30,7 @@ public class RodeoRestAPI extends Application {
 		classes.add(StepResource.class);
 		classes.add(WorkspaceResource.class);
 		classes.add(JobResource.class);
+		classes.add(JobQueueResource.class);
 		return classes;
 	}
 }

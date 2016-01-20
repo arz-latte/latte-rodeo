@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response.Status;
 
 import at.arz.latte.rodeo.api.Attribute;
 import at.arz.latte.rodeo.api.RodeoFunction;
-import at.arz.latte.rodeo.execution.FindJobs;
+import at.arz.latte.rodeo.execution.JobsByIdentifierOrStatus;
 import at.arz.latte.rodeo.execution.Job;
 import at.arz.latte.rodeo.execution.JobEngine;
 import at.arz.latte.rodeo.execution.JobIdentifier;
@@ -55,16 +55,8 @@ public class JobResource {
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public JobsResult listJobs(@QueryParam("status") Job.Status status) {
-		List<JobStatusResult> list = model.applyAll(new FindJobs(new JobIdentifier("%"), status),
-													new RodeoFunction<Job, JobStatusResult>() {
-
-														@Override
-														public JobStatusResult apply(Job job) {
-															return new JobStatusResult(	job.getIdentifier(),
-																						job.getStatus());
-														}
-
-													});
+		JobsByIdentifierOrStatus query = new JobsByIdentifierOrStatus(new JobIdentifier("%"), status);
+		List<JobStatusResult> list = model.applyAll(query, new MapJobToJobStatusResult());
 		return new JobsResult(list);
 	}
 
@@ -72,7 +64,7 @@ public class JobResource {
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response listJobs(@PathParam("identifier") JobIdentifier identifier) {
-		List<JobStatusResult> list = model.applyAll(new FindJobs(identifier, null),
+		List<JobStatusResult> list = model.applyAll(new JobsByIdentifierOrStatus(identifier, null),
 													new RodeoFunction<Job, JobStatusResult>() {
 
 														@Override

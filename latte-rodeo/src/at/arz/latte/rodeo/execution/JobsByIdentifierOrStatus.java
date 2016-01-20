@@ -7,18 +7,18 @@ import javax.persistence.TypedQuery;
 
 import at.arz.latte.rodeo.api.RodeoQuery;
 
-public class FindJobs
+public class JobsByIdentifierOrStatus
 		implements RodeoQuery<List<Job>> {
 
 	private JobIdentifier identifier;
 	private Job.Status status;
 
-	public FindJobs(JobIdentifier identifier, Job.Status status) {
+	public JobsByIdentifierOrStatus(JobIdentifier identifier, Job.Status status) {
 		this.identifier = identifier;
 		this.status = status;
 	}
 
-	public FindJobs(JobIdentifier identifier) {
+	public JobsByIdentifierOrStatus(JobIdentifier identifier) {
 		this(identifier, null);
 	}
 

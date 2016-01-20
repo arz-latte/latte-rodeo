@@ -110,7 +110,7 @@ public class JobEngine {
 
 	public void jobStatusChanged(@Observes() final JobStatusChanged event) {
 		log.info("job " + event.getIdentifier() + " changed status to " + event.getStatus());
-		model.applyAll(new FindJobs(event.getIdentifier()), new RodeoFunction<Job, Void>() {
+		model.applyAll(new JobsByIdentifierOrStatus(event.getIdentifier()), new RodeoFunction<Job, Void>() {
 
 			@Override
 			public Void apply(Job job) {
