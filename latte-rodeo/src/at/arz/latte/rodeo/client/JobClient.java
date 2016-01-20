@@ -35,6 +35,10 @@ public class JobClient {
 						.getJobs();
 	}
 
+	public JobStatusResult getJobStatus(JobIdentifier id) {
+		return client.begin(API_JOBS, id.toString()).get(JobStatusResult.class);
+	}
+
 	public List<JobStatusResult> getAllQueuedJobStates() {
 		return client.begin(API_JOBQUEUE).get(JobsResult.class).getJobs();
 	}
