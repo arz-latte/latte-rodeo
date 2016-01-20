@@ -1,6 +1,7 @@
 package at.arz.latte.rodeo.execution;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,40 +27,40 @@ public class Job
 	private static final long serialVersionUID = 1L;
 
 	public enum Status {
-						CREATED {
+		CREATED {
 
-							@Override
-							public boolean hasStarted() {
-								return false;
-							}
-						},
-						WAITING {
+			@Override
+			public boolean hasStarted() {
+				return false;
+			}
+		},
+		WAITING {
 
-							@Override
-							public boolean hasStarted() {
-								return false;
-							}
-						},
-						SUCCESS {
+			@Override
+			public boolean hasStarted() {
+				return false;
+			}
+		},
+		SUCCESS {
 
-							@Override
-							public boolean isFinished() {
-								return true;
-							}
-						},
-						FAILED {
+			@Override
+			public boolean isFinished() {
+				return true;
+			}
+		},
+		FAILED {
 
-							@Override
-							public boolean isFinished() {
-								return true;
-							}
-						},
-						RUNNING {
+			@Override
+			public boolean isFinished() {
+				return true;
+			}
+		},
+		RUNNING {
 
-							public boolean isActive() {
-								return true;
-							}
-						};
+			public boolean isActive() {
+				return true;
+			}
+		};
 
 		public boolean isActive() {
 			return false;
@@ -89,6 +90,8 @@ public class Job
 	@Column(name = "JOB_STATUS", nullable = false)
 	private Status status;
 
+	private Timestamp created;
+
 	protected Job() {
 		// jpa constructor
 	}
@@ -96,6 +99,11 @@ public class Job
 	public Job(JobIdentifier identifier) {
 		this.identifier = identifier;
 		this.status = Status.CREATED;
+		this.created = new Timestamp(System.currentTimeMillis());
+	}
+
+	public Timestamp getCreated() {
+		return created;
 	}
 
 	public Long getId() {

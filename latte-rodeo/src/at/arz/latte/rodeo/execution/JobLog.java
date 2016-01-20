@@ -30,12 +30,12 @@ public class JobLog {
 
 	public void log(String prefix, String line) {
 		synchronized (printStream) {
-			if (prefix != null) {
+			if (prefix == null) {
 				prefix = "UNKNOWN";
 			}
 			printStream.append("[");
 			printStream.append(prefix);
-			printStream.append("]“");
+			printStream.append("] | ");
 			printStream.append(line);
 			printStream.println();
 		}
@@ -73,7 +73,7 @@ public class JobLog {
 		}
 	}
 
-	public Runnable createRunnerForStream(final InputStream inputStream, final String prefix) {
+	public Runnable createRunnerForStream(final InputStream inputStream, final String streamPrefix) {
 		return new Runnable() {
 
 			@Override
@@ -82,7 +82,7 @@ public class JobLog {
 				try {
 					String line = reader.readLine();
 					while (line != null) {
-						JobLog.this.log(prefix, line);
+						JobLog.this.log(streamPrefix, line);
 						line = reader.readLine();
 					}
 				} catch (IOException ioe) {

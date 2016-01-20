@@ -49,15 +49,17 @@ class JobRunner
 		if (commandLine == null || commandLine.length() == 0) {
 			throw new RuntimeException("invalid emtpy command line");
 		}
-		int executeProcess = -1;
+		int rc = -1;
 		try {
-			executeProcess = executeProcess(commandLine);
-			if (executeProcess == 0) {
+			rc = executeProcess(commandLine);
+			if (rc == 0) {
+				logger.info("job " + identifier + " finished successfully.");
 				JobStatusChanged event = new JobStatusChanged(identifier, Status.SUCCESS);
 				runner.eventFromAsynchronousThread(event);
 			}
 		} finally {
-			if (executeProcess != 0) {
+			if (rc != 0) {
+				logger.info("job " + identifier + " failed with returncode:" + rc);
 				JobStatusChanged event = new JobStatusChanged(identifier, Status.FAILED);
 				runner.eventFromAsynchronousThread(event);
 			}
@@ -80,6 +82,8 @@ class JobRunner
 		Process p = createProcess(commandLine);
 		runner.eventFromAsynchronousThread(new JobStatusChanged(identifier, Job.Status.RUNNING));
 		log = new JobLog(logFile);
+		log.addLogStream(p.getInputStream(), "STDOUT");
+		log.addLogStream(p.getErrorStream(), "STDERR");
 		try {
 			try {
 				p.waitFor();

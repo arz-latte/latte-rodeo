@@ -30,17 +30,17 @@ public class FindJobs
 
 	private TypedQuery<Job> createQuery(EntityManager entityManager) {
 		if (status == null && identifier == null) {
-			return entityManager.createQuery("select o from Job o", Job.class);
+			return entityManager.createQuery("select o from Job o order by o.created DESC", Job.class);
 		}
 
 		if (status == null) {
-			TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.identifier like :identifier",
+			TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.identifier like :identifier order by o.created DESC",
 																Job.class);
 			query.setParameter("identifier", identifier);
 			return query;
 		}
 
-		TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.identifier like :identifier and status=:status",
+		TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.identifier like :identifier and status=:status order by o.created DESC",
 															Job.class);
 		query.setParameter("identifier", identifier);
 		query.setParameter("status", status);
