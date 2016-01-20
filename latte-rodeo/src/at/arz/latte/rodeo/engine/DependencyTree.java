@@ -1,8 +1,14 @@
 package at.arz.latte.rodeo.engine;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 import at.arz.latte.rodeo.engine.graph.Graph;
 import at.arz.latte.rodeo.engine.graph.Visitor;
+import at.arz.latte.rodeo.release.ModuleName;
 
+@XmlRootElement
+@XmlSeeAlso({ DependencyNode.class, ModuleName.class })
 public class DependencyTree<T>
 		extends Graph<DependencyNode<T>>
 		implements Cloneable {
