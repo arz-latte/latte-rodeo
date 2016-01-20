@@ -60,7 +60,8 @@ public class ScmResource {
 
 			@Override
 			public Void execute(EntityManager entityManager) {
-				TypedQuery<Scm> query = entityManager.createQuery("select o from scm o where o.name =:name", Scm.class);
+				TypedQuery<Scm> query = entityManager.createQuery("select o from Scm o where o.name =:name", Scm.class);
+				query.setParameter("name", name);
 				entityManager.remove(query.getSingleResult());
 				return null;
 			}

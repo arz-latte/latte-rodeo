@@ -26,6 +26,9 @@ public class GetScmRepositoriesResult implements Serializable {
 	}
 
 	public List<ScmResult> getScms() {
+		if (scms == null) {
+			return Collections.emptyList();
+		}
 		return Collections.unmodifiableList(scms);
 	}
 
