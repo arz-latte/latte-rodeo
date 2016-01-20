@@ -40,7 +40,7 @@ public class FindJobs
 			return query;
 		}
 
-		TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.identifier like :identifier and status=:status order by o.created DESC",
+		TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.identifier like :identifier and o.status=:status order by o.created DESC",
 															Job.class);
 		query.setParameter("identifier", identifier);
 		query.setParameter("status", status);
