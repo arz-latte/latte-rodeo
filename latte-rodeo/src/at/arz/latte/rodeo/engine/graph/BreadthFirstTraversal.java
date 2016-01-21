@@ -20,17 +20,21 @@ public class BreadthFirstTraversal<V>
 		Set<V> visited = new HashSet<V>();
 
 		queue.add(vertex);
-		visited.add(vertex);
-		visitor.visit(vertex);
 
 		while (!queue.isEmpty()) {
 			V next = queue.remove();
-			for (V neighbour : graph.getNeighbours(next)) {
-				if (!visited.contains(neighbour)) {
-					queue.add(neighbour);
-					visited.add(neighbour);
-					visitor.visit(neighbour);
-				}
+			visited.add(vertex);
+			visitor.visit(next);
+			queueUnvisitedChildren(queue, visited, next);
+		}
+	}
+
+	private void queueUnvisitedChildren(Queue<V> queue, Set<V> visited, V next) {
+		Set<V> children = graph.getChildren(next);
+		for (V child : children) {
+			Set<V> parents = graph.getParents(child);
+			if (visited.containsAll(parents) && visited.add(child)) {
+				queue.add(child);
 			}
 		}
 	}

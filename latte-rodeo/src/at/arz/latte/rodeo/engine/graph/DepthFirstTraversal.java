@@ -1,6 +1,8 @@
 package at.arz.latte.rodeo.engine.graph;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -18,31 +20,29 @@ public class DepthFirstTraversal<V>
 		Stack<V> stack = new Stack<V>();
 		Set<V> visited = new HashSet<V>();
 
-		stack.push(vertex);
-		visited.add(vertex);
-		visitor.visit(vertex);
+		stack.add(vertex);
 
 		while (!stack.isEmpty()) {
-			V next = stack.peek();
-			Set<V> unvisitedNeighbours = getUnvisitedNeighbours(graph.getNeighbours(next), visited);
-			if (unvisitedNeighbours.isEmpty()) {
-				stack.pop();
+			V next = stack.pop();
+			if (visited.add(next)) {
+				visitor.visit(next);
 			}
-			for (V neighbour : unvisitedNeighbours) {
-				visited.add(neighbour);
-				stack.push(neighbour);
-				visitor.visit(neighbour);
-			}
+			stackUnvisitedChildren(visited, next, stack);
 		}
 	}
 
-	private Set<V> getUnvisitedNeighbours(Set<V> neighbours, Set<V> visited) {
-		Set<V> unvisited = new HashSet<V>();
-		for (V neighbour : neighbours) {
-			if (!visited.contains(neighbour)) {
-				unvisited.add(neighbour);
+
+	private void stackUnvisitedChildren(Set<V> visited, V node, Stack<V> stack) {
+		List<V> unvisited = new LinkedList<>();
+		for (V child : graph.getChildren(node)) {
+			if (!visited.contains(child)) {
+				// Store children in reversed order to keep traversal top-down and left-to-right.
+				unvisited.add(0, child);
 			}
 		}
-		return unvisited;
+		// Push the unvisited nodes on top of stack.
+		stack.addAll(unvisited);
 	}
+
+
 }
