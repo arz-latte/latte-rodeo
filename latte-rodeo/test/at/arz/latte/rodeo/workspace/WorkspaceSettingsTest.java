@@ -9,12 +9,12 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-
 public class WorkspaceSettingsTest {
 
 	@Test
 	public void removePrefix_does_not_return_equal_name() {
 		assertThat(Settings.removePrefix("domain", "domain"), is(nullValue()));
+		// haha
 	}
 
 	@Test
