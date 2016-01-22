@@ -13,6 +13,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import at.arz.latte.rodeo.engine.graph.Visitor;
+
 public class DependencyTreeTraverserTest {
 
 	@Rule
@@ -151,5 +153,56 @@ public class DependencyTreeTraverserTest {
 
 		assertEquals(expectedProcessingSequence, actualProcessingSequence);
 
+	}
+
+	@Test
+	public void depth_first_traversal(){
+		List<DependencyNode<String>> expectedProcessingSequence = Arrays.asList(new DependencyNode<String>("A"),
+																				new DependencyNode<String>("B"),
+																				new DependencyNode<String>("D"),
+																				new DependencyNode<String>("I"),
+																				new DependencyNode<String>("E"),
+																				new DependencyNode<String>("G"),
+																				new DependencyNode<String>("C"),
+																				new DependencyNode<String>("F"),
+																				new DependencyNode<String>("H"));
+
+		DependencyTree<String> tree = DependencyTreeMother.createTree();
+		final List<DependencyNode<String>> processingSequence = new LinkedList<>();
+		Visitor<DependencyNode<String>> visitor = new Visitor<DependencyNode<String>>() {
+
+			@Override
+			public void visit(DependencyNode<String> node) {
+				processingSequence.add(node);
+			}
+		};
+		tree.depthFirstTraversal(visitor);
+		assertEquals(expectedProcessingSequence, processingSequence);
+		
+	}
+
+	@Test
+	public void breadth_first_traversal() {
+		List<DependencyNode<String>> expectedProcessingSequence = Arrays.asList(new DependencyNode<String>("A"),
+																				new DependencyNode<String>("B"),
+																				new DependencyNode<String>("C"),
+																				new DependencyNode<String>("D"),
+																				new DependencyNode<String>("E"),
+																				new DependencyNode<String>("F"),
+																				new DependencyNode<String>("G"),
+																				new DependencyNode<String>("H"),
+																				new DependencyNode<String>("I"));
+
+		DependencyTree<String> tree = DependencyTreeMother.createTree();
+		final List<DependencyNode<String>> processingSequence = new LinkedList<>();
+		Visitor<DependencyNode<String>> visitor = new Visitor<DependencyNode<String>>() {
+
+			@Override
+			public void visit(DependencyNode<String> node) {
+				processingSequence.add(node);
+			}
+		};
+		tree.breadthFirstTraversal(visitor);
+		assertEquals(expectedProcessingSequence, processingSequence);
 	}
 }
