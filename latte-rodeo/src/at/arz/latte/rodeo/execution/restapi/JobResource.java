@@ -1,10 +1,14 @@
 package at.arz.latte.rodeo.execution.restapi;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -12,9 +16,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriInfo;
 
 import at.arz.latte.rodeo.api.Attribute;
 import at.arz.latte.rodeo.api.RodeoFunction;
@@ -31,6 +38,12 @@ public class JobResource {
 
 	@Inject
 	private JobEngine engine;
+
+	@Context
+	private ServletContext context;
+
+	@Context
+	private UriInfo uriInfo;
 
 	@Inject
 	private RodeoModel model;
@@ -55,8 +68,10 @@ public class JobResource {
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public JobsResult listJobs(@QueryParam("status") Job.Status status) {
+		System.out.println("requestURI:" + uriInfo.getRequestUri());
+		System.out.println("baseURI:" + uriInfo.getBaseUri());
 		JobsByIdentifierOrStatus query = new JobsByIdentifierOrStatus(null, status);
-		List<JobStatusResult> list = model.applyAll(query, new MapJobToJobStatusResult());
+		List<JobStatusResult> list = model.applyAll(query, new MapJobToJobStatusResult(uriInfo.getBaseUri()));
 		return new JobsResult(list);
 	}
 
@@ -69,8 +84,13 @@ public class JobResource {
 
 														@Override
 														public JobStatusResult apply(Job job) {
+															String link = uriInfo.getBaseUri().toString() + "jobs/"
+																			+ job.getIdentifier()
+																												.toString()
+																			+ "/log.txt";
 															return new JobStatusResult(	job.getIdentifier(),
-																						job.getStatus());
+																						job.getStatus(),
+																						link);
 														}
 
 													});
@@ -81,6 +101,46 @@ public class JobResource {
 							.build();
 		}
 		return Response.ok(list.get(0)).build();
+	}
+
+	@Path("{identifier}/log.txt")
+	@GET
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getJobLog(@PathParam("identifier") JobIdentifier identifier) {
+		final List<Job> list = model.query(new JobsByIdentifierOrStatus(identifier, null));
+		if (list.isEmpty()) {
+			return respondFileNotFound(identifier);
+		}
+		String dir = list.get(0).getWorkDirectory();
+		if (dir == null) {
+			return respondFileNotFound(identifier);
+		}
+		File workDirectory = new File(dir);
+		final File file = new File(workDirectory, "log.txt");
+		if (!file.exists()) {
+			return respondFileNotFound(identifier);
+		}
+
+		StreamingOutput output = new StreamingOutput() {
+
+			@Override
+			public void write(OutputStream out) throws IOException {
+				byte[] buffer = new byte[80];
+				try (FileInputStream inputStream = new FileInputStream(file)) {
+					int rc = inputStream.read(buffer);
+					while (rc != -1) {
+						out.write(buffer, 0, rc);
+						rc = inputStream.read(buffer);
+					}
+				}
+			}
+		};
+		return Response.status(404).type(MediaType.TEXT_PLAIN).entity(output).build();
+
+	}
+
+	private Response respondFileNotFound(JobIdentifier identifier) {
+		return Response.status(404).type(MediaType.TEXT_PLAIN).entity(identifier + " not found.").build();
 	}
 
 }

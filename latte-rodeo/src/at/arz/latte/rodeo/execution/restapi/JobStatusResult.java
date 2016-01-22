@@ -14,14 +14,20 @@ public class JobStatusResult {
 
 	private JobIdentifier identifier;
 	private Job.Status status;
+	private String link;
 
 	public JobStatusResult() {
 		// Tool constructor
 	}
 
-	public JobStatusResult(JobIdentifier identifier, Status status) {
+	public JobStatusResult(JobIdentifier identifier, Status status, String link) {
 		this.identifier = identifier;
 		this.status = status;
+		this.link = link;
+	}
+
+	public String getLink() {
+		return link;
 	}
 
 	public Job.Status getStatus() {

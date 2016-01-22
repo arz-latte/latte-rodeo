@@ -90,6 +90,8 @@ public class Job
 	@Column(name = "JOB_STATUS", nullable = false)
 	private Status status;
 
+	private String workDirectory;
+
 	private Timestamp created;
 
 	protected Job() {
@@ -120,6 +122,14 @@ public class Job
 
 	public JobIdentifier getIdentifier() {
 		return identifier;
+	}
+
+	public String getWorkDirectory() {
+		return workDirectory;
+	}
+
+	public void setWorkDirectory(String workDirectory) {
+		this.workDirectory = workDirectory;
 	}
 
 }

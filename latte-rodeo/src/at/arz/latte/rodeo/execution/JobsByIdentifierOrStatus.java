@@ -40,6 +40,13 @@ public class JobsByIdentifierOrStatus
 			return query;
 		}
 
+		if (identifier == null) {
+			TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.status = :status order by o.created DESC",
+																Job.class);
+			query.setParameter("status", status);
+			return query;
+		}
+
 		TypedQuery<Job> query = entityManager.createQuery(	"select o from Job o where o.identifier like :identifier and o.status=:status order by o.created DESC",
 															Job.class);
 		query.setParameter("identifier", identifier);

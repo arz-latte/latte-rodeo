@@ -88,6 +88,7 @@ public class JobEngine {
 		File jobDir = createJobDir(identifier, jobDate);
 		File scriptFile = createScript(jobDir, steps.get(0), properties);
 		Job job = new Job(identifier);
+		job.setWorkDirectory(jobDir.getAbsolutePath());
 		JobRunner processor = new JobRunner(runner, identifier);
 		processor.setLogFile(new File(jobDir, "log.txt"));
 		processor.setWorkDirectory(workDirectory);
