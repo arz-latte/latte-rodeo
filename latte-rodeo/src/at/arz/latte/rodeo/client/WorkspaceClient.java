@@ -1,5 +1,6 @@
 package at.arz.latte.rodeo.client;
 
+import java.io.InputStream;
 import java.util.List;
 
 import at.arz.latte.rodeo.scm.ScmLocation;
@@ -23,6 +24,18 @@ public class WorkspaceClient {
 		this.scmClient = new ScmClient(client);
 		this.stepClient = new StepClient(client);
 		this.jobClient = new JobClient(client);
+	}
+
+	public InputStream downloadFile(String path) {
+		return client.begin(WORKSPACE_PATH + "/" + path).get(InputStream.class);
+	}
+
+	public void updateFile(String path, InputStream file) {
+		try {
+			client.begin(WORKSPACE_PATH + "/" + path).post(file);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public List<DirItem> listWorkspace() {
