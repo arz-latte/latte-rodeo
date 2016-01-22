@@ -33,7 +33,7 @@ import at.arz.latte.rodeo.infrastructure.RodeoModel;
 import at.arz.latte.rodeo.workspace.Workspace;
 
 @Path("/jobs")
-@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class JobResource {
 
 	@Inject
