@@ -119,7 +119,7 @@ public class WorkspaceResource {
 		File destinationFile = new File(workspaceDir, path);
 
 		if (!destinationFile.exists()) {
-			Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(path + " not found").build();
+			return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(path + " not found").build();
 		}
 
 		try {

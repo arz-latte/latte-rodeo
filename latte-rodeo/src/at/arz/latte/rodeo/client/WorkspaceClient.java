@@ -30,6 +30,14 @@ public class WorkspaceClient {
 		return client.begin(WORKSPACE_PATH + "/" + path).get(InputStream.class);
 	}
 
+	public void updloadFile(String path, InputStream file) {
+		try {
+			client.begin(WORKSPACE_PATH + "/" + path).put(file);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public void updateFile(String path, InputStream file) {
 		try {
 			client.begin(WORKSPACE_PATH + "/" + path).post(file);
