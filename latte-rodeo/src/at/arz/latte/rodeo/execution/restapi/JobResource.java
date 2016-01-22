@@ -68,8 +68,6 @@ public class JobResource {
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public JobsResult listJobs(@QueryParam("status") Job.Status status) {
-		System.out.println("requestURI:" + uriInfo.getRequestUri());
-		System.out.println("baseURI:" + uriInfo.getBaseUri());
 		JobsByIdentifierOrStatus query = new JobsByIdentifierOrStatus(null, status);
 		List<JobStatusResult> list = model.applyAll(query, new MapJobToJobStatusResult(uriInfo.getBaseUri()));
 		return new JobsResult(list);
