@@ -22,8 +22,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-
 import at.arz.latte.rodeo.infrastructure.RodeoSecurity;
 import at.arz.latte.rodeo.workspace.Workspace;
 
@@ -149,13 +147,22 @@ public class WorkspaceResource {
 		}
 
 		if (destinationfile.isDirectory()) {
-			try {
-				FileUtils.deleteDirectory(destinationfile);
-			} catch (IOException e) {
-				return Response.notModified(e.getMessage()).build();
-			}
+			deleteDirectory(destinationfile);
 		}
 		return Response.ok().build();
+	}
+
+	private void deleteDirectory(File directory) {
+		if(directory.exists()){
+			File[] files = directory.listFiles();
+			for (File file : files) {
+				if(file.isDirectory()){
+					deleteDirectory(file);
+				}else{
+					file.delete();
+				}
+			}
+		}
 	}
 
 	private void writeStreamToFile(InputStream in, File resource) throws IOException {

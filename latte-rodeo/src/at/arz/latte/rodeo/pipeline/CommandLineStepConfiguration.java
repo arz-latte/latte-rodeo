@@ -4,12 +4,9 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import com.sun.xml.txw2.annotation.XmlElement;
-
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlElement("configuration")
-public class CommandLineStepConfiguration extends 
-StepConfiguration {
+public class CommandLineStepConfiguration
+		extends StepConfiguration {
 
 	@Size(max = Template.MAX_LENGTH)
 	private String mainScript;

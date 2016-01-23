@@ -7,6 +7,7 @@ import java.io.File;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -33,6 +34,7 @@ public class JobProcessorTest {
 		processor.setWorkDirectory(new File("."));
 	}
 
+	@Ignore("we must not start system commands during unit tests")
 	@Test
 	public void test() throws InterruptedException {
 		Thread thread = new Thread(processor);

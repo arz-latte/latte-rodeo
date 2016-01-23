@@ -47,11 +47,11 @@ public class RodeoModel {
 		return list;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public <R> R execute(@Valid RodeoCommand<R> command) {
 		CreationalContext<Object> context = beanManager.createCreationalContext(null);
 		try {
-			@SuppressWarnings("unchecked")
-			AnnotatedType<Object> type = (AnnotatedType<Object>) beanManager.createAnnotatedType(command.getClass());
+			AnnotatedType type = (AnnotatedType) beanManager.createAnnotatedType(command.getClass());
 			beanManager.createInjectionTarget(type).inject(command, context);
 			return command.execute();
 		} finally {
