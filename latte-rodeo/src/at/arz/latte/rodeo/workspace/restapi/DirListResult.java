@@ -14,6 +14,8 @@ public class DirListResult {
 
 	private String path;
 
+	private String parent;
+
 	@XmlElement(name = "item")
 	private List<DirItem> items;
 
@@ -21,12 +23,13 @@ public class DirListResult {
 		// tool constructor
 	}
 
-	public DirListResult(String path, List<DirItem> items) {
+	public DirListResult(String parent, String path, List<DirItem> items) {
+		Objects.requireNonNull(parent, "parent required");
 		Objects.requireNonNull(path, "path required");
 		Objects.requireNonNull(items, "items required");
+		this.parent = parent;
 		this.path = path;
 		this.items = items;
-		// tool constructor
 	}
 
 	public List<DirItem> getItems() {
@@ -35,5 +38,9 @@ public class DirListResult {
 
 	public String getPath() {
 		return path;
+	}
+
+	public String getParent() {
+		return parent;
 	}
 }

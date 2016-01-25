@@ -30,6 +30,7 @@ import at.arz.latte.rodeo.execution.JobEngine;
 import at.arz.latte.rodeo.execution.JobIdentifier;
 import at.arz.latte.rodeo.execution.JobsByIdentifierOrStatus;
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
+import at.arz.latte.rodeo.rest.XSLTSheet;
 import at.arz.latte.rodeo.workspace.Workspace;
 
 @Path("/jobs")
@@ -67,6 +68,7 @@ public class JobResource {
 	@Path("/")
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@XSLTSheet("jobs")
 	public JobsResult listJobs(@QueryParam("status") Job.Status status) {
 		JobsByIdentifierOrStatus query = new JobsByIdentifierOrStatus(null, status);
 		List<JobStatusResult> list = model.applyAll(query, new MapJobToJobStatusResult(uriInfo.getBaseUri()));
@@ -76,6 +78,7 @@ public class JobResource {
 	@Path("{identifier}")
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@XSLTSheet("jobs")
 	public Response listJobs(@PathParam("identifier") JobIdentifier identifier) {
 		List<JobStatusResult> list = model.applyAll(new JobsByIdentifierOrStatus(identifier, null),
 													new RodeoFunction<Job, JobStatusResult>() {

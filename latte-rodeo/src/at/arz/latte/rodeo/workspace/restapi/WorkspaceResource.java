@@ -21,8 +21,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import at.arz.latte.rodeo.infrastructure.RodeoSecurity;
+import at.arz.latte.rodeo.rest.XSLTSheet;
 import at.arz.latte.rodeo.workspace.Workspace;
 
 @Path("/workspaces")
@@ -38,14 +40,19 @@ public class WorkspaceResource {
 	@Context
 	private ServletContext context;
 
+	@Context
+	private UriInfo uriInfo;
+
 	@Path("/")
 	@GET
+	@XSLTSheet("workspaces")
 	public Response getRootIndex() {
 		return getIndex("/");
 	}
 
 	@Path("{path : .+}")
 	@GET
+	@XSLTSheet("workspaces")
 	public Response getIndex(@PathParam("path") String path) {
 		File workspaceDir = workspace.getWorkspaceDir();
 		File subdir = new File(workspaceDir, path);
@@ -185,12 +192,18 @@ public class WorkspaceResource {
 	}
 
 	private DirListResult buildDirList(File sourceDirectory) {
-		List<DirItem> list = buildDirItems(sourceDirectory);
+		String parentPath = buildParentPath(workspace.getWorkspaceDir(), sourceDirectory);
+		String baseUri = uriInfo.getBaseUri().toString();
+
+		String link = uriInfo.getRequestUri().toString();
+
+		List<DirItem> list = buildDirItems(sourceDirectory, link);
 		String path = buildPath(workspace.getWorkspaceDir(), sourceDirectory);
-		return new DirListResult(path, list);
+
+		return new DirListResult(baseUri + "workspaces/" + parentPath, path, list);
 	}
 
-	private List<DirItem> buildDirItems(File rootPath) {
+	private List<DirItem> buildDirItems(File rootPath, String link) {
 		File[] files = rootPath.listFiles();
 		ArrayList<DirItem> list = new ArrayList<DirItem>(files.length);
 		for (File file : files) {
@@ -199,6 +212,7 @@ public class WorkspaceResource {
 			item.setLastModified(new Date(file.lastModified()));
 			item.setSize(file.isDirectory() ? 0 : file.length());
 			item.setName(buildPath(rootPath, file));
+			item.setLink(link + "/" + file.getName());
 			list.add(item);
 		}
 		return list;
@@ -206,6 +220,10 @@ public class WorkspaceResource {
 
 	private String buildPath(File directory, File file) {
 		return file.toURI().getPath().substring(directory.toURI().getPath().length());
+	}
+
+	private String buildParentPath(File directory, File file) {
+		return file.getParentFile().toURI().getPath().substring(directory.toURI().getPath().length());
 	}
 
 }
