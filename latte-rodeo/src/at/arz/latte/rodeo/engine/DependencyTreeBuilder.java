@@ -5,13 +5,24 @@ import java.util.Set;
 
 import at.arz.latte.rodeo.engine.graph.GraphBuilder;
 
+/**
+ * A builder for dependency trees.
+ * 
+ * @param <T>
+ */
 public class DependencyTreeBuilder<T>
 		extends GraphBuilder<DependencyNode<T>, DependencyTree<T>> {
 
+	/**
+	 * Creates a new dependency tree builder.
+	 */
 	public DependencyTreeBuilder() {
 		super(new DependencyTree<T>());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public DependencyTree<T> build() {
 		DependencyTree<T> dependencyTree = super.build();
