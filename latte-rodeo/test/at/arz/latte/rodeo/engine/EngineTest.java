@@ -42,9 +42,7 @@ public class EngineTest {
 		// Verify retrieval of initial nodes.
 		verify(traverser).retrieveProcessableNodes();
 		// Verify invocation of first node.
-		for (DependencyNode<String> initial : initialNodes) {
-			verify(action).execute(engine, initial);
-		}
+		verify(action).execute(engine, initialNodes.iterator().next());
 		// Keine weiteren Interaktionen, da die action sofort cancelAll() ausgelöst hat!
 		verifyNoMoreInteractions(traverser, action);
 
