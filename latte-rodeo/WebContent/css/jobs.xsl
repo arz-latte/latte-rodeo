@@ -2,6 +2,7 @@
 <html xsl:version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <head>
   <title>rodeo - Job status</title>
+  <meta http-equiv="refresh" content="3" />
   <link rel="stylesheet" type="text/css" href="/rodeo/css/rodeo.css" />
 </head>
 <body>
