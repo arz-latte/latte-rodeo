@@ -20,6 +20,7 @@ import at.arz.latte.rodeo.execution.JobIdentifier;
 import at.arz.latte.rodeo.execution.JobsByIdentifierOrStatus;
 import at.arz.latte.rodeo.execution.JobsByStatus;
 import at.arz.latte.rodeo.infrastructure.RodeoModel;
+import at.arz.latte.rodeo.rest.XSLTSheet;
 import at.arz.latte.rodeo.workspace.Workspace;
 
 @Path("/jobqueue")
@@ -38,6 +39,7 @@ public class JobQueueResource {
 	@Path("/")
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@XSLTSheet("jobs")
 	public JobsResult listQueuedJobs() {
 		List<JobStatusResult> list = model.applyAll(new JobsByStatus(),
 													new MapJobToJobStatusResult(uriInfo.getBaseUri()));
