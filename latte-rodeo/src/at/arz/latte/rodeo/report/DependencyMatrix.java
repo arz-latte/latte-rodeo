@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 
 public class DependencyMatrix {
+
 	private BitSet edges[];
 	private final int size;
 
@@ -121,10 +122,10 @@ public class DependencyMatrix {
 	 * @return
 	 */
 	public void transitiveReduction() {
-		for (int source = 0; source < size; source++) {
-			for (int target = 0; target < size; target++) {
-				if (edges[source].get(target)) {
-					edges[source].andNot(edges[target]);
+		for (int source = 0; source < edges.length; source++) {
+			for (int target = 0; target < edges.length; target++) {
+				if (edges[target].get(source)) {
+					edges[target].andNot(edges[source]);
 				}
 			}
 		}

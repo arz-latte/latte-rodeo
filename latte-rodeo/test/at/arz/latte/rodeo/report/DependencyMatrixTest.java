@@ -74,4 +74,23 @@ public class DependencyMatrixTest {
 		assertThat(matrix.toString(), is("[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]"));
 	}
 
+	@Test
+	public void diamond() {
+		matrix = new DependencyMatrix(6);
+		matrix.setEdge(0, 1);
+		matrix.setEdge(0, 2);
+		matrix.setEdge(1, 3);
+		matrix.setEdge(3, 2);
+		matrix.setEdge(2, 4);
+		matrix.setEdge(4, 5);
+		matrix.setEdge(0, 5);
+		System.out.println(matrix.toString());
+		matrix.removeReflexiveEdges();
+		System.out.println(matrix.toString());
+		matrix.produceTransitiveClosure();
+		System.out.println(matrix.toString());
+		matrix.transitiveReduction();
+		System.out.println(matrix.toString());
+	}
+
 }
