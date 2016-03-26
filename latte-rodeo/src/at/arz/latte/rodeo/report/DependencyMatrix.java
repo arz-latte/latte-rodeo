@@ -130,4 +130,84 @@ public class DependencyMatrix {
 			}
 		}
 	}
+
+	public boolean isLeaf(int vertex) {
+		return edges[vertex].isEmpty();
+	}
+
+	/**
+	 * returns true if source is ancestor of target.
+	 * 
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	public boolean isAncestor(int source, int target) {
+		return edges[source].get(target);
+	}
+
+	public BitSet getAncestors(int vertex) {
+		BitSet ancestors = new BitSet(edges.length);
+		for (int source = 0; source < edges.length; source++) {
+			if (edges[source].get(vertex)) {
+				ancestors.set(source);
+			}
+		}
+		return ancestors;
+	}
+
+	public BitSet getLeafs() {
+		BitSet leafs = new BitSet(edges.length);
+		for (int source = 0; source < edges.length; source++) {
+			if (edges[source].isEmpty()) {
+				leafs.set(source);
+			}
+		}
+		return leafs;
+	}
+
+	public BitSet getAncestors(BitSet query) {
+		BitSet ancestors = new BitSet(edges.length);
+		for (int i = query.nextSetBit(0); i >= 0; i = query.nextSetBit(i + 1)) {
+			for (int source = 0; source < edges.length; source++) {
+				if (edges[source].get(i)) {
+					ancestors.set(source);
+				}
+			}
+		}
+		return ancestors;
+	}
+
+	/**
+	 * returns a vertices which would become leafes, if the given set of leaves would be removed.
+	 * 
+	 * @param leafs
+	 * @return
+	 */
+	public BitSet findAncestorLeafs(BitSet leafs) {
+		BitSet ancestorLeafs = new BitSet(edges.length);
+		for (int i = 0; i < edges.length; i++) {
+			if (leafs.get(i)) {
+				continue;
+			}
+			if (isResolved(i, leafs)) {
+				ancestorLeafs.set(i);
+			}
+		}
+		return ancestorLeafs;
+	}
+
+	/**
+	 * returns true if the set knownVertices contains all required vertices of the given vertex v.
+	 * 
+	 * @param v
+	 * @param knownVertices
+	 * @return
+	 */
+	boolean isResolved(int v, BitSet knownVertices) {
+		BitSet tmp = new BitSet(size);
+		tmp.or(edges[v]);
+		tmp.andNot(knownVertices);
+		return tmp.isEmpty();
+	}
 }
