@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.workspace;
+package at.arz.latte.rodeo.settings;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,8 +101,7 @@ public class Settings {
 		properties.store(outputStream, "updated by rodeo");
 	}
 
-	public static final Properties loadDefaultProperties() {
-		URL resource = Settings.class.getResource("workspace.properties");
+	public static Properties loadProperties(URL resource) {
 		try (InputStream inputStream = resource.openStream()) {
 			return loadProperties(inputStream);
 		} catch (IOException e) {

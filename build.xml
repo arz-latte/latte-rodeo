@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE public>
+<project name="latte-rodeo-root" default="build-all" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property name="common.dir" location="${basedir}/build"/>
+	<import file="build/setup.ant" />
+	
+	<target name="buildlist" depends="load-ivy">
+		<ivy:buildlist reference="build.modules">
+			<fileset dir="${basedir}" includes="*/build.xml" excludes="build.xml"/>
+		</ivy:buildlist>
+	</target>
+	
+	<target name="build-all" depends="buildlist" description="--> builds all modules">
+		<subant buildpathref="build.modules" target="publish-local">
+		</subant>
+	</target>
+	
+	<target name="publish" depends="buildlist" description="--> builds all modules">
+		<subant buildpathref="build.modules" target="publish">
+		</subant>
+	</target>
+	
+	<target name="clean-all" depends="buildlist" description="--> cleans all module builds">
+		<subant buildpathref="build.modules" target="clean" taskname="">
+		</subant>
+	</target>
+	
+	<target name="clean" depends="clean-all" description="--> cleans modules and cache">
+		<delete dir="${target.dir}"/>
+		<ivy:cleancache cache="local" />
+	</target>
+	
+</project>

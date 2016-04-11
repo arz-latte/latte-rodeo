@@ -27,9 +27,9 @@ import at.arz.latte.rodeo.pipeline.CommandLineStep;
 import at.arz.latte.rodeo.pipeline.Step;
 import at.arz.latte.rodeo.pipeline.StepName;
 import at.arz.latte.rodeo.pipeline.admin.FindStep;
+import at.arz.latte.rodeo.settings.Settings;
+import at.arz.latte.rodeo.settings.VariableResolver;
 import at.arz.latte.rodeo.workspace.AsynchronousRunner;
-import at.arz.latte.rodeo.workspace.Settings;
-import at.arz.latte.rodeo.workspace.VariableResolver;
 import at.arz.latte.rodeo.workspace.Workspace;
 
 @Stateless(name = "JobEngine")

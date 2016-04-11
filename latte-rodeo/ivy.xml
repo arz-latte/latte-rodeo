@@ -2,7 +2,7 @@
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
        
-    <info organisation="at.arz.latte" module="latte-rodeo" revision="0.2.0">
+    <info organisation="at.arz.latte" module="latte-rodeo" status="integration">
     </info>
     
     <configurations>
@@ -12,9 +12,17 @@
     	<conf name="provided"/>
     	<conf name="test" extends="runtime"/>
     	<conf name="runtime" extends="compile"/>
+    	<conf name="sources" />
     </configurations>
     
+    <publications>
+    	<artifact name="latte-rodeo" conf="master" type="war" ext="war"/>
+    	<artifact name="latte-rodeo-sources" conf="sources" type="source" ext="jar"/>
+    </publications>
+    
     <dependencies defaultconf="compile" defaultconfmapping="compile->default;provided->default;test->default">
+        <dependency org="at.arz.latte" name="latte-rodeo-common" conf="compile->default" rev="latest.integration"/>
+    
     	<dependency org="org.apache.tomee" name="javaee-api"  conf="provided" rev="7.0" />
        	<dependency org="com.sun.jersey" name="jersey-client" conf="provided" rev="1.19" />
     	<dependency org="com.sun.jersey" name="jersey-core"  conf="provided" rev="1.19" />

@@ -9,6 +9,8 @@ import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
 
+import at.arz.latte.rodeo.settings.VariableResolver;
+
 
 public class VariableResolverTest {
 

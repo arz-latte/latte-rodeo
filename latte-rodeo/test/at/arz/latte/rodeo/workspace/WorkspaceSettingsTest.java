@@ -9,6 +9,9 @@ import java.util.Properties;
 
 import org.junit.Test;
 
+import at.arz.latte.rodeo.settings.Settings;
+import at.arz.latte.rodeo.settings.VariableResolver;
+
 public class WorkspaceSettingsTest {
 
 	@Test
@@ -64,7 +67,7 @@ public class WorkspaceSettingsTest {
 
 	@Test
 	public void load_default_properties() {
-		Properties properties = Settings.loadDefaultProperties();
+		Properties properties = Settings.loadProperties(Workspace.class.getResource("workspace.properties"));
 		assertThat(properties, is(notNullValue()));
 	}
 

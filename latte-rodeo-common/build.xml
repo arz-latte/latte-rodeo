@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE public>
+<project name="latte-rodeo-common">
+	<property name="common.dir" location="../build" />
+	<import file="${common.dir}/common.ant"/>
+</project>

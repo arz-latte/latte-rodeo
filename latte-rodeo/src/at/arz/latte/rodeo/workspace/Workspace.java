@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 
+import at.arz.latte.rodeo.settings.Settings;
+import at.arz.latte.rodeo.settings.VariableResolver;
+
 @ApplicationScoped
 public class Workspace {
 
@@ -66,7 +69,7 @@ public class Workspace {
 	}
 
 	private Properties loadConfiguration() {
-		Properties defaultProperties = Settings.loadDefaultProperties();
+		Properties defaultProperties = Settings.loadProperties(Workspace.class.getResource("workspace.properties"));
 		File customConfig = new File(homeDir, "etc/rodeo.properties");
 		if (customConfig.exists()) {
 			try (InputStream is = new FileInputStream(customConfig)) {

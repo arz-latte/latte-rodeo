@@ -1,0 +1,21 @@
+<project name="setup" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property file="${common.dir}/build.properties" />
+	<property name="ivy.jar.dir" value="${user.home}/.ivy2/jars" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+	<!-- ================================= 
+          target: load-ivy         
+            this target is not necessary if you put ivy.jar in your ant lib directory
+            if you already have ivy 2.0 in your ant lib, you can simply remove this
+            target
+         ================================= -->
+	<target name="load-ivy">
+		<mkdir dir="${ivy.jar.dir}" />
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+		<ivy:settings file="${common.dir}/ivysettings.xml" />
+	</target>
+	
+</project>

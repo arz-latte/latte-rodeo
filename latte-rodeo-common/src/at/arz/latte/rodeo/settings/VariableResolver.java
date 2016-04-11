@@ -1,4 +1,4 @@
-package at.arz.latte.rodeo.workspace;
+package at.arz.latte.rodeo.settings;
 
 import java.util.Properties;
 import java.util.regex.Matcher;

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE public>
+<project name="latte-rodeo" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property name="target.dir" value="${basedir}/target" />
+	<property name="ivy.install.version" value="2.4.0" />
+	<property name="ivy.jar.dir" value="${target.dir}/ivy" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+	<property name="src.dir" value="src" />
+	<property name="web.dir" value="WebContent" />
+	<property name="test.dir" value="test" />
+	<property name="src.bin.dir" value="${target.dir}/classes" />
+	<property name="test.bin.dir" value="${target.dir}/test/classes" />
+
+	<target name="init">
+		<condition property="skip.download" value="true">
+			<available file="${ivy.jar.file}" />
+		</condition>
+	</target>
+
+	<target name="download-ivy" depends="init" unless="skip.download">
+		<mkdir dir="${ivy.jar.dir}" />
+		<echo message="installing ivy..." />
+		<property name="ivy.download.url" value="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" />
+		<get src="${ivy.download.url}" dest="${ivy.jar.file}" usetimestamp="true" />
+	</target>
+
+	<target name="install-ivy" depends="download-ivy" description="--> install ivy">
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
+
+	<target name="resolve" depends="install-ivy">
+		<ivy:resolve file="ivy.xml" />
+	</target>
+
+
+	<target name="compile" depends="resolve">
+		<mkdir dir="${target.dir}/libs/compile" />
+		<mkdir dir="${target.dir}/libs/provided" />
+		<ivy:retrieve conf="compile, provided" pattern="${target.dir}/libs/[conf]/[artifact]-[revision].[ext]"/>
+		<mkdir dir="${target.dir}/classes" />
+		<javac source="1.7" target="1.7" debug="true" destdir="${src.bin.dir}" srcdir="${src.dir}" includeantruntime="false">
+			<compilerarg value="-proc:none" />
+			<classpath>
+				<fileset dir="${target.dir}/libs/compile" includes="*.jar" />
+				<fileset dir="${target.dir}/libs/provided" includes="*.jar" />
+			</classpath>
+		</javac>
+		<copy todir="${src.bin.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java"/>
+		</copy>
+	</target>
+	
+	<target name="test" depends="compile">
+		<echo>project build successfully</echo>
+		<mkdir dir="${target.dir}/test/classes" />
+		<path id="test.classpath">
+			<pathelement path="${src.bin.dir}" />
+			<pathelement path="${test.bin.dir}" />
+			<fileset dir="${target.dir}/libs/test" includes="*.jar" />
+			<fileset dir="${target.dir}/libs/provided" includes="*.jar" />
+		</path>
+
+		<ivy:retrieve conf="test" pattern="${target.dir}/libs/[conf]/[artifact]-[revision].[ext]"/>
+		<javac source="1.7" target="1.7" debug="true" destdir="${test.bin.dir}" srcdir="${test.dir}" includeantruntime="false">
+			<compilerarg value="-proc:none" />
+			<classpath refid="test.classpath"/>
+		</javac>
+		<copy todir="${test.bin.dir}">
+			<fileset dir="${test.dir}" excludes="**/*.java"/>
+		</copy>
+
+		<mkdir dir="${target.dir}/junit"/>
+		<junit includeantruntime="false">
+			<classpath refid="test.classpath"/>
+			<batchtest todir="${target.dir}/junit">
+				<formatter type="brief" usefile="false"/>
+				<fileset dir="${test.dir}">
+					<include name="**/*Test.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<target name="package" depends="test">
+		<delete file="${target.dir}/latte-rodeo.war"/>
+		<war destfile="${target.dir}/latte-rodeo.war" >
+			<fileset dir="${web.dir}" includes="**/*" excludes="WEB-INF/classes/**"/>
+			<zipfileset dir="${src.bin.dir}" prefix="WEB-INF/classes"/>
+		</war>
+		<delete file="${target.dir}/latte-rodeo-sources.jar"/>
+		<jar destfile="${target.dir}/latte-rodeo-sources.jar" >
+			<fileset dir="${src.dir}" includes="**/*"/>
+		</jar>
+	</target>
+
+	<target name="build" depends="package"/>
+
+	<target name="clean" depends="init">
+		<delete dir="${target.dir}">
+			<exclude name="ivy/**" />
+		</delete>
+	</target>
+
+</project>

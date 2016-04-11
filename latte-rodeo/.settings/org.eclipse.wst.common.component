@@ -4,6 +4,9 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_generated"/>
+        <dependent-module archiveName="latte-rodeo-common.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/latte-rodeo-common/latte-rodeo-common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="rodeo"/>
         <property name="java-output-path" value="/latte-rodeo/WebContent/WEB-INF/classes"/>
     </wb-module>
