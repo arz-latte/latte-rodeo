@@ -1,0 +1,28 @@
+<project name="common-build" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property name="common-build.dir" location="../build" />
+	<property file="${user.home}/.ivy2/build.properties" />
+	<property file="${common-build.dir}/common-build.properties" />
+	
+	<property name="rodeo.defaultResolver" value="" />
+	
+	<condition property="skip.download" value="true">
+		<available file="${ivy.jar.file}" />
+	</condition>
+
+	<target name="init">
+	</target>
+
+	<target name="download-ivy" depends="init" unless="skip.download">
+		<mkdir dir="${ivy.jar.dir}" />
+		<echo message="installing ivy..." />
+		<get src="${ivy.download.url}" dest="${ivy.jar.file}" usetimestamp="true" />
+	</target>
+
+	<target name="install-ivy" depends="download-ivy" description="--> install ivy">
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
+
+</project>

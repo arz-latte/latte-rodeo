@@ -1,0 +1,23 @@
+<ivysettings>
+	<property name="ivy.settings.rodeo" value="${ivy.default.settings.dir}/ivysettings.xml" override="false"/>
+	<property name="upstreamResolver" value="main" override="false"/>
+	<include url="${ivy.settings.rodeo}"/>
+	
+	<settings defaultResolver="default" />
+	  
+	<caches default="workspaceCache">
+		<cache name="workspaceCache" basedir="${common-build.dir}/target/cache" />  
+	</caches>
+  	
+	<resolvers>
+		<filesystem name="workspace">
+	      <ivy pattern="${common-build.dir}/target/repo/${ivy.local.default.ivy.pattern}" />
+	      <artifact pattern="${common-build.dir}/target/repo/${ivy.local.default.artifact.pattern}" />
+	    </filesystem>
+	    
+		<chain name="default" dual="true">
+			<resolver ref="workspace"/>
+			<resolver ref="${upstreamResolver}"/>
+		</chain>
+	</resolvers>
+</ivysettings>

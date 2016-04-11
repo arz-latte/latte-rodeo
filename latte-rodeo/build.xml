@@ -1,37 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE public>
 <project name="latte-rodeo" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
-	<property name="target.dir" value="${basedir}/target" />
-	<property name="ivy.install.version" value="2.4.0" />
-	<property name="ivy.jar.dir" value="${target.dir}/ivy" />
-	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
-	<property name="src.dir" value="src" />
-	<property name="web.dir" value="WebContent" />
-	<property name="test.dir" value="test" />
-	<property name="src.bin.dir" value="${target.dir}/classes" />
-	<property name="test.bin.dir" value="${target.dir}/test/classes" />
-
-	<target name="init">
-		<condition property="skip.download" value="true">
-			<available file="${ivy.jar.file}" />
-		</condition>
-	</target>
-
-	<target name="download-ivy" depends="init" unless="skip.download">
-		<mkdir dir="${ivy.jar.dir}" />
-		<echo message="installing ivy..." />
-		<property name="ivy.download.url" value="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" />
-		<get src="${ivy.download.url}" dest="${ivy.jar.file}" usetimestamp="true" />
-	</target>
-
-	<target name="install-ivy" depends="download-ivy" description="--> install ivy">
-		<path id="ivy.lib.path">
-			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
-		</path>
-		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
-	</target>
-
+	<property name="common-build.dir" location="../build" />
+	<import file="${common-build.dir}/common-build.ant" optional="false" />
+	
 	<target name="resolve" depends="install-ivy">
+		<ivy:settings file="${common-build.dir}/ivysettings.xml"/>
 		<ivy:resolve file="ivy.xml" />
 	</target>
 
