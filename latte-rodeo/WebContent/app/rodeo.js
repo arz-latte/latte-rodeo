@@ -6,7 +6,7 @@
 	}
 
 	function getContextRoot() {
-		var thisScriptName = "/app/common.js";
+		var thisScriptName = "/app/rodeo.js";
 		var scriptTags = document.getElementsByTagName("script");
 		for (var int = 0; int < scriptTags.length; int++) {
 			var scriptURL = scriptTags[int].src;
@@ -22,6 +22,8 @@
 	requirejs.config({
 	  baseUrl: contextRoot  + '/js',
 	  
+	  urlArgs: "bust=" + (new Date()).getTime(),
+	  
 	  paths: {
 	      "app": contextRoot  + '/app'
 	  },
@@ -34,10 +36,21 @@
 	
 	});
 	
-	define("app/common", function() {
+	define("app/rodeo",["underscore"], function(_) {
 
+		_.templateSettings = {
+				  evaluate:    /\{\{#([\s\S]+?)\}\}/g,            // {{# console.log("blah") }}
+				  interpolate: /\{\{[^#\{]([\s\S]+?)[^\}]\}\}/g,  // {{ title }}
+				  escape:      /\{\{\{([\s\S]+?)\}\}\}/g,         // {{{ title }}}
+		};
+		
 		return {
+			
 		  contextRoot : contextRoot,
+		  
+		  template : function (path){
+			  
+		  },
 
 		  loadDocument: function(path, fun) {
 		  	var documentURL=this.contextRoot + "/" + path;
