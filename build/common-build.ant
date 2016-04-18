@@ -2,14 +2,12 @@
 	<property name="common-build.dir" location="../build" />
 	<property file="${user.home}/.ivy2/build.properties" />
 	<property file="${common-build.dir}/common-build.properties" />
-	
+
 	<property name="rodeo.defaultResolver" value="" />
-	
-	<condition property="skip.download" value="true">
-		<available file="${ivy.jar.file}" />
-	</condition>
 
 	<target name="init">
+		<echo>${buildEnvironment}</echo>
+		<available property="skip.download" file="${ivy.jar.file}" />
 	</target>
 
 	<target name="download-ivy" depends="init" unless="skip.download">
@@ -23,6 +21,105 @@
 			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
 		</path>
 		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
+
+	<target name="resolve" depends="install-ivy">
+		<ivy:settings file="${common-build.dir}/ivysettings.xml" />
+		<ivy:resolve file="ivy.xml" />
+	</target>
+
+	<target name="compile" depends="resolve" description="--> compiles this project">
+		<mkdir dir="${target.dir}/libs/compile" />
+		<mkdir dir="${target.dir}/libs/provided" />
+		<ivy:retrieve conf="compile, provided" pattern="${target.dir}/libs/[conf]/[artifact]-[revision].[ext]" />
+		<mkdir dir="${target.dir}/classes" />
+		<javac source="1.7"
+		       target="1.7"
+		       debug="true"
+		       destdir="${src.bin.dir}"
+		       srcdir="${src.dir}"
+		       includeantruntime="false">
+			<compilerarg value="-proc:none" />
+			<classpath>
+				<fileset dir="${target.dir}/libs/compile" includes="*.jar" />
+				<fileset dir="${target.dir}/libs/provided" includes="*.jar" />
+			</classpath>
+		</javac>
+		<copy todir="${src.bin.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="test" depends="compile" description="--> compiles the project and runs unit tests">
+		<mkdir dir="${target.dir}/test/classes" />
+
+		<path id="test.classpath">
+			<pathelement path="${src.bin.dir}" />
+			<pathelement path="${test.bin.dir}" />
+			<fileset dir="${target.dir}/libs/test" includes="*.jar" />
+			<fileset dir="${target.dir}/libs/provided" includes="*.jar" />
+		</path>
+
+		<ivy:retrieve conf="test" pattern="${target.dir}/libs/[conf]/[artifact]-[revision].[ext]" />
+		<javac source="1.7"
+		       target="1.7"
+		       debug="true"
+		       destdir="${test.bin.dir}"
+		       srcdir="${test.dir}"
+		       includeantruntime="false">
+			<compilerarg value="-proc:none" />
+			<classpath refid="test.classpath" />
+		</javac>
+		<copy todir="${test.bin.dir}">
+			<fileset dir="${test.dir}" excludes="**/*.java" />
+		</copy>
+
+		<mkdir dir="${target.dir}/junit" />
+		<junit includeantruntime="false">
+			<classpath refid="test.classpath" />
+			<batchtest todir="${target.dir}/junit">
+				<formatter type="brief" usefile="false" />
+				<fileset dir="${test.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="package" depends="test">
+		<property name="module.src.package" value="${ivy.module}-sources.jar" />
+		<delete file="${target.dir}/${module.src.package}" />
+		<jar destfile="${target.dir}/${module.src.package}">
+			<fileset dir="${src.dir}" includes="**/*" />
+		</jar>
+	</target>
+
+	<target name="install" depends="package" description="--> installs the ivy module in the workspace repository">
+	</target>
+
+	<target name="local-version">
+		<tstamp>
+			<format property="now" pattern="yyyyMMddHHmmss" />
+		</tstamp>
+		<property name="ivy.new.revision" value="${module.version.target}-local-${now}" />
+	</target>
+
+	<target name="publish-workspace"
+	        depends="local-version, package"
+	        description="--> publish this project in the workspace ivy repository">
+		<ivy:publish artifactspattern="${target.dir}/[artifact].[ext]"
+		             resolver="workspace"
+		             pubrevision="${version}"
+		             pubdate="${now}"
+		             status="integration"
+		             forcedeliver="true" />
+		<echo message="project ${ant.project.name} published locally with version ${version}" />
+	</target>
+
+	<target name="build" depends="package" />
+
+	<target name="clean" depends="init" description="--> cleans the build output">
+		<delete dir="${target.dir}" />
 	</target>
 
 </project>
