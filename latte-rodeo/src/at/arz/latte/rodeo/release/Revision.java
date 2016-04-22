@@ -1,8 +1,6 @@
 package at.arz.latte.rodeo.release;
 
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -10,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.openjpa.persistence.Externalizer;
@@ -39,9 +36,6 @@ public class Revision
 	@Id
 	private String revision;
 
-	@OneToMany()
-	private List<Dependency> dependencies;
-
 	@ManyToOne
 	@Column(name = "MOUDLE_REVISION_BUILD_BY")
 	private User buildBy;
@@ -58,13 +52,11 @@ public class Revision
 		// jpa constructor
 	}
 
-	Revision(Module module, String revision, List<Dependency> dependencies) {
+	public Revision(Module module, String revision) {
 		Objects.requireNonNull(module, "module required");
 		Objects.requireNonNull(revision, "revision required");
-		Objects.requireNonNull(dependencies, "dependencies required");
 		this.module = module;
 		this.revision = revision;
-		this.dependencies = dependencies;
 		this.modificationTime = new Timestamp(System.currentTimeMillis());
 	}
 
@@ -87,44 +79,13 @@ public class Revision
 		return modificationTime;
 	}
 
-	public List<Dependency> getDependencies() {
-		return Collections.unmodifiableList(dependencies);
-	}
-
-	public boolean update(Timestamp modificationTime, List<Dependency> dependencies) {
-		if (isModified(modificationTime) || dependenciesModified(dependencies)) {
-			this.modificationTime = modificationTime;
-			this.dependencies = dependencies;
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * compares the list of dependencies, but ignores the order.
-	 * 
-	 * @param dependencies
-	 * @return true if dependencies differ.
-	 */
-	public boolean dependenciesModified(List<Dependency> dependencies) {
-		return dependencies.containsAll(this.dependencies) && this.dependencies.containsAll(dependencies);
-	}
-
 	public ModuleStatus getStatus() {
 		return status;
 	}
 
 	@Override
 	public String toString() {
-		return "ModuleRevision [module=" + module + ", revision=" + revision + "]";
-	}
-
-	public Dependency createUpstreamDependencyTo(Revision source, String conf, boolean override) {
-		return new Dependency(source, this, conf, override);
-	}
-
-	public Dependency createDownstreamDependencyTo(Revision dest, String conf, boolean override) {
-		return new Dependency(this, dest, conf, override);
+		return "Revision [module=" + module + ", revision=" + revision + "]";
 	}
 
 	public String getRevision() {

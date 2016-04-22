@@ -31,14 +31,6 @@ public class DependencyTest {
 									.hasRevision("2.0.1")
 									.hasRevision("2.0.2");
 
-		application	.revision("2.0.0")
-					.dependsOn(runtime.module.getRevision("1.0.0"), "conf", false)
-					.dependsOn(runtime.module.getRevision("1.0.0"), "conf", false);
-
-		application	.revision("2.0.1")
-					.dependsOn(runtime.module.getRevision("1.0.1"), "conf", false)
-					.dependsOn(framework.module.getRevision("1.1.1"), "conf", false);
-
 	}
 
 	@Test
@@ -48,15 +40,5 @@ public class DependencyTest {
 		assertFalse(revision_0.equals(revision_1));
 	}
 
-	@Test
-	public void two_revisions_are_same() {
-		ModuleStory other = ModuleStory.module("at.arz", "application").hasRevision("2.0.1");
-		other	.revision("2.0.1")
-				.dependsOn(runtime.module.getRevision("1.0.1"), "conf", false)
-				.dependsOn(framework.module.getRevision("1.1.1"), "conf", false);
-
-		Revision revision_1 = application.module.getRevision("2.0.1");
-		assertFalse(other.equals(revision_1));
-	}
 
 }

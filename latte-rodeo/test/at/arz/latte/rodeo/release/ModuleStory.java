@@ -1,7 +1,5 @@
 package at.arz.latte.rodeo.release;
 
-import java.util.Collections;
-import java.util.List;
 
 public class ModuleStory {
 
@@ -16,30 +14,9 @@ public class ModuleStory {
 	}
 
 	public ModuleStory hasRevision(String revision) {
-		List<Dependency> dependencies = Collections.emptyList();
-		module.addRevision(new Revision(module, revision, dependencies));
+		module.addRevision(new Revision(module, revision));
 		return this;
 	}
 	
-	public RevisionStory revision(String revision){
-		return new RevisionStory(module.getRevision(revision));
-	}
-	
-	public class RevisionStory {
-
-		Revision revision;
-
-		RevisionStory(Revision revision){
-			this.revision = revision;
-		}
-		
-		public RevisionStory dependsOn(Revision dest, String conf, boolean override){
-			revision.createDownstreamDependencyTo(dest, conf, override);
-			return this;
-		}
-		
-		
-
-	}
 
 }

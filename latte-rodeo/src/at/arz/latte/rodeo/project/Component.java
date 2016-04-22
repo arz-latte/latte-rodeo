@@ -1,6 +1,7 @@
 package at.arz.latte.rodeo.project;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -72,6 +73,7 @@ public class Component
 	public Component(String componentName) {
 		Objects.requireNonNull(componentName, "componentName required");
 		this.name = componentName;
+		this.projects = new HashSet<Project>();
 	}
 
 	public Long getId() {

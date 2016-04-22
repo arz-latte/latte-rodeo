@@ -111,7 +111,9 @@ public class DependencyMatrix {
 			builder.setLength(builder.length() - 1);
 			builder.append("],");
 		}
-		builder.setLength(builder.length() - 1);
+		if (builder.length() > 0) {
+			builder.setLength(builder.length() - 1);
+		}
 		return builder.toString();
 	}
 
@@ -135,6 +137,15 @@ public class DependencyMatrix {
 		return edges[vertex].isEmpty();
 	}
 
+	public boolean isRoot(int vertex) {
+		for (int i = 0; i < edges.length; i++) {
+			if (edges[i].get(vertex)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * returns true if source is ancestor of target.
 	 * 
@@ -154,6 +165,16 @@ public class DependencyMatrix {
 			}
 		}
 		return ancestors;
+	}
+
+	public BitSet getDescendant(int vertex) {
+		BitSet descendants = new BitSet(edges.length);
+		for (int target = 0; target < edges.length; target++) {
+			if (edges[vertex].get(target)) {
+				descendants.set(target);
+			}
+		}
+		return descendants;
 	}
 
 	public BitSet getLeafs() {

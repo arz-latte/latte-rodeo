@@ -21,6 +21,7 @@ public class DependencyTree<T>
 	
 	/**
 	 * Returns a sub tree containing all parent nodes of the given node.
+	 * The resulting tree contains the given leaf node.
 	 * 
 	 * @param node - the leaf node
 	 * @return a sub tree contaiing all parent nodes of the given node.

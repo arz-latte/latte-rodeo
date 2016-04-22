@@ -138,4 +138,9 @@ public class Project
 		return Objects.equals(name, other.name);
 	}
 
+	@Override
+	public String toString() {
+		return "Project [name=" + name + "]";
+	}
+
 }

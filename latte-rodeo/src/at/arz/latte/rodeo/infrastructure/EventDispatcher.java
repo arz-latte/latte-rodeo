@@ -27,7 +27,11 @@ public class EventDispatcher
 	}
 
 	public static final void notify(Object event) {
-		current.beanManager.fireEvent(event);
+		current.fireEvent(event);
+	}
+
+	protected void fireEvent(Object event) {
+		beanManager.fireEvent(event);
 	}
 
 	@Override
