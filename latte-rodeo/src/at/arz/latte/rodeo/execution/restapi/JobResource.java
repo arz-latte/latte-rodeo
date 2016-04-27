@@ -1,14 +1,13 @@
 package at.arz.latte.rodeo.execution.restapi;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Properties;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -39,9 +38,6 @@ public class JobResource {
 
 	@Inject
 	private JobEngine engine;
-
-	@Context
-	private ServletContext context;
 
 	@Context
 	private UriInfo uriInfo;
@@ -121,27 +117,19 @@ public class JobResource {
 		if (!file.exists()) {
 			return respondFileNotFound(identifier);
 		}
-
 		StreamingOutput output = new StreamingOutput() {
-
 			@Override
 			public void write(OutputStream out) throws IOException {
-				byte[] buffer = new byte[80];
-				try (FileInputStream inputStream = new FileInputStream(file)) {
-					int rc = inputStream.read(buffer);
-					while (rc != -1) {
-						out.write(buffer, 0, rc);
-						rc = inputStream.read(buffer);
-					}
-				}
+				Files.copy(file.toPath(), out);
 			}
 		};
-		return Response.status(404).type(MediaType.TEXT_PLAIN).entity(output).build();
-
+		return Response.ok(output, MediaType.TEXT_PLAIN).build();
 	}
 
 	private Response respondFileNotFound(JobIdentifier identifier) {
-		return Response.status(404).type(MediaType.TEXT_PLAIN).entity(identifier + " not found.").build();
+		return Response.status(Response.Status.NOT_FOUND)
+						.type(MediaType.TEXT_PLAIN)
+						.entity(identifier + " not found.")
+						.build();
 	}
-
 }
