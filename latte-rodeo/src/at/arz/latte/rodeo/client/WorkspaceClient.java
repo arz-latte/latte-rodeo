@@ -3,6 +3,8 @@ package at.arz.latte.rodeo.client;
 import java.io.InputStream;
 import java.util.List;
 
+import com.sun.jersey.api.client.UniformInterfaceException;
+
 import at.arz.latte.rodeo.scm.ScmLocation;
 import at.arz.latte.rodeo.scm.ScmName;
 import at.arz.latte.rodeo.scm.restapi.ScmResult;
@@ -65,7 +67,13 @@ public class WorkspaceClient {
 	}
 
 	public void remove(String path) {
-		client.begin(WORKSPACE_PATH + "/" + path).delete();
+		try {
+			client.begin(WORKSPACE_PATH + "/" + path).delete();
+		} catch (UniformInterfaceException e) {
+			if (e.getResponse().getStatus() != 409) {
+				throw e;
+			}
+		}
 	}
 	
 	public ScmLocation getScmLocation(ScmName scmName) {

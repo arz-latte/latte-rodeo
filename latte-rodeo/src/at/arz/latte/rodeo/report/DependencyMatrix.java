@@ -1,7 +1,9 @@
 package at.arz.latte.rodeo.report;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.List;
 
 public class DependencyMatrix {
 
@@ -21,6 +23,21 @@ public class DependencyMatrix {
 		for (int i = 0; i < size; i++) {
 			this.edges[i] = new BitSet(size);
 		}
+	}
+
+	public List<BitSet> createLevels() {
+		List<BitSet> levels = new ArrayList<BitSet>();
+		BitSet knownLeafs = getLeafs();
+		BitSet root = new BitSet();
+		root.or(knownLeafs);
+		levels.add(root);
+		BitSet newLeafs = findAncestorLeafs(knownLeafs);
+		while (!newLeafs.isEmpty()) {
+			levels.add(newLeafs);
+			knownLeafs.or(newLeafs);
+			newLeafs = findAncestorLeafs(knownLeafs);
+		}
+		return levels;
 	}
 
 	public void clear() {

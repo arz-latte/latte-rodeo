@@ -19,13 +19,15 @@
     </publications>
     
     <dependencies defaultconf="compile" defaultconfmapping="compile->default;provided->default;test->default">
-    	<dependency org="org.apache.tomee" name="javaee-api"  conf="provided" rev="7.0" />
        	<dependency org="com.sun.jersey" name="jersey-client" conf="provided" rev="1.1.5" />
     	<dependency org="com.sun.jersey" name="jersey-core"  conf="provided" rev="1.1.5" />
     	<dependency org="org.apache.openjpa" name="openjpa" conf="provided" rev="2.4.0" />
     	
     	<dependency org="junit" name="junit" conf="test" rev="4.12"/>
     	<dependency org="org.mockito" name="mockito-all" conf="test" rev="1.10.19"/>
+    	    	<!-- provided -->
+		<dependency org="javax" name="javaee-api" rev="7.0" conf="provided->default"/>
+    	
     </dependencies>
         
 </ivy-module>
